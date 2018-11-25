@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - S.I.E.{% endblock %}
+{% block page-title %}Meu Perfil{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item active"><span>Perfil</span></li>
+{% endblock %}
+
+{% block content %}
+
+<!-- Main Content Start -->
+<section class="main--content">
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">Perfil</h3>
+        </div>
+
+        <div class="panel-content">
+
+            <form method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.avatar }}
+
+                <button type="submit">Update Profile</button>
+            </form>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

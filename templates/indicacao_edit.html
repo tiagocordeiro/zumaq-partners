@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+{% load parceiros_extras %}
+
+{% block title %}Dashboard - S.I.E.{% endblock %}
+{% block page-title %}Nova Indicação{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'indicacao_list' %}">Indicações</a></li>
+    <li class="breadcrumb-item active"><span>Novo</span></li>
+{% endblock %}
+
+{% block content %}
+<section class="main--content">
+    <div class="row gutter-20">
+        <div class="col-md-12">
+            <!-- Panel Start -->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Nova Indicação</h3>
+                </div>
+
+                <div class="panel-content">
+
+                    {% if form.errors %}
+                        {{ form.errors }}
+                    {% endif %}
+
+                    <div class="form-group">
+                    <form method="post" action="{% url 'indicacao_edit' pk=indicacao.pk %}">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="col-md-6 col-sm-12">
+                                <span class="label-text">{{ form.cliente.label_tag }}</span>
+                                {{ form.cliente }}
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <span class="label-text">{{ form.email.label_tag }}</span>
+                                {{ form.email }}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-row">
+                            <div class="col-md-6 col-sm-12">
+                                <span class="label-text">{{ form.telefone.label_tag }}</span>
+                                {{ form.telefone }}
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <span class="label-text">{{ form.celular.label_tag }}</span>
+                                {{ form.celular }}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-row">
+                            <div class="col col-md-12 col-sm-12">
+                                <span class="label-text">{{ form.descricao.label_tag }}</span>
+                                {{ form.descricao }}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        {% if request.user.is_superuser or request.user|has_group:"Gerente" %}
+                        <div class="form-row">
+                            <div class="col-md-6 col-sm-12">
+                                <span class="label-text">{{ form.status.label_tag }}</span>
+                                {{ form.status }}
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <span class="label-text">{{ form.valor.label_tag }}</span>
+                                {{ form.valor }}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        {% else %}
+
+                        {% endif %}
+
+                        <a href="{% url 'indicacao_list' %}">
+                            <button type="button" class="btn btn-rounded btn-outline-secondary">Cancelar</button>
+                        </a>
+                        <button class="btn btn-rounded btn-success" type="submit" value="indicacao_add" name="indicacao_add">
+                            Salvar
+                        </button>
+
+                    </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static "assets/js/jquery.mask.min.js" %}"></script>
+<script>
+$(document).ready(function(){
+var SPMaskBehavior = function (val) {
+      return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+    },
+    spOptions = {
+      onKeyPress: function(val, e, field, options) {
+          field.mask(SPMaskBehavior.apply({}, arguments), options);
+        }
+    };
+
+    $('.phone').mask(SPMaskBehavior, spOptions);
+});
+</script>
+{% endblock %}

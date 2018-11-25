@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Dashboard - Casa Conceito{% endblock %}
+{% block page-title %}Dashboard{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">S.I.E.</a></li>
+    <li class="breadcrumb-item active"><span>Dashboard</span></li>
+{% endblock %}
+
+{% block content %}
+<section class="main--content">
+    <div class="row gutter-20">
+        <div class="col-md-4">
+            <div class="panel">
+                <!-- Mini Stats Panel Start -->
+                <div class="miniStats--panel">
+                    <div class="miniStats--header bg-darker">
+                        <p class="miniStats--caption text-blue">Indicações</p>
+
+                        <p class="miniStats--label text-white bg-blue">
+                            <a class="text-white" href="#">
+                                <i class="fa fa-list"></i>
+                                <span>{{ indicacoes_qt }}</span>
+                            </a>
+                        </p>
+                    </div>
+
+
+                    <div class="miniStats--body">
+                        <i class="miniStats--icon fa fa-user text-blue"></i>
+
+                        <p class="miniStats--caption text-blue">Leads</p>
+                        <P><br></P>
+                        <a href="{% url 'indicacao_add' %}" class="btn btn-sm btn-outline-info">Adicionar Novo</a>
+                    </div>
+                </div>
+                <!-- Mini Stats Panel End -->
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel">
+                <!-- Mini Stats Panel Start -->
+                <div class="miniStats--panel">
+                    <div class="miniStats--header bg-darker">
+                        <p class="miniStats--caption text-orange">Indicações Ganhas</p>
+
+
+                        <p class="miniStats--label text-white bg-orange">
+                            <a class="text-white" href="{% url 'indicacao_list' %}">
+                                <i class="fa fa-list"></i>
+                                <span>{{ indicacoes_ganhas }}</span>
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="miniStats--body">
+                        <i class="miniStats--icon fa fa-rocket text-orange"></i>
+
+                        <p class="miniStats--caption text-orange">Leads</p>
+                        <br>
+                        <a href="{% url 'indicacao_list' %}" class="btn btn-sm btn-outline-warning">Indicações</a>
+                    </div>
+                </div>
+                <!-- Mini Stats Panel End -->
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel">
+                <!-- Mini Stats Panel Start -->
+                <div class="miniStats--panel">
+                    <div class="miniStats--header bg-darker">
+                        <p class="miniStats--caption text-green">R$ Ganhos</p>
+
+                        <p class="miniStats--label text-white bg-green">
+                            <a class="text-white" href="#">
+                                <i class="fa fa-money-bill-alt"></i>
+                                <span>{{ total_ganho|default_if_none:"0"|intcomma }}</span>
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="miniStats--body">
+                        <i class="miniStats--icon fa fa-dollar-sign text-green"></i>
+
+                        <p class="miniStats--caption text-green">Comissão</p>
+                        <br>
+                        <a href="#" class="btn btn-sm btn-outline-success">Relatórios</a>
+                    </div>
+                </div>
+                <!-- Mini Stats Panel End -->
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

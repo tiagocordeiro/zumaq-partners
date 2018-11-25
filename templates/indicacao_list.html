@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+{% load parceiros_extras %}
+
+{% block title %}Indicações - Casa Conceito{% endblock %}
+{% block page-title %}Indicações{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item active"><a href="{% url 'indicacao_list' %}">Indicações</a></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+
+    <div class="panel">
+      <!-- Records List Start -->
+      <div class="records--list" data-title="Listando Indicações">
+        <table id="recordsListView">
+          <thead>
+          <tr>
+            {% if user.is_superuser or request.user|has_group:"Gerente" %}
+              <th>Indicação</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Pagamento</th>
+              <th>Corretor</th>
+              <th class="not-sortable"></th>
+            {% else %}
+              <th>Indicação</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Pagamento</th>
+            {% endif %}
+          </tr>
+          </thead>
+          <tbody>
+          {% for indicacao in indicacoes %}
+            <tr>
+              {% if user.is_superuser or request.user|has_group:"Gerente" %}
+                <td><a href="{% url 'indicacao_detail' pk=indicacao.pk %}">{{ indicacao.cliente }}</a></td>
+                <td>{{ indicacao.valor }}</td>
+                {% if indicacao.status == "NOVO" %}
+                  <td><span class="label label-info">{{ indicacao.status }}</span></td>
+                  <td></td>
+                {% elif indicacao.status == "EM ANDAMENTO" %}
+                  <td><span class="label label-warning">{{ indicacao.status }}</span></td>
+                  <td></td>
+                {% elif indicacao.status == "FECHADO" %}
+                  <td><span class="label label-success">{{ indicacao.status }}</span></td>
+                  {% if indicacao.indicacaopagamentos.status_pagamento ==  "SOLICITADO" %}
+                    <td>
+                      <button class="btn btn-info btn-sm" disabled="">SOLICITADO</button>
+                    </td>
+                  {% elif indicacao.indicacaopagamentos.status_pagamento ==  "PAGO" %}
+                    <td>
+                      <button class="btn btn-success btn-sm" disabled="">PAGO</button>
+                    </td>
+                  {% else %}
+                    <td>
+                      <button class="btn btn-success btn-sm" disabled="">Liberado</button>
+                    </td>
+                  {% endif %}
+                {% else %}
+                  <td><span class="label label-danger">{{ indicacao.status }}</span></td>
+                  <td></td>
+                {% endif %}
+                <td>{{ indicacao.added_by }}</td>
+                <td>
+                  <div class="dropleft">
+                    <a href="#" class="btn-link" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></a>
+
+                    <div class="dropdown-menu">
+                      <a href="{% url 'indicacao_edit' pk=indicacao.pk %}" class="dropdown-item">Editar</a>
+                      <a href="{% url 'indicacao_detail' pk=indicacao.pk %}" class="dropdown-item">Detalhes</a>
+                    </div>
+                  </div>
+                </td>
+              {% else %}
+                <td><a href="{% url 'indicacao_detail' pk=indicacao.pk %}">{{ indicacao.cliente }}</a></td>
+                <td>{{ indicacao.valor }}</td>
+                {% if indicacao.status == "NOVO" %}
+                  <td><span class="label label-info">{{ indicacao.status }}</span></td>
+                  <td></td>
+                {% elif indicacao.status == "EM ANDAMENTO" %}
+                  <td><span class="label label-warning">{{ indicacao.status }}</span></td>
+                  <td></td>
+                {% elif indicacao.status == "FECHADO" %}
+                  <td><span class="label label-success">{{ indicacao.status }}</span></td>
+                  {% if indicacao.indicacaopagamentos.status_pagamento ==  "SOLICITADO" %}
+                    <td>
+                      <button class="btn btn-info btn-sm" disabled="">SOLICITADO</button>
+                    </td>
+                  {% elif indicacao.indicacaopagamentos.status_pagamento ==  "PAGO" %}
+                    <td>
+                      <button class="btn btn-success btn-sm" disabled="">PAGO</button>
+                    </td>
+                  {% else %}
+                    <td><a href="{% url 'indicacao_solicita_pg' indicacao.pk %}" class="btn btn-success btn-sm">Solicitar
+                      Pagamento</a></td>
+                  {% endif %}
+                {% else %}
+                  <td><span class="label label-danger">{{ indicacao.status }}</span></td>
+                  <td></td>
+                {% endif %}
+              {% endif %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- Records List End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+{% endblock %}
+
+{% block extra_scripts %}
+  <script type="application/javascript">
+    $.extend(true, $.fn.dataTable.defaults, {
+      "oLanguage": {
+        "sEmptyTable": "Nenhum registro encontrado. <a href='{% url "indicacao_add" %}'>Adicione uma nova indicação.</a>",
+        "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+        "sInfoPostFix": "",
+        "sInfoThousands": ".",
+        "sLengthMenu": "_MENU_ resultados por página",
+        "sLoadingRecords": "Carregando...",
+        "sProcessing": "Processando...",
+        "sZeroRecords": "Nenhum registro encontrado",
+        "sSearch": "Pesquisar",
+        "oPaginate": {
+          "sNext": "Próximo",
+          "sPrevious": "Anterior",
+          "sFirst": "Primeiro",
+          "sLast": "Último"
+        },
+        "oAria": {
+          "sSortAscending": ": Ordenar colunas de forma ascendente",
+          "sSortDescending": ": Ordenar colunas de forma descendente"
+        }
+      }
+    });
+
+    $(document).ready(function () {
+      $('#recordsListView').DataTable();
+    });
+  </script>
+{% endblock %}
