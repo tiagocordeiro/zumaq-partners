@@ -1,11 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import User
+from django.forms.models import inlineformset_factory
+from .forms import UserProfileForm, ProfileForm
 from .models import UserProfile
 
 
 def dashboard(request):
-    return render(request, 'dashboard_demo.html')
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    user = User.objects.get(username=request.user)
+
+    return render(request, 'dashboard_demo.html', {'usuario': usuario,
+                                                   'user': user, })
 
 
 @login_required
@@ -37,7 +47,7 @@ def profile_update(request):
         form = ProfileForm(instance=request.user)
         formset = ProfileInlineFormset(instance=request.user)
 
-    return render(request, 'dadmin/profile_update.html', {'form': form,
-                                                          'formset': formset,
-                                                          'usuario': usuario,
-                                                          'user': user, })
+    return render(request, 'profile_update.html', {'form': form,
+                                                   'formset': formset,
+                                                   'usuario': usuario,
+                                                   'user': user, })
