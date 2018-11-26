@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
-from .forms import UserProfileForm, ProfileForm
+from django.shortcuts import render, redirect
+
+from .forms import ProfileForm
 from .models import UserProfile
 
 
+@login_required
 def dashboard(request):
     try:
         usuario = UserProfile.objects.get(user=request.user)
