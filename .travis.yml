@@ -20,6 +20,5 @@ script:
   - pycodestyle partners/ core/
   - pyflakes partners/ core/
   - python manage.py test -v 2
-#  - python -m doctest README.md
 # after_success:
 #  - coveralls

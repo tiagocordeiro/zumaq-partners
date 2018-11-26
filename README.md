@@ -1,6 +1,10 @@
 # zumaq-partners
 ## Sistema de revendas parceiras da Zumaq
 
+[![Build Status](https://travis-ci.org/tiagocordeiro/zumaq-partners.svg?branch=master)](https://travis-ci.org/tiagocordeiro/zumaq-partners)
+[![Updates](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/shield.svg)](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/)
+[![Python 3](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/python-3-shield.svg)](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/)
+
 
 ### Como rodar o projeto?
 
