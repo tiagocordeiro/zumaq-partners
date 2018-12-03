@@ -3,7 +3,7 @@ pycodestyle==2.4.0
 pyflakes==2.0.0
 
 # DebugToolbar
-django-debug-toolbar==1.10.1
+django-debug-toolbar==1.11
 sqlparse==0.2.4
 
 -r requirements.txt
