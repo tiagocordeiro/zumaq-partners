@@ -23,7 +23,7 @@ certifi==2018.10.15
 chardet==3.0.4
 cloudinary==1.14.0
 django-cloudinary-storage==0.2.3
-idna==2.7
+idna==2.8
 mock==2.0.0
 pbr==5.1.1
 requests==2.20.1
