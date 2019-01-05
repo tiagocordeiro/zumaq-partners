@@ -20,5 +20,5 @@ script:
   - pycodestyle partners/ core/
   - pyflakes partners/ core/
   - coverage run manage.py test -v 2
- after_success:
+after_success:
   - codecov
