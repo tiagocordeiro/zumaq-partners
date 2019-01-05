@@ -6,4 +6,7 @@ pyflakes==2.0.0
 django-debug-toolbar==1.11
 sqlparse==0.2.4
 
+# Coverage
+coverage==4.5.2
+
 -r requirements.txt
