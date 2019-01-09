@@ -1,5 +1,6 @@
-from django.test import TestCase
 from decimal import Decimal
+
+from django.test import TestCase
 
 from .models import Produto
 
@@ -23,4 +24,3 @@ class AnimalTestCase(TestCase):
     def test_retorno_ch_com_imposto(self):
         produto = Produto.objects.get(codigo='TYL-1080')
         self.assertEqual(produto.ch_com_imposto(), Decimal('526.20'))
-
