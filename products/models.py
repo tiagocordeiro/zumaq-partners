@@ -13,7 +13,10 @@ class Produto(models.Model):
     coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
 
     def ch_sem_imposto(self):
-        return self.pago_na_china / self.reminmbi * self.compra_do_cambio
+        return round(self.pago_na_china / self.reminmbi * self.compra_do_cambio, ndigits=2)
+
+    def ch_com_imposto(self):
+        return round(self.ch_sem_imposto() * self.impostos_na_china + self.ch_sem_imposto(), ndigits=2)
 
     class Meta:
         verbose_name_plural = "produtos"
