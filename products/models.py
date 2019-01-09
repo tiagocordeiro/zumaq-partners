@@ -21,6 +21,15 @@ class Produto(models.Model):
     def ch_com_imposto(self):
         return round(self.ch_sem_imposto() * self.impostos_na_china + self.ch_sem_imposto(), ndigits=2)
 
+    def custo_da_peca(self):
+        return round(self.ch_com_imposto() * self.porcentagem_importacao + self.ch_com_imposto(), ndigits=2)
+
+    def cliente_paga(self):
+        return round(self.custo_da_peca() * self.coeficiente + self.custo_da_peca(), ndigits=2)
+
+    def unitario_em_dolar(self):
+        return round(self.cliente_paga() / self.dolar_cotado, ndigits=2)
+
     class Meta:
         verbose_name_plural = "produtos"
         verbose_name = "produto"

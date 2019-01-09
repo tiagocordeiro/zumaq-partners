@@ -27,3 +27,15 @@ class AnimalTestCase(TestCase):
     def test_retorno_compra_do_cambio(self):
         produto = Produto.objects.get(codigo='TYL-1080')
         self.assertEqual(produto.compra_do_cambio(), Decimal('4.09'))
+
+    def test_retorno_custo_da_peca(self):
+        produto = Produto.objects.get(codigo='TYL-1080')
+        self.assertEqual(produto.custo_da_peca(), Decimal('799.82'))
+
+    def test_retorno_cliente_paga(self):
+        produto = Produto.objects.get(codigo='TYL-1080')
+        self.assertEqual(produto.cliente_paga(), Decimal('1199.73'))
+
+    def test_retorno_valor_unitario_em_dolar(self):
+        produto = Produto.objects.get(codigo='TYL-1080')
+        self.assertEqual(produto.unitario_em_dolar(), Decimal('308.41'))
