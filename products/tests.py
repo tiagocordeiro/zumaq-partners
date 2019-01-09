@@ -12,7 +12,6 @@ class AnimalTestCase(TestCase):
                                pago_na_china=880,
                                reminmbi=6.84,
                                dolar_cotado=3.89,
-                               compra_do_cambio=4.09,
                                impostos_na_china=0,
                                porcentagem_importacao=0.52,
                                coeficiente=0.50)
@@ -24,3 +23,7 @@ class AnimalTestCase(TestCase):
     def test_retorno_ch_com_imposto(self):
         produto = Produto.objects.get(codigo='TYL-1080')
         self.assertEqual(produto.ch_com_imposto(), Decimal('526.20'))
+
+    def test_retorno_compra_do_cambio(self):
+        produto = Produto.objects.get(codigo='TYL-1080')
+        self.assertEqual(produto.compra_do_cambio(), Decimal('4.09'))
