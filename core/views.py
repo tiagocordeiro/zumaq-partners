@@ -30,7 +30,6 @@ def profile_update(request):
     user = User.objects.get(username=request.user)
 
     ProfileInlineFormset = inlineformset_factory(User, UserProfile, fields=('avatar',))
-    formset = ProfileInlineFormset(instance=request.user)
 
     if request.method == 'POST':
         form = ProfileForm(data=request.POST, instance=request.user)
