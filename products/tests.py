@@ -5,7 +5,7 @@ from django.test import TestCase
 from .models import Produto
 
 
-class AnimalTestCase(TestCase):
+class ProductsTestCase(TestCase):
     def setUp(self):
         Produto.objects.create(codigo='TYL-1080',
                                descricao='Tubo de Laser Yong Li - 80w - R3',

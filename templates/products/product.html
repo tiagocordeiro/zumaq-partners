@@ -1,23 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Produto</title>
-</head>
-<body>
-    <p>{{ codigo }}</p>
-    <p>{{ descricao }}</p>
-    <p>{{ pago_na_china }}</p>
-    <p>{{ reminmbi }}</p>
-    <p>{{ dolar_cotado }}</p>
-    <p>{{ impostos_na_china }}</p>
-    <p>{{ porcentagem_importacao }}</p>
-    <p>{{ coeficiente }}</p>
-    {% if product_status == 'no bling' %}
-{#      <a href="{% url 'save-product' codigo=codigo %}">Salvar no sistema</a>#}
-      <button>Salvar no sistema</button>
-    {% endif %}
-</body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - S.I.E.{% endblock %}
+{% block page-title %}Máquinas{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="#">Máquinas</a></li>
+    <li class="breadcrumb-item active"><span>Cadastro</span></li>
+{% endblock %}
+
+{% block content %}
+
+
+
+<p>{{ context.codigo }}</p>
+<p>{{ context.descricao }}</p>
+<p>{{ context.pago_na_china }}</p>
+<p>{{ context.reminmbi }}</p>
+<p>{{ context.dolar_cotado }}</p>
+<p>{{ context.impostos_na_china }}</p>
+<p>{{ context.porcentagem_importacao }}</p>
+<p>{{ context.coeficiente }}</p>
+<hr>
+<p>{{ produto.ch_sem_imposto }}</p>
+<p>{{ produto.ch_com_imposto }}</p>
+<p>{{ produto.compra_do_cambio }}</p>
+<p>{{ produto.custo_da_peca }}</p>
+<p>{{ produto.cliente_paga }}</p>
+<p>{{ produto.unitario_em_dolar }}</p>
+{% endblock %}
