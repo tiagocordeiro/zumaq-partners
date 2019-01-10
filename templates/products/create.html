@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - S.I.E.{% endblock %}
+{% block page-title %}Máquinas{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="#">Máquinas</a></li>
+    <li class="breadcrumb-item active"><span>Cadastro</span></li>
+{% endblock %}
+
+{% block content %}
+<p>{{ context.codigo }}</p>
+<p>{{ context.descricao }}</p>
+<p>{{ context.pago_na_china }}</p>
+<form action="." method="post" enctype="multipart/form-data">
+{% csrf_token %}
+{{ form }}
+<input type="submit" value="Adicionar" class="btn btn-rounded btn-success">
+</form>
+{% endblock %}
