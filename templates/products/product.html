@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Produto</title>
+</head>
+<body>
+    <p>{{ codigo }}</p>
+    <p>{{ descricao }}</p>
+    <p>{{ pago_na_china }}</p>
+    <p>{{ reminmbi }}</p>
+    <p>{{ dolar_cotado }}</p>
+    <p>{{ impostos_na_china }}</p>
+    <p>{{ porcentagem_importacao }}</p>
+    <p>{{ coeficiente }}</p>
+    {% if product_status == 'no bling' %}
+{#      <a href="{% url 'save-product' codigo=codigo %}">Salvar no sistema</a>#}
+      <button>Salvar no sistema</button>
+    {% endif %}
+</body>
+</html>
