@@ -46,17 +46,20 @@ def product_create(request, codigo):
         return redirect('product_update', codigo=produto.codigo)
 
     except Produto.DoesNotExist:
-        produto = get_product(codigo=codigo)
-        detalhes = produto.json()['retorno']['produtos'][0]['produto']
-        context = {'codigo': detalhes['codigo'],
-                   'descricao': detalhes['descricao'],
-                   'pago_na_china': detalhes['precoCusto'],
-                   'reminmbi': '',
-                   'dolar_cotado': '',
-                   'impostos_na_china': '',
-                   'porcentagem_importacao': '',
-                   'coeficiente': '',
-                   'product_status': 'no bling'}
+        try:
+            produto = get_product(codigo=codigo)
+            detalhes = produto.json()['retorno']['produtos'][0]['produto']
+            context = {'codigo': detalhes['codigo'],
+                       'descricao': detalhes['descricao'],
+                       'pago_na_china': detalhes['precoCusto'],
+                       'reminmbi': '',
+                       'dolar_cotado': '',
+                       'impostos_na_china': '',
+                       'porcentagem_importacao': '',
+                       'coeficiente': '',
+                       'product_status': 'no bling'}
+        except KeyError:
+            return redirect('product_add')
 
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
@@ -112,3 +115,11 @@ def product_update(request, codigo):
                                                     'form': form,
                                                     'produto': produto,
                                                     'context': context})
+
+@login_required
+def product_add(request):
+    if request.method == 'POST':
+        codigo = request.POST['codigo_do_bling']
+        return redirect('product_create', codigo=codigo)
+
+    return render(request, 'products/add.html')
