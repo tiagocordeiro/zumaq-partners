@@ -25,20 +25,6 @@
 
     <div class="navbar--nav ml-auto">
         <ul class="nav">
-{#            <li class="nav-item">#}
-{#                <a href="#" class="nav-link">#}
-{#                    <i class="fa fa-bell"></i>#}
-{#                    <span class="badge text-white bg-blue">7</span>#}
-{#                </a>#}
-{#            </li>#}
-{##}
-{#            <li class="nav-item">#}
-{#                <a href="#" class="nav-link">#}
-{#                    <i class="fa fa-envelope"></i>#}
-{#                    <span class="badge text-white bg-blue">4</span>#}
-{#                </a>#}
-{#            </li>#}
-
             <!-- Nav User Start -->
             <li class="nav-item dropdown nav--user online">
                 <a href="#" class="nav-link" data-toggle="dropdown">
@@ -131,27 +117,21 @@
             </li>
 
             <li>
-                <a href="#">Indicações</a>
+                <a href="#">Produtos</a>
 
                 <ul>
                     <li>
-                        <a href="#">
+                        <a href="{% url 'product_add' %}">
                             <i class="far fa-newspaper"></i>
                             <span>Adicionar</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{% url 'product_list' %}">
                             <i class="far fa-newspaper"></i>
                             <span>Consultar</span>
                         </a>
                     </li>
-{#                    <li>#}
-{#                        <a href="#">#}
-{#                            <i class="fab fa-wpforms"></i>#}
-{#                            <span>Relatórios</span>#}
-{#                        </a>#}
-{#                    </li>#}
                 </ul>
             </li>
         </ul>

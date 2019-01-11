@@ -123,3 +123,15 @@ def product_add(request):
         return redirect('product_create', codigo=codigo)
 
     return render(request, 'products/add.html')
+
+@login_required
+def product_list(request):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    produtos = Produto.objects.all()
+
+    return render(request, 'products/list.html', {'usuario': usuario,
+                                                  'produtos': produtos})
