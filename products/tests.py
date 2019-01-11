@@ -5,7 +5,7 @@ from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
 from .models import Produto
-from .views import product_add, product_update, product_create
+from .views import product_add, product_update
 
 
 class ProductsTestCase(TestCase):
@@ -99,12 +99,10 @@ class ProductsTestCase(TestCase):
         self.assertEqual(produto.coeficiente, Decimal('0.11'))
         self.assertEqual(response.status_code, 302)
 
-    def test_product_create_status_code_gerente(self):
-        request = self.factory.post(reverse('product_create', kwargs={'codigo': 'TYL-1080'}))
-        request.user = self.user_gerente
-
-        response = product_create(request, codigo='TYL-1080')
-        response.client = self.client
+    def test_product_create_exist_status_code_gerente(self):
+        self.client.force_login(self.user_gerente)
+        response = self.client.post(reverse('product_create', kwargs={'codigo': self.product.codigo}))
+        print(response)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("product_update", kwargs={'codigo': 'TYL-1080'}))
+        self.assertRedirects(response, '/products/product/update/TYL-1080/', status_code=302, target_status_code=200)
