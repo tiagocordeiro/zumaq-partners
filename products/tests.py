@@ -1,10 +1,11 @@
 from decimal import Decimal
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, AnonymousUser
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
 from .models import Produto
+from .views import product_add, product_update
 
 
 class ProductsTestCase(TestCase):
@@ -49,23 +50,34 @@ class ProductsTestCase(TestCase):
         self.assertEqual(produto.unitario_em_dolar(), Decimal('308.41'))
 
     def test_product_add_anonimo(self):
+        request = self.factory.get(reverse('product_add'))
+        request.user = AnonymousUser()
+
+        response = product_add(request)
+        self.assertEqual(response.status_code, 302)
         # request = self.factory.get(reverse('product_add'))
         # self.client.force_login(self.user_gerente)
         # request.user = AnonymousUser()
 
         # response = product_add(request)
-        response = self.client.get(reverse('product_add'))
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/accounts/login/?next=/products/product/add/')
+        # response = self.client.get(reverse('product_add'))
+        # self.assertEqual(response.status_code, 302)
+        # self.assertRedirects(response, '/accounts/login/?next=/products/product/add/')
 
     def test_product_add_gerente(self):
-        self.client.force_login(self.user_gerente)
-        response = self.client.get(reverse('product_add'))
+        request = self.factory.get(reverse('product_add'))
+        request.user = self.user_gerente
+
+        response = product_add(request)
         self.assertEqual(response.status_code, 200)
+        # self.client.force_login(self.user_gerente)
+        # response = self.client.get(reverse('product_add'))
+        # self.assertEqual(response.status_code, 200)
 
     def test_product_update(self):
         produto = self.product
-        self.client.force_login(self.user_gerente)
+
+        # self.client.force_login(self.user_gerente)
 
         form_data = {'codigo': 'TYL-1080',
                      'descricao': 'Tubo de Laser Yong Li - 80w - R3',
@@ -76,7 +88,11 @@ class ProductsTestCase(TestCase):
                      'porcentagem_importacao': 0.52,
                      'coeficiente': 0.11, }
 
-        response = self.client.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
+        request = self.factory.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
+        request.user = self.user_gerente
+
+        response = product_update(request, codigo=produto.codigo)
+        # response = self.factory.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
 
         produto.refresh_from_db()
         self.assertEqual(produto.coeficiente, Decimal('0.11'))
