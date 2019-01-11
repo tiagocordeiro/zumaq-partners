@@ -1,17 +1,18 @@
 from decimal import Decimal
 
 from django.contrib.auth.models import User, Group, AnonymousUser
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
 from .models import Produto
-from .views import product_add, product_update
+from .views import product_add, product_update, product_create
 
 
 class ProductsTestCase(TestCase):
     def setUp(self):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
+        self.client = Client()
         self.user_gerente = User.objects.create_user(username='jacob', email='jacob@…', password='top_secret')
         self.group = Group.objects.create(name='Gerente')
         self.group.user_set.add(self.user_gerente)
@@ -97,3 +98,13 @@ class ProductsTestCase(TestCase):
         produto.refresh_from_db()
         self.assertEqual(produto.coeficiente, Decimal('0.11'))
         self.assertEqual(response.status_code, 302)
+
+    def test_product_create_status_code_gerente(self):
+        request = self.factory.post(reverse('product_create', kwargs={'codigo': 'TYL-1080'}))
+        request.user = self.user_gerente
+
+        response = product_create(request, codigo='TYL-1080')
+        response.client = self.client
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("product_update", kwargs={'codigo': 'TYL-1080'}))
