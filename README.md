@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/tiagocordeiro/zumaq-partners.svg?branch=master)](https://travis-ci.org/tiagocordeiro/zumaq-partners)
 [![Updates](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/shield.svg)](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/)
 [![Python 3](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/python-3-shield.svg)](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/)
-
+[![codecov](https://codecov.io/gh/tiagocordeiro/zumaq-partners/branch/master/graph/badge.svg)](https://codecov.io/gh/tiagocordeiro/zumaq-partners)
 
 ### Como rodar o projeto?
 
@@ -47,6 +47,6 @@ python manage.py test -v 2
 
 Code style
 ```
-pycodestyle partners/ core/
-pyflakes partners/ core/
+pycodestyle partners/ core/ products/
+pyflakes partners/ core/ products/
 ```
