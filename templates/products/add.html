@@ -5,8 +5,8 @@
 {% block page-title %}Máquinas{% endblock %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-  <li class="breadcrumb-item"><a href="#">Produtos</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Produtos</a></li>
   <li class="breadcrumb-item active"><span>Adicionar</span></li>
 {% endblock %}
 
@@ -17,7 +17,7 @@
       <!-- Records Header Start -->
       <div class="records--header">
         <div class="title fa-shopping-bag">
-          <h3 class="h3">Produtos <a href="#" class="btn btn-sm btn-outline-info">Ver tudo</a>
+          <h3 class="h3">Produtos <a href="{% url 'product_list' %}" class="btn btn-sm btn-outline-info">Ver tudo</a>
           </h3>
         </div>
       </div>
@@ -40,7 +40,7 @@
             {% endfor %}
           {% endif %}
 
-          <a href="#" class="btn btn-rounded btn-danger">Cancelar</a>
+          <a href="{% url 'product_list' %}" class="btn btn-rounded btn-danger">Cancelar</a>
         </div>
         <form action="." method="post" enctype="multipart/form-data">
           {% csrf_token %}
@@ -58,9 +58,9 @@
             <!-- Tab Pane Start -->
             <div class="tab-pane fade show active" id="tab01">
               <div class="form-group row">
-                <span class="label-text col-md-3 col-form-label">Código no Bling:</span>
+                <span class="label-text col-md-2 col-form-label">Código no Bling:</span>
 
-                <div class="col-md-9">
+                <div class="col-md-10">
                   <input type="text" name="codigo_do_bling" class="form-control" required="" id="codigo_do_bling">
                 </div>
               </div>
@@ -69,7 +69,7 @@
           </div>
           <!-- Tab Content End -->
           <div class="row mt-3">
-            <div class="col-md-9 offset-md-3">
+            <div class="col-md-12">
               <input type="submit" value="Buscar" class="btn btn-rounded btn-success">
             </div>
           </div>

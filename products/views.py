@@ -7,6 +7,7 @@ from core.models import UserProfile
 from .forms import ProdutoForm
 from .models import Produto
 
+
 @login_required
 def product_view(request, codigo):
     try:
@@ -69,7 +70,7 @@ def product_create(request, codigo):
             new_product.descricao = detalhes['descricao']
             new_product.pago_na_china = detalhes['precoCusto']
             new_product.save()
-            return redirect('product_view', codigo=codigo)
+            return redirect('product_update', codigo=codigo)
 
     else:
         form = ProdutoForm()
@@ -116,6 +117,7 @@ def product_update(request, codigo):
                                                     'produto': produto,
                                                     'context': context})
 
+
 @login_required
 def product_add(request):
     if request.method == 'POST':
@@ -123,6 +125,7 @@ def product_add(request):
         return redirect('product_create', codigo=codigo)
 
     return render(request, 'products/add.html')
+
 
 @login_required
 def product_list(request):
