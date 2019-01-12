@@ -102,7 +102,36 @@ class ProductsTestCase(TestCase):
     def test_product_create_exist_status_code_gerente(self):
         self.client.force_login(self.user_gerente)
         response = self.client.post(reverse('product_create', kwargs={'codigo': self.product.codigo}))
-        print(response)
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/products/product/update/TYL-1080/', status_code=302, target_status_code=200)
+
+    def test_product_update_does_not_exist(self):
+        self.client.force_login(self.user_gerente)
+        response = self.client.post(reverse('product_update', kwargs={'codigo': 'AAA'}))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/products/product/create/AAA/', status_code=302, target_status_code=302)
+
+    def test_product_list_view_anonimo(self):
+        self.client.logout()
+        response = self.client.get(reverse('product_list'))
+
+        # response = product_list(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/products/list/',
+                             status_code=302, target_status_code=200)
+
+    def test_product_list_view_gerente(self):
+        self.client.force_login(self.user_gerente)
+        response = self.client.get(reverse('product_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'TYL-1080')
+
+    def test_product_view_gerente(self):
+        self.client.force_login(self.user_gerente)
+        response = self.client.get(reverse('product_view', kwargs={'codigo': self.product.codigo}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'TYL-1080')
