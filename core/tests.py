@@ -59,7 +59,20 @@ class ProfileUpdateViewTest(TestCase):
         self.group_parceiro.user_set.add(self.user_parceiro)
 
         # User Profile Parceiro
-        self.user_profile_parceiro = UserProfile.objects.create(user=self.user_parceiro, avatar=TEST_IMAGE)
+        image_thumb = '''
+                R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
+                '''.strip()
+
+        self.image = InMemoryUploadedFile(
+            BytesIO(base64.b64decode(image_thumb)),  # use io.BytesIO
+            field_name='tempfile',
+            name='tempfile.png',
+            content_type='image/png',
+            size=len(image_thumb),
+            charset='utf-8',
+        )
+
+        self.user_profile_parceiro = UserProfile.objects.create(user=self.user_parceiro, avatar=str(self.image))
 
     def test_profile_update_anonimo(self):
         request = self.factory.get('/profile/update/')
@@ -77,15 +90,6 @@ class ProfileUpdateViewTest(TestCase):
 
     @override_settings(MEDIA_ROOT=tempfile.gettempdir())
     def test_user_profile_update_name(self):
-        image = InMemoryUploadedFile(
-            BytesIO(base64.b64decode(TEST_IMAGE)),  # use io.BytesIO
-            field_name='tempfile',
-            name='tempfile.png',
-            content_type='image/png',
-            size=len(TEST_IMAGE),
-            charset='utf-8',
-        )
-
         data = {
             'first_name': 'Joe',
             'last_name': 'Forest',
@@ -94,23 +98,21 @@ class ProfileUpdateViewTest(TestCase):
             'userprofile-INITIAL_FORMS': 1,
             'userprofile-MIN_NUM_FORMS': 0,
             'userprofile-MAX_NUM_FORMS': 1,
-            'userprofile-0-avatar': image,
-            'userprofile-0-id': 1,
-            'userprofile-0-user': 2,
+            # 'userprofile-0-avatar': str(self.image),
+            'userprofile-0-id': self.user_profile_parceiro.id,
+            'userprofile-0-user': self.user_parceiro.id,
         }
 
         self.client.force_login(self.user_parceiro)
         request = self.client.get('/profile/update/')
 
         self.assertEqual(request.status_code, 200)
+        print(request.context['formset'])
+        print(self.user_parceiro.id)
+        print(self.user_profile_parceiro.id)
 
         response = self.client.post('/profile/update/', data=data, instance=self.user_parceiro)
 
         self.user_parceiro.refresh_from_db()
-        # self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(self.user_parceiro.first_name, 'Joe')
-
-
-TEST_IMAGE = '''
-R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
-'''.strip()
