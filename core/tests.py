@@ -94,7 +94,7 @@ class ProfileUpdateViewTest(TestCase):
             'userprofile-INITIAL_FORMS': 1,
             'userprofile-MIN_NUM_FORMS': 0,
             'userprofile-MAX_NUM_FORMS': 1,
-            'userprofile-0-avatar': str(image),
+            'userprofile-0-avatar': image,
             'userprofile-0-id': 1,
             'userprofile-0-user': 2,
         }
