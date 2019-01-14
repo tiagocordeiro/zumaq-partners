@@ -98,7 +98,6 @@ class ProfileUpdateViewTest(TestCase):
             'userprofile-INITIAL_FORMS': 1,
             'userprofile-MIN_NUM_FORMS': 0,
             'userprofile-MAX_NUM_FORMS': 1,
-            # 'userprofile-0-avatar': str(self.image),
             'userprofile-0-id': self.user_profile_parceiro.id,
             'userprofile-0-user': self.user_parceiro.id,
         }
@@ -107,9 +106,6 @@ class ProfileUpdateViewTest(TestCase):
         request = self.client.get('/profile/update/')
 
         self.assertEqual(request.status_code, 200)
-        print(request.context['formset'])
-        print(self.user_parceiro.id)
-        print(self.user_profile_parceiro.id)
 
         response = self.client.post('/profile/update/', data=data, instance=self.user_parceiro)
 
