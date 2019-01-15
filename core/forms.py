@@ -24,7 +24,7 @@ class ProfileForm(ModelForm):
         }
 
 
-class SignUpForm(UserCreationForm):
+class CadastroParceiro(UserCreationForm):
     first_name = CharField(max_length=30, required=False, help_text='Optional.')
     last_name = CharField(max_length=30, required=False, help_text='Optional.')
     email = EmailField(max_length=254, help_text='Required. Inform a valid email address.')

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - S.I.E.{% endblock %}
+{% block page-title %}Parceiros{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="#">Parceiros</a></li>
+  <li class="breadcrumb-item active"><span>Adicionar</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+    <div class="panel">
+      <!-- Records Header Start -->
+      <div class="records--header">
+        <div class="title fa-user">
+          <h3 class="h3">Parceiros</h3>
+          <p>{{ total_parceiros }}</p>
+        </div>
+
+        <div class="actions">
+          <a href="{% url 'parceiro_cadastro' %}" class="addProduct btn btn-lg btn-rounded btn-warning">Adicionar Parceiro</a>
+        </div>
+      </div>
+      <!-- Records Header End -->
+    </div>
+
+    <div class="panel">
+      <!-- Records List Start -->
+      <div class="records--list" data-title="Parceiros Listing">
+        <table id="recordsListView">
+          <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>Nome</th>
+            <th>Sobrenome</th>
+            <th>E-mail</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for parceiro in parceiros %}
+          <tr>
+            <td>
+              <a href="#" class="btn-link">{{ parceiro.username }}</a>
+            </td>
+            <td>
+              {{ parceiro.first_name }}
+            </td>
+            <td>
+              {{ parceiro.last_name }}
+            </td>
+            <td>
+              {{ parceiro.email }}
+            </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- Records List End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+{% endblock %}
