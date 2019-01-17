@@ -1,4 +1,5 @@
 {% load static %}
+{% load core_extras %}
 <!-- Navbar Start -->
 <header class="navbar navbar-fixed">
     <!-- Navbar Header Start -->
@@ -120,12 +121,14 @@
                 <a href="#">Produtos</a>
 
                 <ul>
-                    <li>
-                        <a href="{% url 'product_add' %}">
-                            <i class="far fa-newspaper"></i>
-                            <span>Adicionar</span>
-                        </a>
-                    </li>
+                    {% if request.user|has_group:"Gerente" %}
+                        <li>
+                            <a href="{% url 'product_add' %}">
+                                <i class="far fa-newspaper"></i>
+                                <span>Adicionar</span>
+                            </a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="{% url 'product_list' %}">
                             <i class="far fa-newspaper"></i>
@@ -134,6 +137,26 @@
                     </li>
                 </ul>
             </li>
+
+            <li>
+                <a href="#">Parceiros</a>
+
+                <ul>
+                    <li>
+                        <a href="{% url 'parceiro_cadastro' %}">
+                            <i class="far fa-newspaper"></i>
+                            <span>Adicionar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'parceiro_list' %}">
+                            <i class="far fa-newspaper"></i>
+                            <span>Consultar</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
         </ul>
     </div>
     <!-- Sidebar Navigation End -->

@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.forms.models import inlineformset_factory
 from django.shortcuts import render, redirect
 
-from .forms import ProfileForm
+from .forms import ProfileForm, CadastroParceiro
 from .models import UserProfile
 
 
@@ -52,3 +52,40 @@ def profile_update(request):
                                                    'formset': formset,
                                                    'usuario': usuario,
                                                    'user': user, })
+
+
+def parceiro_cadastro(request):
+    if request.method == 'POST':
+        form = CadastroParceiro(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            user = User.objects.get(username=username)
+            group = Group.objects.get(name="Parceiro")
+            user.groups.add(group)
+            return redirect('parceiro_list')
+    else:
+        form = CadastroParceiro()
+    return render(request, 'registration/cadastro_parceiro.html', {'form': form})
+
+
+@login_required
+def parceiro_list(request):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiros = User.objects.filter(groups__name__in=['Parceiro'])
+    total_parceiros = len(parceiros)
+
+    if total_parceiros == 1:
+        total_str = f"Encontrado {total_parceiros} parceiro"
+    elif total_parceiros == 0:
+        total_str = f"Nenhum parceiro cadastrado"
+    else:
+        total_str = f"Encontrados {total_parceiros} parceiros"
+
+    return render(request, 'parceiros/list.html', {'usuario': usuario,
+                                                   'parceiros': parceiros,
+                                                   'total_parceiros': total_str, })
