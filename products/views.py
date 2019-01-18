@@ -135,6 +135,15 @@ def product_list(request):
         usuario = None
 
     produtos = Produto.objects.all()
+    total_produtos = len(produtos)
+
+    if total_produtos == 1:
+        total_str = f"Encontrado {total_produtos} produto"
+    elif total_produtos == 0:
+        total_str = f"Nenhum produto cadastrado"
+    else:
+        total_str = f"Encontrados {total_produtos} produtos"
 
     return render(request, 'products/list.html', {'usuario': usuario,
-                                                  'produtos': produtos})
+                                                  'produtos': produtos,
+                                                  'total_str': total_str})

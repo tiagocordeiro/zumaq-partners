@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load core_extras %}
 
 {% block title %}Dashboard - S.I.E.{% endblock %}
 {% block page-title %}Máquinas{% endblock %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-  <li class="breadcrumb-item"><a href="#">Produtos</a></li>
-  <li class="breadcrumb-item active"><span>Adicionar</span></li>
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item active"><span>Produtos</span></li>
 {% endblock %}
 
 {% block content %}
@@ -17,20 +17,14 @@
       <!-- Records Header Start -->
       <div class="records--header">
         <div class="title fa-shopping-bag">
-          <h3 class="h3">Ecommerce Products <a href="#" class="btn btn-sm btn-outline-info">Manage Products</a></h3>
-          <p>Found Total 1,330 Products</p>
+          <h3 class="h3">Produtos</h3>
+          <p>{{ total_str }}</p>
         </div>
 
         <div class="actions">
-          <form action="#" class="search flex-wrap flex-md-nowrap">
-            <input type="text" class="form-control" placeholder="Product Name..." required>
-            <select name="select" class="form-control">
-              <option value="" selected>Product Category</option>
-            </select>
-            <button type="submit" class="btn btn-rounded"><i class="fa fa-search"></i></button>
-          </form>
-
-          <a href="#" class="addProduct btn btn-lg btn-rounded btn-warning">Add Product</a>
+          {% if request.user|has_group:"Gerente" %}
+            <a href="{% url 'product_add' %}" class="addProduct btn btn-lg btn-rounded btn-warning">Adicionar</a>
+          {% endif %}
         </div>
       </div>
       <!-- Records Header End -->
@@ -45,31 +39,28 @@
             <th>Código</th>
             <th>Descrição</th>
             <th>Preço</th>
-{#            <th class="not-sortable">Actions</th>#}
+            <th>Un. em Dolar</th>
           </tr>
           </thead>
           <tbody>
           {% for produto in produtos %}
           <tr>
             <td>
-              <a href="#" class="btn-link">{{ produto.codigo }}</a>
+              {% if request.user|has_group:"Gerente" %}
+                <a href="{% url 'product_update' codigo=produto.codigo %}" class="btn-link">{{ produto.codigo }}</a>
+              {% else %}
+                {{ produto.codigo }}
+              {% endif %}
             </td>
             <td>
               {{ produto.descricao }}
             </td>
             <td>
-              {{ produto.cliente_paga }}
+              R$ {{ produto.cliente_paga }}
             </td>
-{#            <td>#}
-{#              <div class="dropleft">#}
-{#                <a href="#" class="btn-link" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></a>#}
-{##}
-{#                <div class="dropdown-menu">#}
-{#                  <a href="#" class="dropdown-item">Edit</a>#}
-{#                  <a href="#" class="dropdown-item">Delete</a>#}
-{#                </div>#}
-{#              </div>#}
-{#            </td>#}
+            <td>
+              USD {{ produto.unitario_em_dolar }}
+            </td>
           </tr>
           {% endfor %}
           </tbody>
