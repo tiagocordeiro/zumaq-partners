@@ -3,9 +3,9 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from pybling.products import get_product
 
-from core.models import UserProfile
+from core.models import UserProfile, User
 from .forms import ProdutoForm
-from .models import Produto
+from .models import Produto, CustomCoeficiente, CustomCoeficienteItens
 
 
 @login_required
@@ -134,8 +134,21 @@ def product_list(request):
     except UserProfile.DoesNotExist:
         usuario = None
 
+    parceiro = User.objects.get(username=request.user)
+
     produtos = Produto.objects.all()
     total_produtos = len(produtos)
+
+    try:
+        custom_coeficiente = CustomCoeficiente.objects.get(parceiro=parceiro)
+        custom_prices = CustomCoeficienteItens.objects.all().filter(parceiro=custom_coeficiente)
+
+        for produto in produtos:
+            c_produto = custom_prices.filter(produto__codigo=produto.codigo).values('coeficiente')[0]['coeficiente']
+            if produto.coeficiente != c_produto:
+                produto.coeficiente = c_produto
+    except CustomCoeficiente.DoesNotExist:
+        pass
 
     if total_produtos == 1:
         total_str = f"Encontrado {total_produtos} produto"
