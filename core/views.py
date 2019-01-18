@@ -76,6 +76,12 @@ def parceiro_list(request):
     except UserProfile.DoesNotExist:
         usuario = None
 
+    user = User.objects.get(username=request.user)
+    if user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
     parceiros = User.objects.filter(groups__name__in=['Parceiro'])
     total_parceiros = len(parceiros)
 
