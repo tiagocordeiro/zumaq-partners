@@ -138,6 +138,7 @@
                 </ul>
             </li>
 
+            {% if request.user|has_group:"Gerente" %}
             <li>
                 <a href="#">Parceiros</a>
 
@@ -156,6 +157,7 @@
                     </li>
                 </ul>
             </li>
+            {% endif %}
 
         </ul>
     </div>
