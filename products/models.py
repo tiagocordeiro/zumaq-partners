@@ -1,4 +1,5 @@
 from django.db import models
+from core.models import User
 from decimal import Decimal
 
 
@@ -33,3 +34,12 @@ class Produto(models.Model):
     class Meta:
         verbose_name_plural = "produtos"
         verbose_name = "produto"
+
+
+class CustomCoeficiente(models.Model):
+    parceiro = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
+
+class CustomCoeficienteItens(models.Model):
+    parceiro = models.ForeignKey(CustomCoeficiente, null=True, on_delete=models.SET_NULL)
+    produto = models.ForeignKey(Produto, null=True, on_delete=models.SET_NULL)
+    coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
