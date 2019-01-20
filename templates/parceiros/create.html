@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - S.I.E.{% endblock %}
+{% block page-title %}Máquinas{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="#">Parceiros</a></li>
+  <li class="breadcrumb-item active"><span>Adicionar</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+    <div class="panel">
+      <!-- Records Header Start -->
+      <div class="records--header">
+        <div class="title fa-shopping-bag">
+          <h3 class="h3">Parceiros <a href="{% url 'parceiro_list' %}" class="btn btn-sm btn-outline-info">Ver tudo</a>
+          </h3>
+        </div>
+      </div>
+      <!-- Records Header End -->
+    </div>
+
+    <div class="panel">
+      <!-- Edit Product Start -->
+      <div class="records--body">
+        <div class="title">
+          <h6 class="h6">Dados do parceiro</h6>
+
+          {% if form.errors %}
+            {{ form.errors }}
+          {% endif %}
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="card-panel amber lighten-4">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+
+          <a href="{% url 'parceiro_list' %}" class="btn btn-rounded btn-danger">Cancelar</a>
+        </div>
+        <form action="." method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- Tabs Nav Start -->
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a href="#tab01" data-toggle="tab" class="nav-link active">Informações</a>
+            </li>
+            <li class="nav-item">
+              <a href="#tab02" data-toggle="tab" class="nav-link">Detalhes</a>
+            </li>
+          </ul>
+          <!-- Tabs Nav End -->
+
+          <!-- Tab Content Start -->
+          <div class="tab-content">
+            <!-- Tab Pane Start -->
+            <div class="tab-pane fade show active" id="tab01">
+              <div class="form-group row">
+                <span class="label-text col-md-3 col-form-label">Usuário:</span>
+
+                <div class="col-md-9">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    </div>
+                    <input type="text" name="username" autofocus="" maxlength="254" placeholder="Usuário" class="form-control" autocomplete="off" required="" id="id_username">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <span class="label-text col-md-3 col-form-label">E-mail:</span>
+
+                <div class="col-md-9">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    </div>
+                    <input type="email" name="email" autofocus="" maxlength="254" placeholder="Email" class="form-control" autocomplete="off" required="" id="id_email">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <span class="label-text col-md-3 col-form-label">Senha:</span>
+
+                <div class="col-md-9">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-key"></i></span>
+                    </div>
+                    <input type="password" name="password1" placeholder="Senha" class="form-control" autocomplete="off" required="" id="id_password1">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <span class="label-text col-md-3 col-form-label">Confirme a senha:</span>
+
+                <div class="col-md-9">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-key"></i></span>
+                    </div>
+                    <input type="password" name="password2" placeholder="Repita a senha" class="form-control" autocomplete="off" required="" id="id_password2">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Tab Pane End -->
+
+            <!-- Tab Pane Start -->
+            <div class="tab-pane fade" id="tab02">
+              <div class="form-group row">
+                <span class="label-text col-md-3 col-form-label">Em breve:</span>
+
+                <div class="col-md-9">
+                  Mais informações
+                </div>
+              </div>
+            </div>
+            <!-- Tab Pane End -->
+
+          </div>
+          <!-- Tab Content End -->
+          <div class="row mt-3">
+            <div class="col-md-9 offset-md-3">
+              <input type="submit" value="Salvar" class="btn btn-rounded btn-success">
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- Edit Product End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+{% endblock %}

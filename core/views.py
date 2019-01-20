@@ -95,3 +95,29 @@ def parceiro_list(request):
     return render(request, 'parceiros/list.html', {'usuario': usuario,
                                                    'parceiros': parceiros,
                                                    'total_parceiros': total_str, })
+
+
+@login_required
+def parceiro_create(request):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    user = User.objects.get(username=request.user)
+    if user.groups.filter(name='Gerente').exists():
+        if request.method == 'POST':
+            form = CadastroParceiro(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data.get('username')
+                user = User.objects.get(username=username)
+                group = Group.objects.get(name="Parceiro")
+                user.groups.add(group)
+                return redirect('parceiro_list')
+        else:
+            form = CadastroParceiro()
+        return render(request, 'parceiros/create.html', {'form': form,
+                                                         'usuario': usuario})
+    else:
+        return redirect('dashboard')

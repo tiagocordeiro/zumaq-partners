@@ -6,8 +6,7 @@
 
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
-  <li class="breadcrumb-item"><a href="#">Parceiros</a></li>
-  <li class="breadcrumb-item active"><span>Adicionar</span></li>
+  <li class="breadcrumb-item active"><span>Parceiros</span></li>
 {% endblock %}
 
 {% block content %}
@@ -22,7 +21,7 @@
         </div>
 
         <div class="actions">
-          <a href="{% url 'parceiro_cadastro' %}" class="addProduct btn btn-lg btn-rounded btn-warning">Adicionar Parceiro</a>
+          <a href="{% url 'parceiro_create' %}" class="addProduct btn btn-lg btn-rounded btn-warning">Adicionar Parceiro</a>
         </div>
       </div>
       <!-- Records Header End -->
