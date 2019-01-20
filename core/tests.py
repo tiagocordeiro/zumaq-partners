@@ -1,5 +1,5 @@
-import base64               # for decoding base64 image
-import tempfile             # for setting up tempdir for media
+import base64  # for decoding base64 image
+import tempfile  # for setting up tempdir for media
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
@@ -114,6 +114,7 @@ class ProfileUpdateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.user_parceiro.first_name, 'Joe')
 
+
 class ParceirosViewsTests(TestCase):
     def setUp(self):
         # Every test needs access to the request factory.
@@ -164,6 +165,12 @@ class ParceirosViewsTests(TestCase):
         request = self.client.get(reverse('parceiro_list'))
         self.assertEqual(request.status_code, 200)
 
+    def test_list_parceiros_nao_gerente(self):
+        self.client.force_login(self.user_parceiro)
+        request = self.client.get(reverse('parceiro_list'))
+
+        self.assertEqual(request.status_code, 302)
+
     def test_view_cadastro_parceiro(self):
         self.client.force_login(self.user_gerente)
         request = self.client.get(reverse('parceiro_cadastro'))
@@ -187,6 +194,39 @@ class ParceirosViewsTests(TestCase):
         new_user = User.objects.get(username='newuser')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(new_user.first_name, 'New')
+
+        parceiros = User.objects.filter(groups__name__in=['Parceiro'])
+        self.assertEqual(len(parceiros), 2)
+
+    def test_view_parceiro_create_get_nao_gerente(self):
+        self.client.force_login(self.user_parceiro)
+        request = self.client.get(reverse('parceiro_create'))
+
+        self.assertEqual(request.status_code, 302)
+
+    def test_view_parceiro_create_get_gerente(self):
+        self.client.force_login(self.user_gerente)
+        request = self.client.get(reverse('parceiro_create'))
+
+        self.assertEqual(request.status_code, 200)
+
+    def test_view_parceiro_create_by_gerente(self):
+        novo_parceiro = {'username': 'newpartner',
+                         'email': 'newpartner@foo.bar',
+                         'first_name': 'NewP',
+                         'last_name': 'User',
+                         'password1': 'top_secret',
+                         'password2': 'top_secret', }
+
+        parceiros = User.objects.filter(groups__name__in=['Parceiro'])
+        self.assertEqual(len(parceiros), 1)
+
+        self.client.force_login(self.user_gerente)
+        response = self.client.post(reverse('parceiro_create'), data=novo_parceiro)
+
+        novo_parceiro = User.objects.get(username='newpartner')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(novo_parceiro.first_name, 'NewP')
 
         parceiros = User.objects.filter(groups__name__in=['Parceiro'])
         self.assertEqual(len(parceiros), 2)
