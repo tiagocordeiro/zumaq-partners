@@ -136,3 +136,17 @@ class ProductsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TYL-1080')
+
+    def test_product_create(self):
+        form_data = {'codigo': 'TYL-1100',
+                     'descricao': 'Tubo de Laser Yong Li - 100w R5',
+                     'pago_na_china': 1200,
+                     'reminmbi': 6.84,
+                     'dolar_cotado': 3.89,
+                     'impostos_na_china': 0,
+                     'porcentagem_importacao': 0.52,
+                     'coeficiente': 0.50, }
+        self.client.force_login(self.user_gerente)
+        response = self.client.post(reverse('product_create', kwargs={'codigo': 'TYL-1100'}), data=form_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/products/product/update/TYL-1100/')
