@@ -1,0 +1,46 @@
+{
+  "retorno": {
+    "produtos": [
+      {
+        "produto": {
+          "codigo": "TYL-1100",
+          "descricao": "Tubo de Laser Yong Li - 100w R5",
+          "tipo": "P",
+          "situacao": "Ativo",
+          "unidade": "Pç",
+          "preco": "2590.0000000000",
+          "precoCusto": "1200.0000000000",
+          "descricaoCurta": "<p>Tubo de Laser Yong Li 7500 horas</p> <p>Cabo de Alta Tensão INCLUSO!</p>",
+          "descricaoComplementar": "",
+          "dataInclusao": "2018-12-17",
+          "dataAlteracao": "2019-01-14",
+          "imageThumbnail": "",
+          "urlVideo": "",
+          "nomeFornecedor": "",
+          "codigoFabricante": "",
+          "marca": "",
+          "class_fiscal": "9013.20.00",
+          "cest": "",
+          "origem": "0",
+          "idGrupoProduto": "0",
+          "grupoProduto": "",
+          "garantia": "0",
+          "pesoLiq": "7.000",
+          "pesoBruto": "11.000",
+          "estoqueMinimo": "10.00",
+          "estoqueMaximo": "30.00",
+          "gtin": "",
+          "gtinEmbalagem": "",
+          "larguraProduto": "151",
+          "alturaProduto": "20",
+          "profundidadeProduto": "20",
+          "unidadeMedida": "Centímetros",
+          "itensPorCaixa": 1,
+          "volumes": 1,
+          "localizacao": "Piso - Sala 01",
+          "crossdocking": "0"
+        }
+      }
+    ]
+  }
+}

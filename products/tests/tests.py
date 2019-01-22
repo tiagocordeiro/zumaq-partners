@@ -4,8 +4,12 @@ from django.contrib.auth.models import User, Group
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
-from .models import Produto
-from .views import product_add, product_update
+import json
+import os
+import responses
+
+from products.models import Produto
+from products.views import product_add, product_update
 
 
 class ProductsTestCase(TestCase):
@@ -137,7 +141,13 @@ class ProductsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TYL-1080')
 
+    @responses.activate
     def test_product_create(self):
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        with open(dir_path + '/tyl-1100-mock.json') as json_data_file:
+            data = json.load(json_data_file)
+
+        responses.add(responses.GET, 'https://bling.com.br/Api/v2/produto/TYL-1100/json/', json=data, status=200)
         form_data = {'codigo': 'TYL-1100',
                      'descricao': 'Tubo de Laser Yong Li - 100w R5',
                      'pago_na_china': 1200,
