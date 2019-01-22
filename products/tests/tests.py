@@ -1,12 +1,11 @@
+import json
+import os
 from decimal import Decimal
 
+import responses
 from django.contrib.auth.models import User, Group
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
-
-import json
-import os
-import responses
 
 from products.models import Produto
 from products.views import product_add, product_update
