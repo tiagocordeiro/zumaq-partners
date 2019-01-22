@@ -35,3 +35,6 @@ pybling==0.0.6
 
 # Sentry
 sentry-sdk==0.6.9
+
+# Crispy Forms
+django-crispy-forms==1.7.2

@@ -1,6 +1,6 @@
-from django.forms import ModelForm, TextInput
+from django.forms import ModelForm, TextInput, Select, NumberInput
 
-from .models import Produto
+from .models import Produto, CustomCoeficiente, CustomCoeficienteItens
 
 
 class ProdutoForm(ModelForm):
@@ -19,4 +19,22 @@ class ProdutoForm(ModelForm):
             'impostos_na_china': TextInput(attrs={'class': 'form-control', 'placeholder': 'Impostos na China'}),
             'porcentagem_importacao': TextInput(attrs={'class': 'form-control', 'placeholder': '% Importação'}),
             'coeficiente': TextInput(attrs={'class': 'form-control', 'placeholder': 'Coeficiente'}),
+        }
+
+class CustomCoeficienteForm(ModelForm):
+    class Meta:
+        model = CustomCoeficiente
+        fields = ['parceiro']
+        widgets = {
+            'parceiro': Select(attrs={'class': 'form-control', 'placeholder': 'Parceiro', 'disabled': ''}),
+        }
+
+class CustomCoeficienteItensForm(ModelForm):
+    class Meta:
+        model = CustomCoeficienteItens
+        fields = ['parceiro', 'produto', 'coeficiente']
+        widgets = {
+            'parceiro': Select(attrs={'class': 'form-control', 'placeholder': 'Parceiro', 'disabled': ''}),
+            'produto': Select(attrs={'class': 'form-control'}),
+            'coeficiente': NumberInput(attrs={'class': 'form-control'}),
         }

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Dashboard - S.I.E.{% endblock %}
+{% block page-title %}Parceiro{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'parceiro_list' %}">Perceiros</a></li>
+  <li class="breadcrumb-item active"><span>Cadastro</span></li>
+{% endblock %}
+
+{% block content %}
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+          crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(function () {
+      $("#add-item").click(function (ev) {
+        ev.preventDefault();
+        var count = $('#nota').children().length;
+        var tmplMarkup = $("#item-nota").html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $("div#nota").append(compiledTmpl);
+        // update form count
+        $('#id_product-TOTAL_FORMS').attr('value', count + 1);
+        // update css
+        $('.input-group')[count].childNodes[1].className = 'col-lg-6 col-md-12 col-sm-12';
+        $('.input-group')[count].childNodes[3].className = 'col-lg-2 col-md-5 col-sm-5';
+        $('.input-group')[count].childNodes[5].className = 'col-lg-2 col-md-5 col-sm-5';
+        $('.input-group')[count].childNodes[7].className = 'col-lg-2 col-md-2 col-sm-2';
+      });
+    });
+  </script>
+  <section class="main--content">
+    <div class="panel">
+      <div class="records--header">
+        <div class="title fa-shopping-bag">
+          <h3 class="h3">Cadastrar Nota <a href="{% url 'parceiro_list' %}" class="btn btn-sm btn-outline-info">Ver tudo</a>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <!-- Edit Product Start -->
+      <div class="records--body">
+        <div class="title">
+          <h6 class="h6">Detalhes</h6>
+          {% if form.errors %}
+            {{ form.errors }}
+          {% endif %}
+
+          {% if formset.errors %}
+            {{ formset.errors }}
+          {% endif %}
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="card-panel amber lighten-4">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <form action="." method="POST">
+          {% csrf_token %}
+{#          {{ form|crispy }}#}
+          <input type="text" name="parceiro" value="{{ parceiro.pk }}" class="form-control" disabled="">
+          {{ formset.management_form|crispy }}
+
+          <legend class="lead">PRODUTOS</legend>
+
+          <div id="nota">
+            {% for custom_item in formset %}
+              <div id="item-{{ forloop.counter0 }}" class="row form-row spacer">
+                <div class="input-group">
+                    {{ custom_item.id }}
+                    {{ custom_item.parceiro }}
+                  <div class="col-lg-6 col-md-12 col-sm-12">
+                    {{ custom_item.produto|as_crispy_field }}
+                  </div>
+                  <div class="col-lg-2 col-md-5 col-sm-5">
+                    {{ custom_item.coeficiente|as_crispy_field }}
+                  </div>
+                  <div class="col-lg-2 col-md-5 col-sm-5">
+{#                    {{ custom_item.parceiro|as_crispy_field }}#}
+{#                    <input type="hidden" name="parceiro" value="{{ parceiro.pk }}" class="form-control">#}
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-2" style="margin: 42px 0 0 0;">
+                    {{ custom_item.DELETE|as_crispy_field }}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <a class="btn btn-info" id="add-item"><i class="fa fa-plus"></i> Add Item</a>
+
+              <a href="{% url 'parceiro_list' %}" class="btn btn-warning pull-right"><i class="fa fa-times"></i>
+                Cancelar</a>
+              <button class="btn btn-rounded btn-success" value="Atualizar"><i class="fa fa-floppy-o"></i> Atualizar
+              </button>
+
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+    <script type="text/html" id="item-nota">
+      <div id="item-__prefix__" style="margin-top: 10px" class="row form-row spacer">
+        <div class="input-group">
+          {{ custom_item.id }}
+          {{ custom_item.parceiro }}
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            {{ formset.empty_form.produto|as_crispy_field }}
+          </div>
+          <div class="col-lg-2 col-md-5 col-sm-5">
+            {{ formset.empty_form.coeficiente|as_crispy_field }}
+          </div>
+          <div class="col-lg-2 col-md-5 col-sm-5">
+{#            {{ formset.empty_form.parceiro|as_crispy_field }}#}
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-2" style="margin: 42px 0 0 0;">
+            {{ formset.empty_form.DELETE|as_crispy_field }}
+          </div>
+        </div>
+      </div>
+    </script>
+
+  </section>
+  <!-- Main Content End -->
+{% endblock %}

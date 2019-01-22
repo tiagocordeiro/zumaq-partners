@@ -43,7 +43,7 @@
           {% for parceiro in parceiros %}
           <tr>
             <td>
-              <a href="#" class="btn-link">{{ parceiro.username }}</a>
+              <a href="{% url 'parceiro_details' pk=parceiro.pk %}" class="btn-link">{{ parceiro.username }}</a>
             </td>
             <td>
               {{ parceiro.first_name }}

@@ -2,9 +2,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.forms.models import inlineformset_factory
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from .forms import ProfileForm, CadastroParceiro
 from .models import UserProfile
+from products.models import CustomCoeficiente, CustomCoeficienteItens
+from products.forms import CustomCoeficienteForm, CustomCoeficienteItensForm
 
 
 @login_required
@@ -121,3 +124,56 @@ def parceiro_create(request):
                                                          'usuario': usuario})
     else:
         return redirect('dashboard')
+
+
+@login_required
+def parceiro_details(request, pk):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(pk=pk)
+
+    try:
+        parceiro_coeficientes = CustomCoeficiente.objects.get(parceiro=parceiro)
+    except CustomCoeficiente.DoesNotExist:
+        parceiro_coeficientes = CustomCoeficiente.objects.create(parceiro=parceiro)
+
+    custom_prices = CustomCoeficienteItens.objects.all().filter(parceiro=parceiro_coeficientes)
+
+    custom_itens_formset = inlineformset_factory(
+        CustomCoeficiente, CustomCoeficienteItens, form=CustomCoeficienteItensForm, extra=0, can_delete=True,
+        min_num=1, validate_min=True,
+    )
+
+    if request.method == 'POST':
+        form = CustomCoeficienteForm(request.POST, instance=parceiro_coeficientes, prefix='main')
+        formset = custom_itens_formset(request.POST, instance=parceiro_coeficientes, prefix='product')
+
+        try:
+            if formset.is_valid():
+                # form.save()
+                formset.save()
+                messages.success(request, "A nota foi atualizada")
+                return redirect(parceiro_list)
+
+        except Exception as e:
+            messages.warning(request, 'Ocorreu um erro ao atualizar: {}'.format(e))
+
+    else:
+        form = CustomCoeficienteForm(instance=parceiro_coeficientes, prefix='main')
+        formset = custom_itens_formset(instance=parceiro_coeficientes, prefix='product')
+
+    context = {
+        'custom_prices': custom_prices,
+        'parceiro_coeficientes': parceiro_coeficientes,
+        'form': form,
+        'formset': formset,
+        'usuario': usuario,
+        'parceiro': parceiro,
+    }
+
+    # return render(request, 'notas/edit.html', context)
+
+    return render(request, 'parceiros/details.html', context)
