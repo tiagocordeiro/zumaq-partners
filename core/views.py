@@ -143,9 +143,7 @@ def parceiro_details(request, pk):
     custom_prices = CustomCoeficienteItens.objects.all().filter(parceiro=parceiro_coeficientes)
 
     custom_itens_formset = inlineformset_factory(
-        CustomCoeficiente, CustomCoeficienteItens, form=CustomCoeficienteItensForm, extra=0, can_delete=True,
-        min_num=1, validate_min=True,
-    )
+        CustomCoeficiente, CustomCoeficienteItens, form=CustomCoeficienteItensForm, extra=0, can_delete=True)
 
     if request.method == 'POST':
         form = CustomCoeficienteForm(request.POST, instance=parceiro_coeficientes, prefix='main')
@@ -156,7 +154,7 @@ def parceiro_details(request, pk):
                 # form.save()
                 formset.save()
                 messages.success(request, "A nota foi atualizada")
-                return redirect(parceiro_list)
+                return redirect(parceiro_details, pk=parceiro.pk)
 
         except Exception as e:
             messages.warning(request, 'Ocorreu um erro ao atualizar: {}'.format(e))

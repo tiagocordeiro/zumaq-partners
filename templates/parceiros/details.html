@@ -8,7 +8,7 @@
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
   <li class="breadcrumb-item"><a href="{% url 'parceiro_list' %}">Perceiros</a></li>
-  <li class="breadcrumb-item active"><span>Cadastro</span></li>
+  <li class="breadcrumb-item active"><span>Coeficientes</span></li>
 {% endblock %}
 
 {% block content %}
@@ -36,8 +36,7 @@
     <div class="panel">
       <div class="records--header">
         <div class="title fa-shopping-bag">
-          <h3 class="h3">Cadastrar Nota <a href="{% url 'parceiro_list' %}" class="btn btn-sm btn-outline-info">Ver tudo</a>
-          </h3>
+          <h3 class="h3">Coeficientes de {{ parceiro }} <a href="{% url 'parceiro_list' %}" class="btn btn-sm btn-outline-info">Ver tudo</a></h3>
         </div>
       </div>
     </div>
@@ -62,10 +61,24 @@
           {% endif %}
         </div>
 
+
+
         <form action="." method="POST">
           {% csrf_token %}
 {#          {{ form|crispy }}#}
-          <input type="text" name="parceiro" value="{{ parceiro.pk }}" class="form-control" disabled="">
+{#          <input type="text" name="parceiro" value="{{ parceiro.pk }}" class="form-control" disabled="">#}
+
+          <div class="row mb-4">
+            <div class="col-md-6 col-sm-12">
+              {{ parceiro.username }}
+            </div>
+            <div class="col-md-6 col-sm-12">
+              {{ parceiro.email }}
+            </div>
+          </div>
+
+
+
           {{ formset.management_form|crispy }}
 
           <legend class="lead">PRODUTOS</legend>
