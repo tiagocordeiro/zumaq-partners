@@ -153,7 +153,7 @@ def parceiro_details(request, pk):
             if formset.is_valid():
                 # form.save()
                 formset.save()
-                messages.success(request, "A nota foi atualizada")
+                messages.success(request, "Coeficientes atualizados.")
                 return redirect(parceiro_details, pk=parceiro.pk)
 
         except Exception as e:
