@@ -31,7 +31,11 @@ class Produto(models.Model):
     def unitario_em_dolar(self):
         return round(self.cliente_paga() / self.dolar_cotado, ndigits=2)
 
+    def __str__(self):
+        return str(self.codigo + ' - ' + self.descricao)
+
     class Meta:
+        ordering = ('codigo', 'descricao')
         verbose_name_plural = "produtos"
         verbose_name = "produto"
 
