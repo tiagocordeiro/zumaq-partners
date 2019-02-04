@@ -21,3 +21,6 @@ CLOUDINARY_API_SECRET=
 
 # Bling Api Key
 BLING_API_KEY=
+
+# Quandl
+QUANDL_KEY=
