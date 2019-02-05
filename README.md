@@ -8,6 +8,7 @@
 [![Python 3.7.1](https://img.shields.io/badge/python-3.7.1-blue.svg)](https://www.python.org/downloads/release/python-371/)
 [![Django 2.1.5](https://img.shields.io/badge/django-2.1.5-blue.svg)](https://www.djangoproject.com/download/)
 [![PyBling](https://img.shields.io/badge/bling-API-green.svg)](https://github.com/tiagocordeiro/pybling)
+[![Quandl](https://img.shields.io/badge/quandl-API-green.svg)](https://github.com/quandl/quandl-python)
 
 
 ### Como rodar o projeto?
