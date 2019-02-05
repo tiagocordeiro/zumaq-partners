@@ -1,17 +1,43 @@
+import os
+from datetime import date, timedelta
+
+import pandas as pd
+import quandl
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.forms.models import inlineformset_factory
 from django.shortcuts import render, redirect
-from django.contrib import messages
 
+from products.forms import CustomCoeficienteForm, CustomCoeficienteItensForm
+from products.models import CustomCoeficiente, CustomCoeficienteItens, Produto
 from .forms import ProfileForm, CadastroParceiro
 from .models import UserProfile
-from products.models import CustomCoeficiente, CustomCoeficienteItens
-from products.forms import CustomCoeficienteForm, CustomCoeficienteItensForm
 
 
 @login_required
 def dashboard(request):
+    quandl.ApiConfig.api_key = os.environ.get('QUANDL_KEY')
+    hoje = date.today()
+    periodo = hoje - timedelta(weeks=4)
+    cotacao_moedas = quandl.get(["BUNDESBANK/BBEX3_D_CNY_USD_CA_AC_000",
+                                 "BUNDESBANK/BBEX3_D_BRL_USD_CA_AB_000"],
+                                start_date=periodo.isoformat(), returns="pandas")
+
+    df = pd.DataFrame(cotacao_moedas)
+    df.reset_index(level=0, inplace=True)
+
+    cotacao_cny = []
+    cotacao_brl = []
+    cny_spark = []
+
+    for cotacao in df.values:
+        cotacao_cny.append({'data': cotacao[0].strftime('%d/%m/%Y'), 'valor': round(cotacao[1], ndigits=2)})
+        cotacao_brl.append({'data': cotacao[0].strftime('%d/%m/%Y'), 'valor': round(cotacao[2], ndigits=2)})
+        cny_spark.append(round(cotacao[1], ndigits=2))
+
+    cny_spark_str = str(cny_spark).strip('[]')
+
     try:
         usuario = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
@@ -19,8 +45,18 @@ def dashboard(request):
 
     user = User.objects.get(username=request.user)
 
-    return render(request, 'dashboard_demo.html', {'usuario': usuario,
-                                                   'user': user, })
+    produtos_qt = Produto.objects.all().count()
+
+    context = {'produtos_qt': produtos_qt,
+               'usuario': usuario,
+               'user': user,
+               'cotacao_cny': cotacao_cny,
+               'cotacao_brl': cotacao_brl,
+               'cny_spark': cny_spark,
+               'cny_spark_str': cny_spark_str,
+               }
+
+    return render(request, 'dashboard_demo.html', context)
 
 
 @login_required

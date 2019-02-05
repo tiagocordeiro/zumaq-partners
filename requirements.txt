@@ -2,7 +2,6 @@
 Django==2.1.5
 pytz==2018.9
 
-
 # Decouple
 python-decouple==3.1
 python-dotenv==0.10.1
@@ -38,3 +37,11 @@ sentry-sdk==0.6.9
 
 # Crispy Forms
 django-crispy-forms==1.7.2
+
+# Quandl
+inflection==0.3.1
+more-itertools==5.0.0
+numpy==1.16.1
+pandas==0.24.1
+python-dateutil==2.7.5
+quandl==3.4.5
