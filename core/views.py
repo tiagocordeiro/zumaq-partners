@@ -29,9 +29,14 @@ def dashboard(request):
 
     cotacao_cny = []
     cotacao_brl = []
+    cny_spark = []
+
     for cotacao in df.values:
         cotacao_cny.append({'data': cotacao[0].strftime('%d/%m/%Y'), 'valor': round(cotacao[1], ndigits=2)})
         cotacao_brl.append({'data': cotacao[0].strftime('%d/%m/%Y'), 'valor': round(cotacao[2], ndigits=2)})
+        cny_spark.append(round(cotacao[1], ndigits=2))
+
+    cny_spark_str = str(cny_spark).strip('[]')
 
     try:
         usuario = UserProfile.objects.get(user=request.user)
@@ -47,6 +52,8 @@ def dashboard(request):
                'user': user,
                'cotacao_cny': cotacao_cny,
                'cotacao_brl': cotacao_brl,
+               'cny_spark': cny_spark,
+               'cny_spark_str': cny_spark_str,
                }
 
     return render(request, 'dashboard_demo.html', context)
