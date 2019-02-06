@@ -27,6 +27,9 @@ def dashboard(request):
     df = pd.DataFrame(cotacao_moedas)
     df.reset_index(level=0, inplace=True)
 
+    df.fillna(method='ffill', inplace=True)
+    df.fillna(method='bfill', inplace=True)
+
     cotacao_cny = []
     cotacao_brl = []
     cny_spark = []
