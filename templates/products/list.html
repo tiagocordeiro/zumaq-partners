@@ -22,6 +22,10 @@
         </div>
 
         <div class="actions">
+          <form action="#" class="search flex-wrap flex-md-nowrap">
+              <input id="txtSearch" type="text" class="form-control" placeholder="Produto...">
+              <button type="submit" class="btn btn-rounded" disabled><i class="fa fa-search"></i></button>
+          </form>
           {% if request.user|has_group:"Gerente" %}
             <a href="{% url 'product_add' %}" class="addProduct btn btn-lg btn-rounded btn-warning">Adicionar</a>
           {% endif %}
@@ -32,7 +36,7 @@
 
     <div class="panel">
       <!-- Records List Start -->
-      <div class="records--list" data-title="Product Listing">
+      <div class="records--list" data-title="Listagem de Produtos">
         <table id="recordsListView">
           <thead>
           <tr>
@@ -70,4 +74,46 @@
     </div>
   </section>
   <!-- Main Content End -->
+{% endblock %}
+
+{% block extra_scripts %}
+  <script type="application/javascript">
+    $.extend(true, $.fn.dataTable.defaults, {
+      "oLanguage": {
+        "sEmptyTable": "Nenhum registro encontrado.",
+        "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+        "sInfoPostFix": "",
+        "sInfoThousands": ".",
+        "sLengthMenu": "_MENU_ resultados por página",
+        "sLoadingRecords": "Carregando...",
+        "sProcessing": "Processando...",
+        "sZeroRecords": "Nenhum registro encontrado",
+        "sSearch": "Pesquisar",
+        "oPaginate": {
+          "sNext": "Próximo",
+          "sPrevious": "Anterior",
+          "sFirst": "Primeiro",
+          "sLast": "Último"
+        },
+        "oAria": {
+          "sSortAscending": ": Ordenar colunas de forma ascendente",
+          "sSortDescending": ": Ordenar colunas de forma descendente"
+        }
+      }
+    });
+    $(document).ready(function () {
+      $('#recordsListView').DataTable();
+
+      $('#recordsListView_filter').hide(); // Hide default search datatables where example is the ID of table
+
+        $('#txtSearch').on('keyup', function() {
+            $('#recordsListView')
+                .DataTable()
+                .search($('#txtSearch').val(), false, true)
+                .draw();
+        });
+    });
+  </script>
 {% endblock %}
