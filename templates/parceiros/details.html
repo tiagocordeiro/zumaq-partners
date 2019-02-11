@@ -34,8 +34,11 @@
   <section class="main--content">
     <div class="panel">
       <div class="records--header">
-        <div class="title fa-shopping-bag">
-          <h3 class="h3">Coeficientes de {{ parceiro }} <a href="{% url 'parceiro_list' %}" class="btn btn-sm btn-outline-info">Ver tudo</a></h3>
+        <div class="title fa-user">
+          <h3 class="h3">{{ parceiro }} <a href="{% url 'parceiro_list' %}" class="btn btn-sm btn-outline-info">Ver todos</a></h3>
+        </div>
+        <div class="actions">
+          <span class="addProduct btn btn-sm btn-rounded btn-primary disabled">Coeficiente {{ parceiro_coeficientes.coeficiente_padrao }}</span>
         </div>
       </div>
     </div>
@@ -80,6 +83,7 @@
 
         <form action="." method="POST">
           {% csrf_token %}
+          {{ form }}
           {{ formset.management_form|crispy }}
 
           <legend class="lead">PRODUTOS</legend>

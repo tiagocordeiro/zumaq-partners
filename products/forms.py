@@ -24,9 +24,9 @@ class ProdutoForm(ModelForm):
 class CustomCoeficienteForm(ModelForm):
     class Meta:
         model = CustomCoeficiente
-        fields = ['parceiro']
+        fields = ['coeficiente_padrao']
         widgets = {
-            'parceiro': Select(attrs={'class': 'form-control', 'placeholder': 'Parceiro', 'disabled': ''}),
+            'coeficiente_padrao': NumberInput(attrs={'class': 'form-control'}),
         }
 
 class CustomCoeficienteItensForm(ModelForm):

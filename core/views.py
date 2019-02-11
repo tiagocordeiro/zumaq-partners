@@ -189,8 +189,8 @@ def parceiro_details(request, pk):
         formset = custom_itens_formset(request.POST, instance=parceiro_coeficientes, prefix='product')
 
         try:
-            if formset.is_valid():
-                # form.save()
+            if formset.is_valid() and form.is_valid():
+                form.save()
                 formset.save()
                 messages.success(request, "Coeficientes atualizados.")
                 return redirect(parceiro_details, pk=parceiro.pk)
