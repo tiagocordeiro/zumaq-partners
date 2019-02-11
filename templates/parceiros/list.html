@@ -37,6 +37,7 @@
             <th>Nome</th>
             <th>Sobrenome</th>
             <th>E-mail</th>
+            <th>Coeficiente</th>
           </tr>
           </thead>
           <tbody>
@@ -53,6 +54,9 @@
             </td>
             <td>
               {{ parceiro.email }}
+            </td>
+            <td>
+              {{ parceiro.customcoeficiente.coeficiente_padrao }}
             </td>
           </tr>
           {% endfor %}

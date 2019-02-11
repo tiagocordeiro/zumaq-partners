@@ -142,11 +142,21 @@ def product_list(request):
     try:
         custom_coeficiente = CustomCoeficiente.objects.get(parceiro=parceiro)
         custom_prices = CustomCoeficienteItens.objects.all().filter(parceiro=custom_coeficiente)
+        parceiro_coeficiente = custom_coeficiente.coeficiente_padrao
 
         for produto in produtos:
-            c_produto = custom_prices.filter(produto__codigo=produto.codigo).values('coeficiente')[0]['coeficiente']
-            if produto.coeficiente != c_produto:
-                produto.coeficiente = c_produto
+            try:
+                c_price = custom_prices.filter(produto__codigo=produto.codigo).values('coeficiente')[0]['coeficiente']
+                if produto.coeficiente != c_price and c_price < parceiro_coeficiente:
+                    produto.coeficiente = c_price
+            except IndexError:
+                pass
+
+            if produto.coeficiente < parceiro_coeficiente:
+                produto.coeficiente = produto.coeficiente
+            else:
+                produto.coeficiente = parceiro_coeficiente
+
     except CustomCoeficiente.DoesNotExist:
         pass
 

@@ -42,6 +42,10 @@ class Produto(models.Model):
 
 class CustomCoeficiente(models.Model):
     parceiro = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
+    coeficiente_padrao = models.DecimalField('Coeficidente padrão (%)',
+                                             max_digits=10,
+                                             decimal_places=2,
+                                             default=.50)
 
 class CustomCoeficienteItens(models.Model):
     parceiro = models.ForeignKey(CustomCoeficiente, null=True, on_delete=models.SET_NULL)
