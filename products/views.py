@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -70,6 +71,7 @@ def product_create(request, codigo):
             new_product.descricao = detalhes['descricao']
             new_product.pago_na_china = detalhes['precoCusto']
             new_product.save()
+            messages.success(request, "Produto cadastrado.")
             return redirect('product_update', codigo=codigo)
 
     else:
@@ -107,7 +109,8 @@ def product_update(request, codigo):
         form = ProdutoForm(request.POST, instance=produto)
         if form.is_valid():
             form.save()
-            return redirect('product_view', codigo=codigo)
+            messages.success(request, "Produto atualizado.")
+            return redirect('product_update', codigo=codigo)
 
     else:
         form = ProdutoForm(instance=produto)

@@ -4,6 +4,7 @@ from decimal import Decimal
 
 import responses
 from django.contrib.auth.models import User, Group
+from django.contrib.messages.storage.fallback import FallbackStorage
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
@@ -95,6 +96,9 @@ class ProductsTestCase(TestCase):
 
         request = self.factory.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
         request.user = self.user_gerente
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
 
         response = product_update(request, codigo=produto.codigo)
         # response = self.factory.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
