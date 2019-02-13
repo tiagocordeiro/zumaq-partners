@@ -3,7 +3,7 @@
 {% load core_extras %}
 
 {% block title %}Dashboard - S.I.E.{% endblock %}
-{% block page-title %}Máquinas{% endblock %}
+{% block page-title %}Produtos{% endblock %}
 
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
@@ -43,7 +43,9 @@
             <th>Código</th>
             <th>Descrição</th>
             <th>Preço</th>
+            {% if request.user|has_group:"Gerente" %}
             <th>Un. em Dolar</th>
+            {% endif %}
           </tr>
           </thead>
           <tbody>
@@ -62,9 +64,11 @@
             <td>
               R$ {{ produto.cliente_paga }}
             </td>
+            {% if request.user|has_group:"Gerente" %}
             <td>
               USD {{ produto.unitario_em_dolar }}
             </td>
+            {% endif %}
           </tr>
           {% endfor %}
           </tbody>
