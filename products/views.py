@@ -142,6 +142,8 @@ def product_list(request):
     produtos = Produto.objects.all()
     total_produtos = len(produtos)
 
+    # TODO: Separar lógica de negócio
+
     try:
         custom_coeficiente = CustomCoeficiente.objects.get(parceiro=parceiro)
         custom_prices = CustomCoeficienteItens.objects.all().filter(parceiro=custom_coeficiente)
@@ -150,15 +152,10 @@ def product_list(request):
         for produto in produtos:
             try:
                 c_price = custom_prices.filter(produto__codigo=produto.codigo).values('coeficiente')[0]['coeficiente']
-                if produto.coeficiente != c_price and c_price < parceiro_coeficiente:
-                    produto.coeficiente = c_price
+                if c_price:
+                    produto.coeficiente = produto.coeficiente + c_price
             except IndexError:
-                pass
-
-            if produto.coeficiente < parceiro_coeficiente:
-                produto.coeficiente = produto.coeficiente
-            else:
-                produto.coeficiente = parceiro_coeficiente
+                produto.coeficiente = produto.coeficiente + parceiro_coeficiente
 
     except CustomCoeficiente.DoesNotExist:
         pass
