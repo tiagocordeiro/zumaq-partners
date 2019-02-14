@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # MyApps
     'core',
     'products',
+    'pedidos',
 ]
 
 MIDDLEWARE = [
