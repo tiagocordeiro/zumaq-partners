@@ -158,9 +158,11 @@ def product_list(request):
             try:
                 c_price = custom_prices.filter(produto__codigo=produto.codigo).values('coeficiente')[0]['coeficiente']
                 if c_price:
-                    produto.coeficiente = produto.coeficiente + c_price
+                    produto.cliente_paga = round(produto.cliente_paga() + (produto.cliente_paga() * c_price),
+                                                 ndigits=2)
             except IndexError:
-                produto.coeficiente = produto.coeficiente + parceiro_coeficiente
+                produto.cliente_paga = round(produto.cliente_paga() + (produto.cliente_paga() * parceiro_coeficiente),
+                                             ndigits=2)
 
     except CustomCoeficiente.DoesNotExist:
         pass
