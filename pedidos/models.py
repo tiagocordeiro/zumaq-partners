@@ -17,6 +17,9 @@ class Pedido(TimeStampedModel, Active):
         'Situação', choices=STATUS_CHOICES, default=0, blank=True
     )
 
+    def __str__(self):
+        return str(self.pk) + ' - ' + str(self.parceiro.username)
+
     class Meta:
         verbose_name = 'pedido'
         verbose_name_plural = 'pedidos'
@@ -27,6 +30,9 @@ class PedidoItem(models.Model):
     item = models.ForeignKey(Produto, null=True, on_delete=models.SET_NULL)
     quantidade = models.PositiveIntegerField('Quantidade', default=1)
     valor_unitario = models.DecimalField('Valor Un.', max_digits=10, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.item.descricao)
 
     class Meta:
         verbose_name = 'item'

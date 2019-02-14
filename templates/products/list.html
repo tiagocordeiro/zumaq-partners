@@ -45,6 +45,7 @@
             <th>Preço</th>
             {% if request.user|has_group:"Gerente" %}
             <th>Un. em Dolar</th>
+            <th>Status</th>
             {% endif %}
           </tr>
           </thead>
@@ -67,6 +68,13 @@
             {% if request.user|has_group:"Gerente" %}
             <td>
               USD {{ produto.unitario_em_dolar }}
+            </td>
+            <td>
+              {% if produto.active %}
+                <span class="label label-success">Ativo</span>
+              {% else %}
+                <span class="label label-warning">Inativo</span>
+              {% endif %}
             </td>
             {% endif %}
           </tr>

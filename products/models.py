@@ -2,8 +2,10 @@ from django.db import models
 from core.models import User
 from decimal import Decimal
 
+from core.models import Active, TimeStampedModel
 
-class Produto(models.Model):
+
+class Produto(TimeStampedModel, Active):
     codigo = models.CharField('Código do produto', max_length=60, primary_key=True)
     descricao = models.CharField('Descrição do produto', max_length=120)
     pago_na_china = models.DecimalField('Preço de custo em ¥', max_digits=16, decimal_places=10)

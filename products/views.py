@@ -138,8 +138,13 @@ def product_list(request):
         usuario = None
 
     parceiro = User.objects.get(username=request.user)
+    user = User.objects.get(username=request.user)
 
-    produtos = Produto.objects.all()
+    if user.groups.filter(name='Gerente').exists():
+        produtos = Produto.objects.all()
+    else:
+        produtos = Produto.objects.all().filter(active=True)
+
     total_produtos = len(produtos)
 
     # TODO: Separar lógica de negócio
