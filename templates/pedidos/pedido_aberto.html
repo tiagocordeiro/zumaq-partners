@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+{% if form.errors %}
+  {{ form.errors }}
+{% endif %}
+
+{% if formset.errors %}
+  {{ formset.errors }}
+{% endif %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="card-panel amber lighten-4">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<p>
+{% if pedido_vazio %}
+  {{ pedido_vazio }}
+{%  else %}
+  {{ pedido }}
+{% endif %}
+</p>
+
+<form action="{% url 'pedido_aberto' %}" method="POST">
+  {% csrf_token %}
+
+  {{ form }}
+  {{ formset.management_form }}
+
+
+  {% for item_pedido_form in formset %}
+    <div id="item-{{ forloop.counter0 }}" class="row form-row spacer">
+      <div class="input-group">
+        {{ item_pedido_form.id }}
+
+        {{ item_pedido_form.item }}
+
+        <div class="col-lg-6 col-md-12 col-sm-12">
+          {{ item_pedido_form.instance.item }}
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+          {{ item_pedido_form.quantidade }}
+        </div>
+        <div class="col-lg-2 col-md-5 col-sm-5">
+          {{ item_pedido_form.instance.valor_unitario }}
+        </div>
+        {{ item_pedido_form.DELETE }}
+      </div>
+    </div>
+  {% endfor %}
+
+  <button class="btn btn-rounded btn-success" value="Atualizar"><i class="fa fa-floppy-o"></i> Atualizar </button>
+
+</form>
+{#{% for item in pedido_itens %}#}
+{#  <p>{{ item }} - <input type="number" name="{{ item.item.pk }}_quant" class="form-control" value="{{ item.quantidade }}"> - {{ item.valor_unitario }}</p>#}
+{#{% endfor %}#}
+
+<p>{{ pedido_total }}</p>
+</body>
+</html>

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from core.models import Active, TimeStampedModel
+from core.models import Active, TimeStampedModel, UserProfile
 from products.models import Produto
 
 
@@ -26,8 +26,8 @@ class Pedido(TimeStampedModel, Active):
 
 
 class PedidoItem(models.Model):
-    pedido = models.ForeignKey(Pedido, null=True, on_delete=models.SET_NULL)
-    item = models.ForeignKey(Produto, null=True, on_delete=models.SET_NULL)
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    item = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField('Quantidade', default=1)
     valor_unitario = models.DecimalField('Valor Un.', max_digits=10, decimal_places=2, null=True, blank=True)
 
