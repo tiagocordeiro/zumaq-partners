@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Dashboard - S.I.E.{% endblock %}
-{% block page-title %}Máquinas{% endblock %}
+{% block title %}Adicionar Produto - S.I.E.{% endblock %}
+{% block page-title %}Produto{% endblock %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-  <li class="breadcrumb-item"><a href="#">Produtos</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Produtos</a></li>
   <li class="breadcrumb-item active"><span>Adicionar</span></li>
 {% endblock %}
 
