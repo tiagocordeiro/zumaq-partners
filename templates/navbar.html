@@ -26,6 +26,12 @@
 
     <div class="navbar--nav ml-auto">
         <ul class="nav">
+            <li class="nav-item">
+                <a href="{% url 'pedido_aberto' %}" class="nav-link">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="badge text-white bg-blue">{{ pedido_itens_qt }}</span>
+                </a>
+            </li>
             <!-- Nav User Start -->
             <li class="nav-item dropdown nav--user online">
                 <a href="#" class="nav-link" data-toggle="dropdown">

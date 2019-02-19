@@ -5,6 +5,7 @@ from django.shortcuts import render
 from pybling.products import get_product
 
 from core.models import UserProfile, User
+from pedidos.models import Pedido, PedidoItem
 from .forms import ProdutoForm
 from .models import Produto, CustomCoeficiente, CustomCoeficienteItens
 
@@ -174,6 +175,15 @@ def product_list(request):
     else:
         total_str = f"Encontrados {total_produtos} produtos"
 
+    parceiro = User.objects.get(username=request.user)
+
+    pedido = Pedido.objects.filter(parceiro=parceiro, status=0).first()
+    if pedido is None:
+        pedido_itens_qt = 0
+    else:
+        pedido_itens_qt = PedidoItem.objects.filter(pedido=pedido).count()
+
     return render(request, 'products/list.html', {'usuario': usuario,
                                                   'produtos': produtos,
-                                                  'total_str': total_str})
+                                                  'total_str': total_str,
+                                                  'pedido_itens_qt': pedido_itens_qt})

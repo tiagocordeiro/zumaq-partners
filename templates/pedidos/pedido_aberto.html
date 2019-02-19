@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static %}
+{% load core_extras %}
+
+{% block title %}Dashboard - S.I.E.{% endblock %}
+{% block page-title %}Máquinas{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="#">Pedidos</a></li>
+  <li class="breadcrumb-item active"><span>Atualizar</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+
+    {% if form.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ form.errors }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+
+    {% if formset.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ formset.errors }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="panel">
+      <!-- Invoice Start -->
+      <div class="invoice">
+{#        <div class="invoice--header">#}
+{#          <div class="invoice--logo">#}
+{#            <img src="assets/img/invoice/logo.png" alt="">#}
+{#          </div>#}
+{##}
+{#          <div class="invoice--address">#}
+{#            <h5 class="h5">Address</h5>#}
+{##}
+{#            <p>795 Park Ave, Suite 120</p>#}
+{#            <p>San Francisco, CA 94107</p>#}
+{#            <p>Phone: +(123) 456 1234</p>#}
+{#          </div>#}
+{#        </div>#}
+{##}
+{#        <div class="invoice--billing">#}
+{#          <div class="invoice--address">#}
+{#            <h3 class="h3"><span>To:</span></h3>#}
+{##}
+{#            <h5 class="h5">ABC Company</h5>#}
+{##}
+{#            <p>795 Park Ave, Suite 120</p>#}
+{#            <p>San Francisco, CA 94107</p>#}
+{#            <p>Phone: +(123) 654 7890</p>#}
+{#          </div>#}
+{##}
+{#          <div class="invoice--info">#}
+{#            <h5 class="h5"><span>Invoice:</span> #9048392</h5>#}
+{#            <p>Invoice Date: <strong>25th Mar 2018</strong></p>#}
+{#            <p>Due Date: <strong>28th Mar 2018</strong></p>#}
+{#          </div>#}
+{#        </div>#}
+
+        <div class="invoice--order">
+          <form action="{% url 'pedido_aberto' %}" method="POST">
+            {% csrf_token %}
+
+            {{ form }}
+            {{ formset.management_form }}
+            <table class="table">
+              <thead>
+              <tr>
+                <th style="width: 40%;">Produto</th>
+                <th style="text-align: center; width: 10%;">Quantidade</th>
+                <th style="text-align: right; width: 20%;">Valor Un.</th>
+                <th style="text-align: right; width: 20%;">Valor Total</th>
+                <th style="text-align: center; width: 10%;">Remover</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for item_pedido_form in formset %}
+                <tr>
+                  {{ item_pedido_form.id }}{{ item_pedido_form.item }}
+                  <td>{{ item_pedido_form.instance.item }}</td>
+                  <td style="text-align: center;">{{ item_pedido_form.quantidade }}</td>
+                  <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario }}</td>
+                  <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario|subtotal:item_pedido_form.instance.quantidade }}</td>
+                  <td style="text-align: center;">{{ item_pedido_form.DELETE }}</td>
+                </tr>
+              {% endfor %}
+              <tr>
+                <td colspan="3"><strong>Total</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total }}</strong></td>
+                <td style="text-align: center;"><button class="btn btn-rounded btn-success m-3" value="Atualizar"><i class="fa fa-floppy-o"></i> Atualizar</button></td>
+              </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+
+        <div class="invoice--footer">
+{#          <div class="invoice--payment">#}
+{#            <p><strong>Payment Method:</strong> Credit Card</p>#}
+{#            <p><strong>Card Type:</strong> Mastercard</p>#}
+{#            <p><strong>Number Verification:</strong> 598746325950</p>#}
+{#          </div>#}
+
+          <div class="invoice--actions">
+            <a href="{% url 'product_list' %}" class="btn btn-rounded btn-outline-secondary">Continuar adicionando</a>
+            <a href="#" class="btn btn-rounded btn-info">Finalizar</a>
+          </div>
+        </div>
+      </div>
+      <!-- Invoice End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+{% endblock %}

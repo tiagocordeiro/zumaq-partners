@@ -34,6 +34,17 @@
       <!-- Records Header End -->
     </div>
 
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message|safe }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
     <div class="panel">
       <!-- Records List Start -->
       <div class="records--list" data-title="Listagem de Produtos">
@@ -46,6 +57,8 @@
             {% if request.user|has_group:"Gerente" %}
             <th>Un. em Dolar</th>
             <th>Status</th>
+            {% else %}
+              <th>Adicionar</th>
             {% endif %}
           </tr>
           </thead>
@@ -75,6 +88,10 @@
               {% else %}
                 <span class="label label-warning">Inativo</span>
               {% endif %}
+            </td>
+            {% else %}
+            <td>
+              <a href="{% url 'pedido_add_item' codigo=produto.codigo %}" class="btn btn-success btn-sm"><i class="fa mr-2 fa-cart-plus"></i> Adicionar</a>
             </td>
             {% endif %}
           </tr>
