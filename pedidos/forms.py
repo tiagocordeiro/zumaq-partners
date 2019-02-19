@@ -1,4 +1,4 @@
-from django.forms import ModelForm, NumberInput, TextInput
+from django.forms import ModelForm, NumberInput
 
 from .models import Pedido, PedidoItem
 

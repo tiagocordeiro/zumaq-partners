@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from core.models import Active, TimeStampedModel, UserProfile
+from core.models import Active, TimeStampedModel
 from products.models import Produto
 
 

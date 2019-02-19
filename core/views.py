@@ -9,6 +9,7 @@ from django.contrib.auth.models import User, Group
 from django.forms.models import inlineformset_factory
 from django.shortcuts import render, redirect
 
+from pedidos.models import Pedido, PedidoItem
 from products.forms import CustomCoeficienteForm, CustomCoeficienteItensForm
 from products.models import CustomCoeficiente, CustomCoeficienteItens, Produto
 from .forms import ProfileForm, CadastroParceiro
@@ -46,6 +47,14 @@ def dashboard(request):
     except UserProfile.DoesNotExist:
         usuario = None
 
+    parceiro = User.objects.get(username=request.user)
+
+    pedido = Pedido.objects.filter(parceiro=parceiro, status=0).first()
+    if pedido is None:
+        pedido_itens_qt = 0
+    else:
+        pedido_itens_qt = PedidoItem.objects.filter(pedido=pedido).count()
+
     user = User.objects.get(username=request.user)
 
     produtos_qt = Produto.objects.all().count()
@@ -57,6 +66,7 @@ def dashboard(request):
                'cotacao_brl': cotacao_brl,
                'cny_spark': cny_spark,
                'cny_spark_str': cny_spark_str,
+               'pedido_itens_qt': pedido_itens_qt,
                }
 
     return render(request, 'dashboard_demo.html', context)
