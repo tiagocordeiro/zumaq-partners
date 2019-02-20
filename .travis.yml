@@ -17,8 +17,8 @@ before_script:
   - python manage.py migrate --noinput
 # command to run tests
 script:
-  - pycodestyle partners/ core/ products/
-  - pyflakes partners/ core/ products/
+  - pycodestyle partners/ core/ products/ pedidos/
+  - pyflakes partners/ core/ products/ pedidos/
   - coverage run manage.py test -v 2
 after_success:
   - codecov
