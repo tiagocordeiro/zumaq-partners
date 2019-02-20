@@ -49,27 +49,27 @@
       <div class="invoice">
         <div class="invoice--header">
           <div class="invoice--logo">
-            <img src="assets/img/invoice/logo.png" alt="">
+            <img src="https://cnczumaq.com/newsletter/img/zumaq-logo-mail.png" alt="CNC Zumaq">
           </div>
 
           <div class="invoice--address">
             <h5 class="h5">CNC Zumaq</h5>
 
-            <p>795 Park Ave, Suite 120</p>
-            <p>San Francisco, CA 94107</p>
-            <p>Phone: +(123) 456 1234</p>
+            <p>Rua: Viena, 150 / 152 • Utinga</p>
+            <p>Santo André • SP • CEP: 09220-700</p>
+            <p>Telefone: (11) 3969-7997</p>
           </div>
         </div>
 
         <div class="invoice--billing">
           <div class="invoice--address">
-            <h3 class="h3"><span>Pedido:</span></h3>
+            <h3 class="h3"><span>Pedido: P{{ pedido.created.year }}-{{ pedido.parceiro_id }}/{{ pedido.pk }}</span></h3>
 
             <h5 class="h5">{{ pedido.parceiro }}</h5>
 
             <p>{{ pedido.parceiro }}</p>
             <p>{{ pedido.parceiro.email }}</p>
-            <p>Phone: +(123) 654 7890</p>
+            <p>Telefone: </p>
           </div>
 
           <div class="invoice--info">
@@ -108,9 +108,8 @@
 
         <div class="invoice--footer">
           <div class="invoice--payment">
-            <p><strong>Payment Method:</strong> Credit Card</p>
-            <p><strong>Card Type:</strong> Mastercard</p>
-            <p><strong>Number Verification:</strong> 598746325950</p>
+            <p><strong>Atenção:</strong> Os valores dos produtos apresentados em nossa plataforma é disponibilizado apenas para você.</p>
+            <p>O compartilhamento não autorizado destas informações pode acarretar o seu desligamento da nossa plataforma de revenda.</p>
           </div>
 
           <div class="invoice--actions">
