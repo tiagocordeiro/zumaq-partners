@@ -1,7 +1,12 @@
+from decouple import config
 from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from django.forms.models import inlineformset_factory
 from django.shortcuts import redirect, render
+from django.template.loader import get_template
 from django.urls import reverse
+from django.utils.html import strip_tags
 
 from core.models import UserProfile, User
 from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
@@ -103,5 +108,102 @@ def pedido_aberto(request):
                                                           'formset': formset})
 
 
-def pedido_checkout(request):
+def pedido_checkout(request, pk):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(username=request.user)
+    pedido = Pedido.objects.get(pk=pk)
+
+    if pedido.parceiro != parceiro:
+        return redirect('dashboard')
+
+    pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+    pedido_total = 0
+    pedido_itens_qt = 0
+
+    if pedido.status != 0:
+        return redirect('pedido_details', pk=pedido.pk)
+
+    if pedido.status == 0:
+        pedido.status = 1
+        pedido.save()
+
+        # TODO: Configurar função para envio do novo pedido para o Gerente
+        pedido_send_mail(request, pk=pedido.pk)
+
+    for item in pedido_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedido_total = pedido_total + subtotal
+
+    return render(request, 'pedidos/pedido_fechado.html', {'parceiro': parceiro,
+                                                           'usuario': usuario,
+                                                           'pedido': pedido,
+                                                           'pedido_itens': pedido_itens,
+                                                           'pedido_total': pedido_total,
+                                                           'pedido_itens_qt': pedido_itens_qt})
+
+
+def pedido_details(request, pk):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(username=request.user)
+    pedido = Pedido.objects.get(pk=pk)
+
+    if pedido.parceiro != parceiro:
+        if parceiro.groups.filter(name='Gerente').exists() or request.user.is_superuser:
+            pass
+        else:
+            return redirect('dashboard')
+
+    pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+    pedido_total = 0
+    pedido_itens_qt = 0
+
+    for item in pedido_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedido_total = pedido_total + subtotal
+
+    return render(request, 'pedidos/pedido_fechado.html', {'parceiro': parceiro,
+                                                           'usuario': usuario,
+                                                           'pedido': pedido,
+                                                           'pedido_itens': pedido_itens,
+                                                           'pedido_total': pedido_total,
+                                                           'pedido_itens_qt': pedido_itens_qt})
+
+
+def pedidos_list(request):
     pass
+
+
+def pedido_send_mail(request, pk):
+    pedido = Pedido.objects.get(pk=pk)
+    pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+    pedido_total = 0
+    url = reverse('pedido_details', kwargs={'pk': pedido.pk})
+    pedido_url = ''.join(['https://', get_current_site(request).domain, url])
+
+    for item in pedido_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedido_total = pedido_total + subtotal
+
+    context = {'pedido': pedido,
+               'pedido_itens': pedido_itens,
+               'pedido_total': pedido_total,
+               'pedido_url': pedido_url, }
+
+    subject = 'Novo pedido de revenda'
+    html_message = get_template('pedidos/pedido_mail.html').render(context)
+    plain_message = strip_tags(html_message)
+    from_email = config('EMAIL_HOST_USER', default='')
+    to = config('PEDIDO_MAIL', default='')
+
+    send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+    messages.info(request, 'O seu pedido foi enviado.')
+
+    return redirect('pedido_details', pk=pedido.pk)

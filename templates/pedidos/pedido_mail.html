@@ -1,0 +1,73 @@
+{% load core_extras %}
+
+<!-- Main Content Start -->
+<section class="main--content">
+  <div class="panel">
+    <!-- Invoice Start -->
+    <div class="invoice">
+      <div class="invoice--header">
+        <div class="invoice--logo">
+          <img src="https://cnczumaq.com/newsletter/img/zumaq-logo-mail.png" alt="CNC Zumaq">
+        </div>
+
+        <div class="invoice--address">
+          <p>Você recebeu um novo pedido de revenda.</p>
+        </div>
+      </div>
+
+      <div class="invoice--billing">
+
+        <div class="invoice--address">
+          <h3 class="h3"><span>Dados do Pedido:</span></h3>
+          <table>
+            <tr>
+              <td><strong>Parceiro:</strong> {{ pedido.parceiro }}</td>
+              <td><strong>Email:</strong> {{ pedido.parceiro.email }}</td>
+            </tr>
+            <tr>
+              <td><strong>Status:</strong> {{ pedido.get_status_display }}</td>
+              <td><strong>Enviado em:</strong> {{ pedido.modified }}</td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="invoice--order">
+        <table class="table">
+          <thead>
+          <tr>
+            <th style="width: 50%;">Produto</th>
+            <th style="text-align: center; width: 15%;">Quantidade</th>
+            <th style="text-align: right; width: 15%;">Valor Un.</th>
+            <th style="text-align: right; width: 20%;">Valor Total</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for item in pedido_itens %}
+            <tr>
+              <td>{{ item.item }}</td>
+              <td style="text-align: center;">{{ item.quantidade }}</td>
+              <td style="text-align: right;">{{ item.valor_unitario }}</td>
+              <td style="text-align: right;">{{ item.valor_unitario|subtotal:item.quantidade }}</td>
+            </tr>
+          {% endfor %}
+          <tr>
+            <td colspan="3"><strong>Total</strong></td>
+            <td style="text-align: right;"><strong>R$ {{ pedido_total }}</strong></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="invoice--footer">
+        <div class="invoice--actions">
+          <a href="{{ pedido_url }}" class="btn btn-rounded btn-outline-secondary">Ver on-line</a>
+        </div>
+      </div>
+    </div>
+    <!-- Invoice End -->
+  </div>
+</section>
+<!-- Main Content End -->
+
