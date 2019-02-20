@@ -16,7 +16,6 @@
       </div>
 
       <div class="invoice--billing">
-
         <div class="invoice--address">
           <h3 class="h3"><span>Dados do Pedido:</span></h3>
           <table>
@@ -27,7 +26,6 @@
             <tr>
               <td><strong>Status:</strong> {{ pedido.get_status_display }}</td>
               <td><strong>Enviado em:</strong> {{ pedido.modified }}</td>
-              <td></td>
             </tr>
           </table>
         </div>
@@ -37,7 +35,7 @@
         <table class="table">
           <thead>
           <tr>
-            <th style="width: 50%;">Produto</th>
+            <th style="text-align: left; width: 50%;">Produto</th>
             <th style="text-align: center; width: 15%;">Quantidade</th>
             <th style="text-align: right; width: 15%;">Valor Un.</th>
             <th style="text-align: right; width: 20%;">Valor Total</th>
@@ -46,7 +44,7 @@
           <tbody>
           {% for item in pedido_itens %}
             <tr>
-              <td>{{ item.item }}</td>
+              <td style="text-align: left;">{{ item.item }}</td>
               <td style="text-align: center;">{{ item.quantidade }}</td>
               <td style="text-align: right;">{{ item.valor_unitario }}</td>
               <td style="text-align: right;">{{ item.valor_unitario|subtotal:item.quantidade }}</td>
@@ -70,4 +68,3 @@
   </div>
 </section>
 <!-- Main Content End -->
-
