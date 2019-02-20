@@ -154,7 +154,7 @@ def pedido_details(request, pk):
     pedido = Pedido.objects.get(pk=pk)
 
     if pedido.parceiro != parceiro:
-        if parceiro.groups.filter(name='Gerente').exists():
+        if parceiro.groups.filter(name='Gerente').exists() or request.user.is_superuser:
             pass
         else:
             return redirect('dashboard')
