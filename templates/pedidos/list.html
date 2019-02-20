@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+{% load core_extras %}
+
+{% block title %}Produtos - S.I.E.{% endblock %}
+{% block page-title %}Pedidos{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item active"><span>Pedidos</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+    <div class="panel">
+      <!-- Records Header Start -->
+      <div class="records--header">
+        <div class="title fa-shopping-bag">
+          <h3 class="h3">Pedidos</h3>
+          <p>{{ total_str }}</p>
+        </div>
+
+        <div class="actions">
+          <form action="#" class="search flex-wrap flex-md-nowrap">
+              <input id="txtSearch" type="text" class="form-control" placeholder="Pedido...">
+              <button type="submit" class="btn btn-rounded" disabled><i class="fa fa-search"></i></button>
+          </form>
+          {% if request.user|has_group:"Gerente" %}
+            <a href="{% url 'product_add' %}" class="addProduct btn btn-lg btn-rounded btn-warning">Adicionar</a>
+          {% endif %}
+        </div>
+      </div>
+      <!-- Records Header End -->
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message|safe }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="panel">
+      <!-- Records List Start -->
+      <div class="records--list" data-title="Listagem de Pedidos">
+        <table id="recordsListView">
+          <thead>
+          <tr>
+            <th>ID</th>
+            {% if request.user|has_group:"Gerente" %}
+              <th>Parceiro</th>
+            {% endif %}
+            <th>Data</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for pedido in pedidos %}
+          <tr>
+            <td>
+              <a href="{% url 'pedido_details' pk=pedido.pk %}" class="btn-link">P{{ pedido.created.year }}-{{ pedido.parceiro_id }}/{{ pedido.pk }}</a>
+            </td>
+            {% if request.user|has_group:"Gerente" %}
+              <th>{{ pedido.parceiro.username }}</th>
+            {% endif %}
+            <td>
+              {{ pedido.created|date:"d/m/Y H:m" }}
+            </td>
+            <td>
+              R$ {{ pedido.valor_total }}
+            </td>
+          {% if pedido.status == 1 %}
+            <td><span class="label label-success">Novo</span></td>
+          {% elif pedido.status == 2 %}
+            <td><span class="label label-info">Atendido</span></td>
+          {% elif pedido.status == 3 %}
+            <td><span class="label label-danger">Cancelado</span></td>
+          {% else %}
+            <td><span class="label label-warning">{{ pedido.get_status_display }}</span></td>
+          {% endif %}
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- Records List End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+{% endblock %}
+
+{% block extra_scripts %}
+  <script type="application/javascript">
+    $.extend(true, $.fn.dataTable.defaults, {
+      "oLanguage": {
+        "sEmptyTable": "Nenhum registro encontrado.",
+        "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+        "sInfoPostFix": "",
+        "sInfoThousands": ".",
+        "sLengthMenu": "_MENU_ resultados por página",
+        "sLoadingRecords": "Carregando...",
+        "sProcessing": "Processando...",
+        "sZeroRecords": "Nenhum registro encontrado",
+        "sSearch": "Pesquisar",
+        "oPaginate": {
+          "sNext": "Próximo",
+          "sPrevious": "Anterior",
+          "sFirst": "Primeiro",
+          "sLast": "Último"
+        },
+        "oAria": {
+          "sSortAscending": ": Ordenar colunas de forma ascendente",
+          "sSortDescending": ": Ordenar colunas de forma descendente"
+        }
+      }
+    });
+    $(document).ready(function () {
+      $('#recordsListView').DataTable();
+
+      $('#recordsListView_filter').hide(); // Hide default search datatables where example is the ID of table
+
+        $('#txtSearch').on('keyup', function() {
+            $('#recordsListView')
+                .DataTable()
+                .search($('#txtSearch').val(), false, true)
+                .draw();
+        });
+    });
+  </script>
+{% endblock %}
