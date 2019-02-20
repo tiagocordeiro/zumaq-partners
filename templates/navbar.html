@@ -139,7 +139,7 @@
           {% endif %}
           <li>
             <a href="{% url 'product_list' %}">
-              <i class="far fa-newspaper"></i>
+              <i class="fa fa-th-list"></i>
               <span>Consultar</span>
             </a>
           </li>
@@ -153,19 +153,32 @@
           <ul>
             <li>
               <a href="{% url 'parceiro_create' %}">
-                <i class="far fa-newspaper"></i>
+                <i class="fa fa-address-card"></i>
                 <span>Adicionar</span>
               </a>
             </li>
             <li>
               <a href="{% url 'parceiro_list' %}">
-                <i class="far fa-newspaper"></i>
+                <i class="fa fa-address-book"></i>
                 <span>Consultar</span>
               </a>
             </li>
           </ul>
         </li>
       {% endif %}
+
+      <li>
+        <a href="#">Pedidos</a>
+
+        <ul>
+          <li>
+            <a href="{% url 'pedidos_list' %}">
+              <i class="fa fa-tasks"></i>
+              <span>Todos os pedidos</span>
+            </a>
+          </li>
+        </ul>
+      </li>
 
     </ul>
   </div>
