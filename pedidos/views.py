@@ -178,7 +178,30 @@ def pedido_details(request, pk):
 
 
 def pedidos_list(request):
-    pass
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(username=request.user)
+
+    if parceiro.groups.filter(name='Gerente').exists() or request.user.is_superuser:
+        pedidos = Pedido.objects.all()
+    else:
+        pedidos = Pedido.objects.all().filter(parceiro=parceiro)
+
+    for pedido in pedidos:
+        pedido.valor_total = 0
+        pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+        for item in pedido_itens:
+            subtotal = item.quantidade * item.valor_unitario
+            pedido.valor_total = pedido.valor_total + subtotal
+
+    context = {'parceiro': parceiro,
+               'usuario': usuario,
+               'pedidos': pedidos, }
+
+    return render(request, 'pedidos/list.html', context)
 
 
 def pedido_send_mail(request, pk):
