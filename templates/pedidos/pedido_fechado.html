@@ -2,13 +2,13 @@
 {% load static %}
 {% load core_extras %}
 
-{% block title %}Pedido em aberto - S.I.E.{% endblock %}
+{% block title %}Pedido {{ pedido.get_status_display }} - S.I.E.{% endblock %}
 {% block page-title %}Pedido{% endblock %}
 
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
   <li class="breadcrumb-item"><a href="#">Pedidos</a></li>
-  <li class="breadcrumb-item active"><span>Atualizar</span></li>
+  <li class="breadcrumb-item active"><span>Detalhes</span></li>
 {% endblock %}
 
 {% block content %}
@@ -47,47 +47,75 @@
     <div class="panel">
       <!-- Invoice Start -->
       <div class="invoice">
-        <div class="invoice--order">
-          <form action="{% url 'pedido_aberto' %}" method="POST">
-            {% csrf_token %}
+        <div class="invoice--header">
+          <div class="invoice--logo">
+            <img src="assets/img/invoice/logo.png" alt="">
+          </div>
 
-            {{ form }}
-            {{ formset.management_form }}
+          <div class="invoice--address">
+            <h5 class="h5">CNC Zumaq</h5>
+
+            <p>795 Park Ave, Suite 120</p>
+            <p>San Francisco, CA 94107</p>
+            <p>Phone: +(123) 456 1234</p>
+          </div>
+        </div>
+
+        <div class="invoice--billing">
+          <div class="invoice--address">
+            <h3 class="h3"><span>Pedido:</span></h3>
+
+            <h5 class="h5">{{ pedido.parceiro }}</h5>
+
+            <p>{{ pedido.parceiro }}</p>
+            <p>{{ pedido.parceiro.email }}</p>
+            <p>Phone: +(123) 654 7890</p>
+          </div>
+
+          <div class="invoice--info">
+            <h5 class="h5"><span>Status:</span> {{ pedido.get_status_display }}</h5>
+            <p>Data: <strong>{{ pedido.created }}</strong></p>
+            <p>Atualizado: <strong>{{ pedido.modified }}</strong></p>
+          </div>
+        </div>
+
+        <div class="invoice--order">
             <table class="table">
               <thead>
               <tr>
-                <th style="width: 40%;">Produto</th>
-                <th style="text-align: center; width: 10%;">Quantidade</th>
-                <th style="text-align: right; width: 20%;">Valor Un.</th>
+                <th style="width: 50%;">Produto</th>
+                <th style="text-align: center; width: 15%;">Quantidade</th>
+                <th style="text-align: right; width: 15%;">Valor Un.</th>
                 <th style="text-align: right; width: 20%;">Valor Total</th>
-                <th style="text-align: center; width: 10%;">Remover</th>
               </tr>
               </thead>
               <tbody>
-              {% for item_pedido_form in formset %}
+              {% for item in pedido_itens %}
                 <tr>
-                  {{ item_pedido_form.id }}{{ item_pedido_form.item }}
-                  <td>{{ item_pedido_form.instance.item }}</td>
-                  <td style="text-align: center;">{{ item_pedido_form.quantidade }}</td>
-                  <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario }}</td>
-                  <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario|subtotal:item_pedido_form.instance.quantidade }}</td>
-                  <td style="text-align: center;">{{ item_pedido_form.DELETE }}</td>
+                  <td>{{ item.item }}</td>
+                  <td style="text-align: center;">{{ item.quantidade }}</td>
+                  <td style="text-align: right;">{{ item.valor_unitario }}</td>
+                  <td style="text-align: right;">{{ item.valor_unitario|subtotal:item.quantidade }}</td>
                 </tr>
               {% endfor %}
               <tr>
                 <td colspan="3"><strong>Total</strong></td>
                 <td style="text-align: right;"><strong>R$ {{ pedido_total }}</strong></td>
-                <td style="text-align: center;"><button class="btn btn-rounded btn-success m-3" value="Atualizar"><i class="fa fa-floppy-o"></i> Atualizar</button></td>
               </tr>
               </tbody>
             </table>
-          </form>
         </div>
 
         <div class="invoice--footer">
+          <div class="invoice--payment">
+            <p><strong>Payment Method:</strong> Credit Card</p>
+            <p><strong>Card Type:</strong> Mastercard</p>
+            <p><strong>Number Verification:</strong> 598746325950</p>
+          </div>
+
           <div class="invoice--actions">
-            <a href="{% url 'product_list' %}" class="btn btn-rounded btn-outline-secondary">Continuar adicionando</a>
-            <a href="{% url 'pedido_checkout' pk=pedido.pk %}" class="btn btn-rounded btn-info">Finalizar</a>
+            <a href="#" class="btn btn-rounded btn-outline-secondary">Baixar PDF</a>
+            <a href="#" class="btn btn-rounded btn-info">Imprimir</a>
           </div>
         </div>
       </div>

@@ -103,5 +103,77 @@ def pedido_aberto(request):
                                                           'formset': formset})
 
 
-def pedido_checkout(request):
+def pedido_checkout(request, pk):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(username=request.user)
+    pedido = Pedido.objects.get(pk=pk)
+
+    if pedido.parceiro != parceiro:
+        return redirect('dashboard')
+
+    pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+    pedido_total = 0
+    pedido_itens_qt = 0
+
+    if pedido.status != 0:
+        return redirect('pedido_details', pk=pedido.pk)
+
+    if pedido.status == 0:
+        pedido.status = 1
+        pedido.save()
+
+        # TODO: Configurar função para envio do novo pedido para o Gerente
+        # from django.core.mail import send_mail
+
+        # send_mail('subject', 'body of the message', 'sender@example.com',
+        #           ['tiago@mulhergorila.com', 'dev@mulhergorila.com.br'])
+
+    for item in pedido_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedido_total = pedido_total + subtotal
+
+    return render(request, 'pedidos/pedido_fechado.html', {'parceiro': parceiro,
+                                                           'usuario': usuario,
+                                                           'pedido': pedido,
+                                                           'pedido_itens': pedido_itens,
+                                                           'pedido_total': pedido_total,
+                                                           'pedido_itens_qt': pedido_itens_qt})
+
+
+def pedido_details(request, pk):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(username=request.user)
+    pedido = Pedido.objects.get(pk=pk)
+
+    if pedido.parceiro != parceiro:
+        if parceiro.groups.filter(name='Gerente').exists():
+            pass
+        else:
+            return redirect('dashboard')
+
+    pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+    pedido_total = 0
+    pedido_itens_qt = 0
+
+    for item in pedido_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedido_total = pedido_total + subtotal
+
+    return render(request, 'pedidos/pedido_fechado.html', {'parceiro': parceiro,
+                                                           'usuario': usuario,
+                                                           'pedido': pedido,
+                                                           'pedido_itens': pedido_itens,
+                                                           'pedido_total': pedido_total,
+                                                           'pedido_itens_qt': pedido_itens_qt})
+
+
+def pedidos_list(request):
     pass
