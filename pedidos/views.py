@@ -1,7 +1,12 @@
+from decouple import config
 from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from django.forms.models import inlineformset_factory
 from django.shortcuts import redirect, render
+from django.template.loader import get_template
 from django.urls import reverse
+from django.utils.html import strip_tags
 
 from core.models import UserProfile, User
 from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
@@ -127,10 +132,7 @@ def pedido_checkout(request, pk):
         pedido.save()
 
         # TODO: Configurar função para envio do novo pedido para o Gerente
-        # from django.core.mail import send_mail
-
-        # send_mail('subject', 'body of the message', 'sender@example.com',
-        #           ['tiago@mulhergorila.com', 'dev@mulhergorila.com.br'])
+        pedido_send_mail(request, pk=pedido.pk)
 
     for item in pedido_itens:
         subtotal = item.quantidade * item.valor_unitario
@@ -177,3 +179,31 @@ def pedido_details(request, pk):
 
 def pedidos_list(request):
     pass
+
+
+def pedido_send_mail(request, pk):
+    pedido = Pedido.objects.get(pk=pk)
+    pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+    pedido_total = 0
+    url = reverse('pedido_details', kwargs={'pk': pedido.pk})
+    pedido_url = ''.join(['https://', get_current_site(request).domain, url])
+
+    for item in pedido_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedido_total = pedido_total + subtotal
+
+    context = {'pedido': pedido,
+               'pedido_itens': pedido_itens,
+               'pedido_total': pedido_total,
+               'pedido_url': pedido_url, }
+
+    subject = 'Novo pedido de revenda'
+    html_message = get_template('pedidos/pedido_mail.html').render(context)
+    plain_message = strip_tags(html_message)
+    from_email = config('EMAIL_HOST_USER', default='')
+    to = config('PEDIDO_MAIL', default='')
+
+    send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+    messages.info(request, 'O seu pedido foi enviado.')
+
+    return redirect('pedido_details', pk=pedido.pk)

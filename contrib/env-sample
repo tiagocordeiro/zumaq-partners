@@ -13,6 +13,8 @@ EMAIL_USE_TLS=False
 EMAIL_HOST_USER=
 EMAIL_HOST_PASSWORD=
 
+# Email que recebe pedidos
+PEDIDO_MAIL=
 
 # Cloudinary for static e media files
 CLOUDINARY_NAME=
