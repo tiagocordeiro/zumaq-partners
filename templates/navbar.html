@@ -26,7 +26,7 @@
 
   <div class="navbar--nav ml-auto">
     <ul class="nav">
-      {% if request.user|has_group:"Parceiro" %}
+      {% if request.user|has_group:"Parceiro" and pedido_itens_qt != 0 %}
         <li class="nav-item">
           <a href="{% url 'pedido_aberto' %}" class="nav-link">
             <i class="fa fa-shopping-cart"></i>

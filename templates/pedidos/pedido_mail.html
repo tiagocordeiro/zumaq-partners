@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+{% load core_extras %}
+
+{% block title %}Pedido {{ pedido.get_status_display }} - S.I.E.{% endblock %}
+{% block page-title %}Pedido{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="#">Pedidos</a></li>
+  <li class="breadcrumb-item active"><span>Detalhes</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+
+    {% if form.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ form.errors }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+
+    {% if formset.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ formset.errors }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="panel">
+      <!-- Invoice Start -->
+      <div class="invoice">
+        <div class="invoice--header">
+          <div class="invoice--logo">
+            <img src="assets/img/invoice/logo.png" alt="">
+          </div>
+
+          <div class="invoice--address">
+            <h5 class="h5">CNC Zumaq</h5>
+
+            <p>795 Park Ave, Suite 120</p>
+            <p>San Francisco, CA 94107</p>
+            <p>Phone: +(123) 456 1234</p>
+          </div>
+        </div>
+
+        <div class="invoice--billing">
+          <div class="invoice--address">
+            <h3 class="h3"><span>Pedido:</span></h3>
+
+            <h5 class="h5">{{ pedido.parceiro }}</h5>
+
+            <p>{{ pedido.parceiro }}</p>
+            <p>{{ pedido.parceiro.email }}</p>
+            <p>Phone: +(123) 654 7890</p>
+          </div>
+
+          <div class="invoice--info">
+            <h5 class="h5"><span>Status:</span> {{ pedido.get_status_display }}</h5>
+            <p>Data: <strong>{{ pedido.created }}</strong></p>
+            <p>Atualizado: <strong>{{ pedido.modified }}</strong></p>
+          </div>
+        </div>
+
+        <div class="invoice--order">
+            <table class="table">
+              <thead>
+              <tr>
+                <th style="width: 50%;">Produto</th>
+                <th style="text-align: center; width: 15%;">Quantidade</th>
+                <th style="text-align: right; width: 15%;">Valor Un.</th>
+                <th style="text-align: right; width: 20%;">Valor Total</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for item in pedido_itens %}
+                <tr>
+                  <td>{{ item.item }}</td>
+                  <td style="text-align: center;">{{ item.quantidade }}</td>
+                  <td style="text-align: right;">{{ item.valor_unitario }}</td>
+                  <td style="text-align: right;">{{ item.valor_unitario|subtotal:item.quantidade }}</td>
+                </tr>
+              {% endfor %}
+              <tr>
+                <td colspan="3"><strong>Total</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total }}</strong></td>
+              </tr>
+              </tbody>
+            </table>
+        </div>
+
+        <div class="invoice--footer">
+          <div class="invoice--payment">
+            <p><strong>Payment Method:</strong> Credit Card</p>
+            <p><strong>Card Type:</strong> Mastercard</p>
+            <p><strong>Number Verification:</strong> 598746325950</p>
+          </div>
+
+          <div class="invoice--actions">
+            <a href="#" class="btn btn-rounded btn-outline-secondary">Baixar PDF</a>
+            <a href="#" class="btn btn-rounded btn-info">Imprimir</a>
+          </div>
+        </div>
+      </div>
+      <!-- Invoice End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+{% endblock %}
