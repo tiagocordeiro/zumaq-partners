@@ -1,5 +1,6 @@
 from decouple import config
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.forms.models import inlineformset_factory
@@ -14,6 +15,7 @@ from .forms import PedidoForm, PedidoItensForm
 from .models import Pedido, PedidoItem
 
 
+@login_required
 def pedido_add_item(request, **kwargs):
     parceiro = User.objects.get(username=request.user)
 
@@ -57,6 +59,7 @@ def pedido_add_item(request, **kwargs):
     return redirect(reverse('product_list'))
 
 
+@login_required
 def pedido_aberto(request):
     try:
         usuario = UserProfile.objects.get(user=request.user)
@@ -108,6 +111,7 @@ def pedido_aberto(request):
                                                           'formset': formset})
 
 
+@login_required
 def pedido_checkout(request, pk):
     try:
         usuario = UserProfile.objects.get(user=request.user)
@@ -146,6 +150,7 @@ def pedido_checkout(request, pk):
                                                            'pedido_itens_qt': pedido_itens_qt})
 
 
+@login_required
 def pedido_details(request, pk):
     try:
         usuario = UserProfile.objects.get(user=request.user)
@@ -177,6 +182,7 @@ def pedido_details(request, pk):
                                                            'pedido_itens_qt': pedido_itens_qt})
 
 
+@login_required
 def pedidos_list(request):
     try:
         usuario = UserProfile.objects.get(user=request.user)
@@ -204,6 +210,7 @@ def pedidos_list(request):
     return render(request, 'pedidos/list.html', context)
 
 
+@login_required
 def pedido_send_mail(request, pk):
     pedido = Pedido.objects.get(pk=pk)
     pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
