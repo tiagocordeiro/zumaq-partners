@@ -26,9 +26,6 @@
               <input id="txtSearch" type="text" class="form-control" placeholder="Pedido...">
               <button type="submit" class="btn btn-rounded" disabled><i class="fa fa-search"></i></button>
           </form>
-          {% if request.user|has_group:"Gerente" %}
-            <a href="{% url 'product_add' %}" class="addProduct btn btn-lg btn-rounded btn-warning">Adicionar</a>
-          {% endif %}
         </div>
       </div>
       <!-- Records Header End -->
