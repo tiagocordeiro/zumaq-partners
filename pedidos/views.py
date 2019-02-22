@@ -203,9 +203,18 @@ def pedidos_list(request):
             subtotal = item.quantidade * item.valor_unitario
             pedido.valor_total = pedido.valor_total + subtotal
 
+    parceiro = User.objects.get(username=request.user)
+
+    pedido = Pedido.objects.filter(parceiro=parceiro, status=0).first()
+    if pedido is None:
+        pedido_itens_qt = 0
+    else:
+        pedido_itens_qt = PedidoItem.objects.filter(pedido=pedido).count()
+
     context = {'parceiro': parceiro,
                'usuario': usuario,
-               'pedidos': pedidos, }
+               'pedidos': pedidos,
+               'pedido_itens_qt': pedido_itens_qt, }
 
     return render(request, 'pedidos/list.html', context)
 
