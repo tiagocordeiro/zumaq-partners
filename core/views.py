@@ -57,7 +57,7 @@ def dashboard(request):
 
     user = User.objects.get(username=request.user)
 
-    produtos_qt = Produto.objects.all().count()
+    produtos_qt = Produto.objects.all().filter(active=True).count()
 
     if parceiro.groups.filter(name='Parceiro'):
         pedidos_itens = PedidoItem.objects.all().filter(pedido__status__gte=1, pedido__parceiro=parceiro)
