@@ -1,157 +1,200 @@
 {% extends "base.html" %}
 {% load static %}
+{% load core_extras %}
 
 {% block title %}Dashboard - S.I.E.{% endblock %}
 {% block page-title %}Dashboard{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">S.I.E.</a></li>
-    <li class="breadcrumb-item active"><span>Dashboard</span></li>
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">S.I.E.</a></li>
+  <li class="breadcrumb-item active"><span>Dashboard</span></li>
 {% endblock %}
 
 {% block content %}
-<section class="main--content">
+  <section class="main--content">
     <div class="row gutter-20">
-        <div class="col-md-4">
-            <div class="panel">
-                <!-- Mini Stats Panel Start -->
-                <div class="miniStats--panel">
-                    <div class="miniStats--header bg-darker">
-                        <p class="text-blue">Produtos</p>
+      <div class="col-md-4">
+        <div class="panel">
+          <!-- Mini Stats Panel Start -->
+          <div class="miniStats--panel">
+            <div class="miniStats--header bg-darker">
+              <p class="text-blue">Produtos</p>
 
-                        <p class="miniStats--label text-white bg-blue">
-                            <a class="text-white" href="{% url 'product_list' %}">
-                                <i class="fa fa-list"></i>
-                                <span>{{ produtos_qt }}</span>
-                            </a>
-                        </p>
-                    </div>
-
-                    <div class="miniStats--body">
-                        <i class="miniStats--icon fa fa-shopping-cart text-blue"></i>
-
-                        <p class="miniStats--caption text-blue">Produtos</p>
-                        <h3 class="miniStats--title h4">disponíveis</h3>
-                        <p class="miniStats--num text-blue">{{ produtos_qt }}</p>
-                    </div>
-                </div>
-                <!-- Mini Stats Panel End -->
+              <p class="miniStats--label text-white bg-blue">
+                <a class="text-white" href="{% url 'product_list' %}">
+                  <i class="fa fa-list"></i>
+                  <span>{{ produtos_qt }}</span>
+                </a>
+              </p>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="panel">
-                <!-- Mini Stats Panel Start -->
-                <div class="miniStats--panel">
-                    <div class="miniStats--header bg-darker">
-                        <p class="miniStats--chart" data-trigger="sparkline" data-type="bar" data-width="4" data-height="30" data-color="#e16123">{{ cny_spark_str }}</p>
+            <div class="miniStats--body">
+              <i class="miniStats--icon fa fa-shopping-cart text-blue"></i>
 
-                        <p class="miniStats--label text-white bg-orange">
-                            <i class="fa fa-level-down-alt"></i>
-                            <span>10%</span>
-                        </p>
-                    </div>
-
-                    <div class="miniStats--body">
-                        <i class="miniStats--icon fa fa-ticket-alt text-orange"></i>
-
-                        <p class="miniStats--caption text-orange">Monthly</p>
-                        <h3 class="miniStats--title h4">Tickets Answered</h3>
-                        <p class="miniStats--num text-orange">450</p>
-                    </div>
-                </div>
-                <!-- Mini Stats Panel End -->
+              <p class="miniStats--caption text-blue">Produtos</p>
+              <h3 class="miniStats--title h4">disponíveis</h3>
+              <p class="miniStats--num text-blue">{{ produtos_qt }}</p>
             </div>
+          </div>
+          <!-- Mini Stats Panel End -->
         </div>
+      </div>
 
-        <div class="col-md-4">
-            <div class="panel">
-                <!-- Mini Stats Panel Start -->
-                <div class="miniStats--panel">
-                    <div class="miniStats--header bg-darker">
-                        <p class="miniStats--chart" data-trigger="sparkline" data-type="bar" data-width="4" data-height="30" data-color="#009378">2,2,3,9,11,9,7,20,9,7,6,5,6,9,4,9,5,3,5,9,15,3</p>
+      <div class="col-md-4">
+        <div class="panel">
+          <!-- Mini Stats Panel Start -->
+          <div class="miniStats--panel">
+            <div class="miniStats--header bg-darker">
+              <p class="text-blue">Pedidos</p>
 
-                        <p class="miniStats--label text-white bg-green">
-                            <i class="fa fa-level-up-alt"></i>
-                            <span>10%</span>
-                        </p>
-                    </div>
-
-                    <div class="miniStats--body">
-                        <i class="miniStats--icon fa fa-rocket text-green"></i>
-
-                        <p class="miniStats--caption text-green">Monthly</p>
-                        <h3 class="miniStats--title h4">Projects Launched</h3>
-                        <p class="miniStats--num text-green">3,130,300</p>
-                    </div>
-                </div>
-                <!-- Mini Stats Panel End -->
+              <p class="miniStats--label text-white bg-orange">
+                <a class="text-white" href="{% url 'pedidos_list' %}">
+                  <i class="fa fa-list"></i>
+                  {% if request.user|has_group:"Parceiro" %}
+                    <span>{{ pedidos_qt_parceiro }}</span>
+                  {% else %}
+                    <span>{{ pedidos_qt_all }}</span>
+                  {% endif %}
+                </a>
+              </p>
             </div>
-        </div>
 
-        <div class="col-xl-6 col-md-6">
-            <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">1 USD x CNY (Remimbi)</h3>
+            <div class="miniStats--body">
+              <i class="miniStats--icon fa fa-ticket-alt text-orange"></i>
 
-                    <div class="dropdown">
-                        <button type="button" class="btn-link dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-ellipsis-v"></i>
-                        </button>
-
-                        <ul class="dropdown-menu">
-                            <li><a href="#">This Week</a></li>
-                            <li><a href="#">Last Week</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="panel-chart">
-                    <!-- Morris Line Chart 01 Start -->
-                    <div id="morrisLineChartCotacaoUSD_CNY" class="chart--body line--chart style--1"></div>
-                    <!-- Morris Line Chart 01 End -->
-                </div>
+              <p class="miniStats--caption text-orange">Total nos</p>
+              <h3 class="miniStats--title h4">Pedidos</h3>
+              <p class="miniStats--num text-orange">{{ pedidos_valor_total }}</p>
             </div>
+          </div>
+          <!-- Mini Stats Panel End -->
         </div>
+      </div>
 
-        <div class="col-xl-6 col-md-6">
-            <div class="panel">
-                <div class="panel-heading">
-                    <h3 class="panel-title">1 USD x BRL (Real)</h3>
+      {#      <div class="col-md-4">#}
+      {#        <div class="panel">#}
+      {#          <!-- Mini Stats Panel Start -->#}
+      {#          <div class="miniStats--panel">#}
+      {#            <div class="miniStats--header bg-darker">#}
+      {#              <p class="miniStats--chart" data-trigger="sparkline" data-type="bar" data-width="4" data-height="30"#}
+      {#                 data-color="#e16123">{{ cny_spark_str }}</p>#}
+      {##}
+      {#              <p class="miniStats--label text-white bg-orange">#}
+      {#                <i class="fa fa-level-down-alt"></i>#}
+      {#                <span>10%</span>#}
+      {#              </p>#}
+      {#            </div>#}
+      {##}
+      {#            <div class="miniStats--body">#}
+      {#              <i class="miniStats--icon fa fa-ticket-alt text-orange"></i>#}
+      {##}
+      {#              <p class="miniStats--caption text-orange">Monthly</p>#}
+      {#              <h3 class="miniStats--title h4">Tickets Answered</h3>#}
+      {#              <p class="miniStats--num text-orange">450</p>#}
+      {#            </div>#}
+      {#          </div>#}
+      {#          <!-- Mini Stats Panel End -->#}
+      {#        </div>#}
+      {#      </div>#}
 
-                    <div class="dropdown">
-                        <button type="button" class="btn-link dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-ellipsis-v"></i>
-                        </button>
+      <div class="col-md-4">
+        <!-- Panel Start -->
+        <div class="panel">
+          <div class="panel-heading">
+            <h3 class="panel-title">Dados Bancários</h3>
+          </div>
 
-                        <ul class="dropdown-menu">
-                            <li><a href="#">This Week</a></li>
-                            <li><a href="#">Last Week</a></li>
-                        </ul>
-                    </div>
-                </div>
+          <div class="panel-content panel-about" style="padding: 10px 20px 14px;">
+            <p>XK - Tron Ind. E Comércio de Peças e Acessórios Eletrônicos Ltda</p>
+            <table>
+              <tr>
+                <th><i class="fas fa-briefcase"></i>CNPJ:</th>
+                <td>18.966.170/0001-90</td>
+              </tr>
+              <tr>
+                <th><i class="fas fa-building"></i>Banco:</th>
+                <td>Bradesco</td>
+              </tr>
+              <tr>
+                <th><i class="fas fa-map-marker-alt"></i>Agência:</th>
+                <td>2422-8</td>
+              </tr>
+              <tr>
+                <th><i class="fas fa-money-bill-alt"></i>Conta Corrente:</th>
+                <td>23881-3</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <!-- Panel End -->
+      </div>
 
-                <div class="panel-chart">
-                    <!-- Morris Line Chart 01 Start -->
-                    <div id="morrisLineChartCotacaoUSD_BRL" class="chart--body line--chart style--1"></div>
-                    <!-- Morris Line Chart 01 End -->
-                </div>
+      <div class="col-xl-6 col-md-6">
+        <div class="panel">
+          <div class="panel-heading">
+            <h3 class="panel-title">1 USD x CNY (Remimbi)</h3>
+
+            <div class="dropdown">
+              <button type="button" class="btn-link dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-ellipsis-v"></i>
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a href="#">This Week</a></li>
+                <li><a href="#">Last Week</a></li>
+              </ul>
             </div>
+          </div>
+
+          <div class="panel-chart">
+            <!-- Morris Line Chart 01 Start -->
+            <div id="morrisLineChartCotacaoUSD_CNY" class="chart--body line--chart style--1"></div>
+            <!-- Morris Line Chart 01 End -->
+          </div>
         </div>
+      </div>
+
+      <div class="col-xl-6 col-md-6">
+        <div class="panel">
+          <div class="panel-heading">
+            <h3 class="panel-title">1 USD x BRL (Real)</h3>
+
+            <div class="dropdown">
+              <button type="button" class="btn-link dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-ellipsis-v"></i>
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a href="#">This Week</a></li>
+                <li><a href="#">Last Week</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="panel-chart">
+            <!-- Morris Line Chart 01 Start -->
+            <div id="morrisLineChartCotacaoUSD_BRL" class="chart--body line--chart style--1"></div>
+            <!-- Morris Line Chart 01 End -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+
+      </div>
     </div>
-</section>
+  </section>
 {% endblock %}
 
 {% block extra_scripts %}
-<script>
-/* ------------------------------------------------------------------------- *
- * CHARTS
- * ------------------------------------------------------------------------- */
-/* MORRIS LINE CHART Cotação CNY */
-var $morrisLineChartCotacaoUSD_CNY = document.getElementById('morrisLineChartCotacaoUSD_CNY');
+  <script>
+    /* ------------------------------------------------------------------------- *
+     * CHARTS
+     * ------------------------------------------------------------------------- */
+    /* MORRIS LINE CHART Cotação CNY */
+    var $morrisLineChartCotacaoUSD_CNY = document.getElementById('morrisLineChartCotacaoUSD_CNY');
 
-if ( $morrisLineChartCotacaoUSD_CNY ) {
-    new Morris.Line({
+    if ($morrisLineChartCotacaoUSD_CNY) {
+      new Morris.Line({
         element: $morrisLineChartCotacaoUSD_CNY.id,
         data: {{ cotacao_cny|safe }},
         xkey: 'data',
@@ -168,16 +211,16 @@ if ( $morrisLineChartCotacaoUSD_CNY ) {
         resize: true,
         hideHover: true,
         yLabelFormat: function (y) {
-           return Math.round(y * 100) / 100
+          return Math.round(y * 100) / 100
         }
-    });
-}
+      });
+    }
 
-/* MORRIS LINE CHART Cotação BRL */
-var $morrisLineChartCotacaoUSD_BRL = document.getElementById('morrisLineChartCotacaoUSD_BRL');
+    /* MORRIS LINE CHART Cotação BRL */
+    var $morrisLineChartCotacaoUSD_BRL = document.getElementById('morrisLineChartCotacaoUSD_BRL');
 
-if ( $morrisLineChartCotacaoUSD_BRL ) {
-    new Morris.Line({
+    if ($morrisLineChartCotacaoUSD_BRL) {
+      new Morris.Line({
         element: $morrisLineChartCotacaoUSD_BRL.id,
         data: {{ cotacao_brl|safe }},
         xkey: 'data',
@@ -194,9 +237,9 @@ if ( $morrisLineChartCotacaoUSD_BRL ) {
         resize: true,
         hideHover: true,
         yLabelFormat: function (y) {
-           return Math.round(y * 100) / 100
+          return Math.round(y * 100) / 100
         }
-    });
-}
-</script>
+      });
+    }
+  </script>
 {% endblock %}

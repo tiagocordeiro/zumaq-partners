@@ -59,6 +59,19 @@ def dashboard(request):
 
     produtos_qt = Produto.objects.all().count()
 
+    if parceiro.groups.filter(name='Parceiro'):
+        pedidos_itens = PedidoItem.objects.all().filter(pedido__status__gte=1, pedido__parceiro=parceiro)
+    else:
+        pedidos_itens = PedidoItem.objects.all().filter(pedido__status__gte=1)
+
+    pedidos_valor_total = 0
+    for item in pedidos_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedidos_valor_total = pedidos_valor_total + subtotal
+
+    pedidos_qt_all = Pedido.objects.all().filter(status__gte=1).count()
+    pedidos_qt_parceiro = Pedido.objects.all().filter(status__gte=1, parceiro=parceiro).count()
+
     context = {'produtos_qt': produtos_qt,
                'usuario': usuario,
                'user': user,
@@ -67,6 +80,9 @@ def dashboard(request):
                'cny_spark': cny_spark,
                'cny_spark_str': cny_spark_str,
                'pedido_itens_qt': pedido_itens_qt,
+               'pedidos_qt_all': pedidos_qt_all,
+               'pedidos_qt_parceiro': pedidos_qt_parceiro,
+               'pedidos_valor_total': pedidos_valor_total,
                }
 
     return render(request, 'dashboard_demo.html', context)
