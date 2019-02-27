@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User, Group
+from django.contrib.messages.storage.fallback import FallbackStorage
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
-from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
 from pedidos.models import Pedido
-from pedidos.views import pedidos_list, pedido_add_item, pedido_aberto
-from django.contrib.messages.storage.fallback import FallbackStorage
+from pedidos.views import pedidos_list, pedido_add_item, pedido_aberto, pedido_checkout, pedido_details
+from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
 
 
 class PedidosTestCase(TestCase):
@@ -23,6 +23,10 @@ class PedidosTestCase(TestCase):
         self.user_parceiro = User.objects.create_user(username='joe', email='joe@…', password='top_secret')
         self.group_parceiro = Group.objects.create(name='Parceiro')
         self.group_parceiro.user_set.add(self.user_parceiro)
+
+        # User Parceiro2
+        self.user_parceiro2 = User.objects.create_user(username='robert', email='robert@…', password='top_secret')
+        self.group_parceiro.user_set.add(self.user_parceiro2)
 
         # Produto
         self.product = Produto.objects.create(codigo='TYL-1080',
@@ -88,4 +92,78 @@ class PedidosTestCase(TestCase):
         request.user = self.user_parceiro
 
         response = pedidos_list(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_pedido_checkout(self):
+        pedido = self.pedido_aberto
+        request = self.factory.get(reverse('pedido_checkout', kwargs={'pk': pedido.pk}))
+        request.user = self.user_parceiro
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        self.assertEqual(pedido.status, 0)
+
+        response = pedido_checkout(request, pedido.pk)
+
+        self.assertEqual(response.status_code, 200)
+
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.status, 1)
+
+    def test_pedido_checkout_not_owner(self):
+        """
+        Testa checkout quando o usuário não é dono do pedido em aberto.
+        :return: Deve retornar status_code = 302 e redirecionar para dashboard.
+        """
+        pedido = self.pedido_aberto
+        request = self.factory.get(reverse('pedido_checkout', kwargs={'pk': pedido.pk}))
+        request.user = self.user_gerente
+
+        self.assertEqual(pedido.status, 0)
+
+        response = pedido_checkout(request, pedido.pk)
+        self.assertEqual(response.status_code, 302)
+
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.status, 0)
+
+    def test_pedido_detais_view_by_owner(self):
+        pedido = self.pedido_aberto
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 0)
+        self.test_pedido_add_item()
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 1)
+        self.test_pedido_checkout()
+
+        request = self.factory.get(reverse('pedido_details', kwargs={'pk': pedido.pk}))
+        request.user = self.user_parceiro
+
+        response = pedido_details(request, pedido.pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(pedido.get_status_display(), 'Enviado')
+
+    def test_pedido_detais_view_not_owner(self):
+        pedido = self.pedido_aberto
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 0)
+        self.test_pedido_add_item()
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 1)
+        self.test_pedido_checkout()
+
+        request = self.factory.get(reverse('pedido_details', kwargs={'pk': pedido.pk}))
+        request.user = self.user_parceiro2
+
+        response = pedido_details(request, pedido.pk)
+        self.assertEqual(response.status_code, 302)
+
+    def test_pedido_detais_view_as_gerente(self):
+        pedido = self.pedido_aberto
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 0)
+        self.test_pedido_add_item()
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 1)
+        self.test_pedido_checkout()
+
+        request = self.factory.get(reverse('pedido_details', kwargs={'pk': pedido.pk}))
+        request.user = self.user_gerente
+
+        response = pedido_details(request, pedido.pk)
         self.assertEqual(response.status_code, 200)
