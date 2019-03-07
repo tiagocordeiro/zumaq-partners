@@ -38,9 +38,11 @@ def pedido_add_item(request, **kwargs):
 
         try:
             c_price = custom_prices.filter(produto__codigo=produto.codigo).values('coeficiente')[0]['coeficiente']
-            if c_price:
-                produto.cliente_paga = round(produto.cliente_paga() + (produto.cliente_paga() * c_price),
-                                             ndigits=2)
+            if c_price == 0:
+                produto.cliente_paga = produto.cliente_paga()
+            else:
+                produto.cliente_paga = round(produto.cliente_paga() + (produto.cliente_paga() * c_price), ndigits=2)
+
         except IndexError:
             produto.cliente_paga = round(produto.cliente_paga() + (produto.cliente_paga() * parceiro_coeficiente),
                                          ndigits=2)
