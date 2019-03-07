@@ -13,6 +13,8 @@ class PedidoAdmin(admin.ModelAdmin):
     inlines = [
         PedidoInline,
     ]
+    actions = ['delete_selected', 'mass_change_selected']
+    massadmin_exclude = ['parceiro', ]
 
 
 admin.site.register(Pedido, PedidoAdmin)

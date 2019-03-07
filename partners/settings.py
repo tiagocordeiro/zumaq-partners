@@ -36,6 +36,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 # Application definition
 
 INSTALLED_APPS = [
+    'massadmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 
 from .models import UserProfile
 
+# Globally disable Mass Change
+admin.site.disable_action('mass_change_selected')
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
