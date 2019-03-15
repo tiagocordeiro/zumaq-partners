@@ -10,6 +10,6 @@ sqlparse==0.2.4
 coverage==4.5.2
 
 # responses
-responses==0.10.5
+responses==0.10.6
 
 -r requirements.txt
