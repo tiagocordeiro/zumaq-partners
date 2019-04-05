@@ -4,12 +4,12 @@ pyflakes==2.1.1
 
 # DebugToolbar
 django-debug-toolbar==1.11
-sqlparse==0.2.4
+sqlparse==0.3.0
 
 # Coverage
-coverage==4.5.2
+coverage==4.5.3
 
 # responses
-responses==0.10.5
+responses==0.10.6
 
 -r requirements.txt
