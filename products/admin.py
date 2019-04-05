@@ -6,7 +6,7 @@ from .models import Produto, CustomCoeficiente, CustomCoeficienteItens
 # Register your models here.
 class ProdutoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'descricao')
-    actions = ['delete_selected', 'mass_change_selected']
+    actions = admin.ModelAdmin.actions + ['mass_change_selected']
     massadmin_exclude = ['codigo', 'descricao', 'pago_na_china', ]
 
 class CustomCoeficienteInline(admin.StackedInline):
@@ -18,7 +18,7 @@ class CustomCoeficienteAdmin(admin.ModelAdmin):
     inlines = [
         CustomCoeficienteInline,
     ]
-    actions = ['delete_selected', 'mass_change_selected']
+    actions = admin.ModelAdmin.actions + ['mass_change_selected']
     massadmin_exclude = ['parceiro', ]
 
 
