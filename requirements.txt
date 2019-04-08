@@ -30,7 +30,7 @@ six==1.12.0
 urllib3==1.24.1
 
 # Bling
-pybling==0.0.6
+pybling==0.0.7
 
 # Sentry
 sentry-sdk==0.7.9
