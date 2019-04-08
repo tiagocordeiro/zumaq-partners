@@ -14,7 +14,7 @@ class Produto(TimeStampedModel, Active):
     impostos_na_china = models.DecimalField('Impostos na China (%)', max_digits=10, decimal_places=2)
     porcentagem_importacao = models.DecimalField('Porcentagem Importação (%)', max_digits=10, decimal_places=2)
     coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
-    imagem = models.URLField(blank=True, null=True)
+    imagem = models.URLField(blank=True, null=True, default='https://via.placeholder.com/150')
 
     def compra_do_cambio(self):
         return round(self.dolar_cotado + Decimal('0.20'), ndigits=2)
