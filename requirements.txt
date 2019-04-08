@@ -9,8 +9,8 @@ python-dotenv==0.10.1
 # Heroku
 dj-database-url==0.5.0
 django-heroku==0.3.1
-psycopg2==2.8
-psycopg2-binary==2.8
+psycopg2==2.8.1
+psycopg2-binary==2.8.1
 whitenoise==4.1.2
 gunicorn==19.9.0
 
@@ -30,10 +30,10 @@ six==1.12.0
 urllib3==1.24.1
 
 # Bling
-pybling==0.0.6
+pybling==0.0.7
 
 # Sentry
-sentry-sdk==0.7.9
+sentry-sdk==0.7.10
 
 # Crispy Forms
 django-crispy-forms==1.7.2
