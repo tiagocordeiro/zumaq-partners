@@ -52,6 +52,11 @@ def product_create(request, codigo):
         try:
             produto = get_product(codigo=codigo)
             detalhes = produto.json()['retorno']['produtos'][0]['produto']
+            imagens = detalhes['imagem']
+            if imagens:
+                imagem = imagens[0]['link']
+            else:
+                imagem = None
             context = {'codigo': detalhes['codigo'],
                        'descricao': detalhes['descricao'],
                        'pago_na_china': detalhes['precoCusto'],
@@ -60,7 +65,8 @@ def product_create(request, codigo):
                        'impostos_na_china': '',
                        'porcentagem_importacao': '',
                        'coeficiente': '',
-                       'product_status': 'no bling'}
+                       'product_status': 'no bling',
+                       'imagem': imagem, }
         except KeyError:
             return redirect('product_add')
 
@@ -71,6 +77,7 @@ def product_create(request, codigo):
             new_product.codigo = detalhes['codigo']
             new_product.descricao = detalhes['descricao']
             new_product.pago_na_china = detalhes['precoCusto']
+            new_product.imagem = imagem
             new_product.save()
             messages.success(request, "Produto cadastrado.")
             return redirect('product_update', codigo=codigo)

@@ -38,7 +38,14 @@
           "itensPorCaixa": 1,
           "volumes": 1,
           "localizacao": "Piso - Sala 01",
-          "crossdocking": "0"
+          "crossdocking": "0",
+          "imagem": [
+            {
+              "link": "https://cnczumaq.com/image/cache/catalog/M%C3%A1quina_Laser/RTODOS-800x800.png",
+              "validade": "S/ Validade",
+              "tipoArmazenamento": "externo"
+            }
+          ]
         }
       }
     ]

@@ -52,6 +52,7 @@
           <thead>
           <tr>
             <th>Código</th>
+            <th>Imagem</th>
             <th>Descrição</th>
             <th>Preço</th>
             {% if request.user|has_group:"Gerente" %}
@@ -70,6 +71,13 @@
                 <a href="{% url 'product_update' codigo=produto.codigo %}" class="btn-link">{{ produto.codigo }}</a>
               {% else %}
                 {{ produto.codigo }}
+              {% endif %}
+            </td>
+            <td>
+              {% if produto.imagem %}
+                <img src="{{ produto.imagem }}" alt="{{ produto.descricao }}">
+              {% else %}
+                <img src="{% static 'assets/img/avatars/01_150x150.png' %}" alt="Produto sem imagem">
               {% endif %}
             </td>
             <td>
