@@ -1,6 +1,6 @@
 # Django
 Django==2.2
-pytz==2018.9
+pytz==2019.1
 
 # Decouple
 python-decouple==3.1
