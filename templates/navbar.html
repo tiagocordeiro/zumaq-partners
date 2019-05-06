@@ -180,6 +180,20 @@
         </ul>
       </li>
 
+      {% if request.user|has_group:"Gerente" %}
+        <li>
+          <a href="#">Relatórios</a>
+          <ul>
+            <li>
+              <a href="{% url 'products_report' %}">
+                <i class="fa fa-download"></i>
+                <span>Produtos</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      {% endif %}
+
     </ul>
   </div>
   <!-- Sidebar Navigation End -->
