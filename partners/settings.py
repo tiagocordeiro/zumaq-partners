@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'core',
     'products',
     'pedidos',
+    'reports',
 ]
 
 MIDDLEWARE = [
