@@ -1,8 +1,9 @@
-from django.db import models
-from core.models import User
 from decimal import Decimal
 
+from django.db import models
+
 from core.models import Active, TimeStampedModel
+from core.models import User
 
 
 class Produto(TimeStampedModel, Active):
@@ -49,6 +50,7 @@ class CustomCoeficiente(models.Model):
                                              max_digits=10,
                                              decimal_places=2,
                                              default=.50)
+
 
 class CustomCoeficienteItens(models.Model):
     parceiro = models.ForeignKey(CustomCoeficiente, null=True, on_delete=models.SET_NULL)

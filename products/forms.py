@@ -23,6 +23,7 @@ class ProdutoForm(ModelForm):
             'active': CheckboxInput(attrs={'class': 'form-control'})
         }
 
+
 class CustomCoeficienteForm(ModelForm):
     class Meta:
         model = CustomCoeficiente
@@ -30,6 +31,7 @@ class CustomCoeficienteForm(ModelForm):
         widgets = {
             'coeficiente_padrao': NumberInput(attrs={'class': 'form-control'}),
         }
+
 
 class CustomCoeficienteItensForm(ModelForm):
     class Meta:
