@@ -82,7 +82,9 @@ def products_report(request, status='all'):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="produtos-{report_name}-{report_date}.csv"'
 
-    writer = csv.writer(response)
+    response.write(u'\ufeff'.encode('utf8'))
+
+    writer = csv.writer(response, delimiter=';', dialect='excel')
     writer.writerow(['Descrição', 'Cliente paga - Mínimo (BRL)', 'unitário em Dolar'])
     for produto in produtos:
         writer.writerow([f'{produto.descricao}', f'{produto.cliente_paga()}', f'{produto.unitario_em_dolar()}'])
@@ -124,7 +126,9 @@ def pedidos_report(request, status='all'):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="pedidos-{report_name}-{report_date}.csv"'
 
-    writer = csv.writer(response)
+    response.write(u'\ufeff'.encode('utf8'))
+
+    writer = csv.writer(response, delimiter=';', dialect='excel')
     writer.writerow(['Parceiro', 'Email parceiro', 'Data pedido', 'Status'])
     for pedido in pedidos:
         writer.writerow([f'{pedido.parceiro}',
