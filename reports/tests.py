@@ -1,10 +1,10 @@
 from django.contrib.auth.models import AnonymousUser, User, Group
 from django.test import RequestFactory, TestCase, Client
 
-from .views import reports_dashboard, products_report
+from .views import reports_dashboard, products_report, pedidos_report
 
 
-class ReportsDashboardViewTest(TestCase):
+class ReportsViewsTests(TestCase):
     def setUp(self):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
@@ -22,21 +22,21 @@ class ReportsDashboardViewTest(TestCase):
 
     # Testes para dashboard de relatórios
     def test_reports_dashboard_anonimo(self):
-        request = self.factory.get('/reports/dashboard/')
+        request = self.factory.get('/reports/')
         request.user = AnonymousUser()
 
         response = reports_dashboard(request)
         self.assertEqual(response.status_code, 302)
 
     def test_reports_dashboard_logado_parceiro(self):
-        request = self.factory.get('/reports/dashboard/')
+        request = self.factory.get('/reports/')
         request.user = self.user_parceiro
 
         response = reports_dashboard(request)
         self.assertEqual(response.status_code, 302)
 
     def test_reports_dashboard_logado_gerente(self):
-        request = self.factory.get('/reports/dashboard/')
+        request = self.factory.get('/reports/')
         request.user = self.user_gerente
 
         response = reports_dashboard(request)
@@ -69,4 +69,40 @@ class ReportsDashboardViewTest(TestCase):
         request.user = self.user_gerente
 
         response = products_report(request)
+        self.assertEqual(response.status_code, 200)
+
+    # Testa views de ralatório de pedidos
+    def test_report_pedidos_anonimo(self):
+        request = self.factory.get('/reports/pedidos/')
+        request.user = AnonymousUser()
+
+        response = pedidos_report(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_report_pedidos_logado_parceiro(self):
+        request = self.factory.get('/reports/pedidos/')
+        request.user = self.user_parceiro
+
+        response = pedidos_report(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_report_pedidos_logado_gerente(self):
+        request = self.factory.get('/reports/pedidos/')
+        request.user = self.user_gerente
+
+        response = pedidos_report(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_report_pedidos_novos_logado_gerente(self):
+        request = self.factory.get('/reports/pedidos/novos/')
+        request.user = self.user_gerente
+
+        response = pedidos_report(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_report_pedidos_abertos_logado_gerente(self):
+        request = self.factory.get('/reports/pedidos/abertos/')
+        request.user = self.user_gerente
+
+        response = pedidos_report(request)
         self.assertEqual(response.status_code, 200)
