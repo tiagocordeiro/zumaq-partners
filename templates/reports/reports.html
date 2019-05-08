@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+{% load core_extras %}
+
+{% block title %}Dashboard - S.I.E.{% endblock %}
+{% block page-title %}Relatórios{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">S.I.E.</a></li>
+  <li class="breadcrumb-item active"><span>Relatórios</span></li>
+{% endblock %}
+
+{% block content %}
+  <section class="main--content">
+    <div class="row gutter-20">
+      <div class="col-md-4">
+        <div class="panel">
+          <!-- Mini Stats Panel Start -->
+          <div class="miniStats--panel">
+            <div class="miniStats--header bg-darker">
+              <p class="text-blue">Produtos</p>
+
+              <p class="miniStats--label text-white bg-blue">
+                <a class="text-white" href="{% url 'product_list' %}">
+                  <i class="fa fa-list"></i>
+                  <span>{{ produtos.count }}</span>
+                </a>
+              </p>
+            </div>
+
+            <div class="miniStats--body">
+              <a href="{% url 'products_report' status='all' %}">
+                <i class="miniStats--icon fa fa-download text-blue" style="opacity: 1;z-index: 1;"></i>
+              </a>
+
+              <p class="miniStats--caption text-blue">Produtos</p>
+              <h3 class="miniStats--title h4">Todos</h3>
+              <p class="miniStats--num text-blue">{{ produtos.count }}</p>
+            </div>
+
+            <div class="miniStats--body">
+              <a href="{% url 'products_report' status='ativos' %}">
+                <i class="miniStats--icon fa fa-download text-blue" style="opacity: 1;z-index: 1;"></i>
+              </a>
+
+              <p class="miniStats--caption text-blue">Produtos</p>
+              <h3 class="miniStats--title h4">Ativos</h3>
+              <p class="miniStats--num text-blue">{{ produtos_ativos.count }}</p>
+            </div>
+
+            <div class="miniStats--body">
+              <a href="{% url 'products_report' status='inativos' %}">
+                <i class="miniStats--icon fa fa-download text-blue" style="opacity: 1;z-index: 1;"></i>
+              </a>
+
+              <p class="miniStats--caption text-blue">Produtos</p>
+              <h3 class="miniStats--title h4">Inativos</h3>
+              <p class="miniStats--num text-blue">{{ produtos_inativos.count }}</p>
+            </div>
+
+          </div>
+          <!-- Mini Stats Panel End -->
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="panel">
+          <!-- Mini Stats Panel Start -->
+          <div class="miniStats--panel">
+            <div class="miniStats--header bg-darker">
+              <p class="text-blue">Pedidos</p>
+
+              <p class="miniStats--label text-white bg-orange">
+                <a class="text-white" href="{% url 'pedidos_list' %}">
+                  <i class="fa fa-list"></i>
+                  {% if request.user|has_group:"Parceiro" %}
+                    <span>{{ pedidos_qt_parceiro }}</span>
+                  {% else %}
+                    <span>{{ pedidos_qt_all }}</span>
+                  {% endif %}
+                </a>
+              </p>
+            </div>
+
+            <div class="miniStats--body">
+              <i class="miniStats--icon fa fa-ticket-alt text-orange"></i>
+
+              <p class="miniStats--caption text-orange">Total de</p>
+              <h3 class="miniStats--title h4">Pedidos</h3>
+              <p class="miniStats--num text-orange">{{ pedidos_valor_total }}</p>
+            </div>
+          </div>
+          <!-- Mini Stats Panel End -->
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="panel">
+          <!-- Mini Stats Panel Start -->
+          <div class="miniStats--panel">
+            <div class="miniStats--header bg-darker">
+              <p class="text-blue">Parceiros</p>
+
+              <p class="miniStats--label text-white bg-orange">
+                <a class="text-white" href="{% url 'pedidos_list' %}">
+                  <i class="fa fa-list"></i>
+                  {% if request.user|has_group:"Parceiro" %}
+                    <span>{{ pedidos_qt_parceiro }}</span>
+                  {% else %}
+                    <span>{{ pedidos_qt_all }}</span>
+                  {% endif %}
+                </a>
+              </p>
+            </div>
+
+            <div class="miniStats--body">
+              <i class="miniStats--icon fa fa-ticket-alt text-orange"></i>
+
+              <p class="miniStats--caption text-orange">Total de</p>
+              <h3 class="miniStats--title h4">Parceiros</h3>
+              <p class="miniStats--num text-orange">{{ pedidos_valor_total }}</p>
+            </div>
+          </div>
+          <!-- Mini Stats Panel End -->
+        </div>
+      </div>
+
+
+      <div class="col-md-4">
+
+      </div>
+    </div>
+  </section>
+{% endblock %}

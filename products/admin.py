@@ -9,9 +9,11 @@ class ProdutoAdmin(admin.ModelAdmin):
     actions = admin.ModelAdmin.actions + ['mass_change_selected']
     massadmin_exclude = ['codigo', 'descricao', 'pago_na_china', ]
 
+
 class CustomCoeficienteInline(admin.StackedInline):
     model = CustomCoeficienteItens
     extra = 1
+
 
 class CustomCoeficienteAdmin(admin.ModelAdmin):
     list_display = ('parceiro',)
