@@ -68,27 +68,47 @@
           <!-- Mini Stats Panel Start -->
           <div class="miniStats--panel">
             <div class="miniStats--header bg-darker">
-              <p class="text-blue">Pedidos</p>
+              <p class="text-orange">Pedidos</p>
 
               <p class="miniStats--label text-white bg-orange">
                 <a class="text-white" href="{% url 'pedidos_list' %}">
                   <i class="fa fa-list"></i>
-                  {% if request.user|has_group:"Parceiro" %}
-                    <span>{{ pedidos_qt_parceiro }}</span>
-                  {% else %}
-                    <span>{{ pedidos_qt_all }}</span>
-                  {% endif %}
+                    <span>{{ pedidos.count }}</span>
                 </a>
               </p>
             </div>
 
             <div class="miniStats--body">
-              <i class="miniStats--icon fa fa-ticket-alt text-orange"></i>
+              <a href="{% url 'pedidos_report_all' %}">
+                <i class="miniStats--icon fa fa-download text-orange" style="opacity: 1;z-index: 1;"></i>
+              </a>
 
-              <p class="miniStats--caption text-orange">Total de</p>
-              <h3 class="miniStats--title h4">Pedidos</h3>
-              <p class="miniStats--num text-orange">{{ pedidos_valor_total }}</p>
+              <p class="miniStats--caption text-orange">Pedidos</p>
+              <h3 class="miniStats--title h4">Todos</h3>
+              <p class="miniStats--num text-orange">{{ pedidos.count }}</p>
             </div>
+
+            <div class="miniStats--body">
+              <a href="{% url 'pedidos_report' status='novos' %}">
+                <i class="miniStats--icon fa fa-download text-orange" style="opacity: 1;z-index: 1;"></i>
+              </a>
+
+              <p class="miniStats--caption text-orange">Pedidos</p>
+              <h3 class="miniStats--title h4">Novos</h3>
+              <p class="miniStats--num text-orange">{{ pedidos_novos.count }}</p>
+            </div>
+
+            <div class="miniStats--body">
+              <a href="{% url 'pedidos_report' status='abertos' %}">
+                <i class="miniStats--icon fa fa-download text-orange" style="opacity: 1;z-index: 1;"></i>
+              </a>
+
+              <p class="miniStats--caption text-orange">Pedidos</p>
+              <h3 class="miniStats--title h4">Abertos</h3>
+              <p class="miniStats--num text-orange">{{ pedidos_abertos.count }}</p>
+            </div>
+
+
           </div>
           <!-- Mini Stats Panel End -->
         </div>
@@ -99,26 +119,24 @@
           <!-- Mini Stats Panel Start -->
           <div class="miniStats--panel">
             <div class="miniStats--header bg-darker">
-              <p class="text-blue">Parceiros</p>
+              <p class="text-green">Parceiros</p>
 
-              <p class="miniStats--label text-white bg-orange">
-                <a class="text-white" href="{% url 'pedidos_list' %}">
+              <p class="miniStats--label text-white bg-green">
+                <a class="text-white" href="{% url 'parceiro_list' %}">
                   <i class="fa fa-list"></i>
-                  {% if request.user|has_group:"Parceiro" %}
-                    <span>{{ pedidos_qt_parceiro }}</span>
-                  {% else %}
-                    <span>{{ pedidos_qt_all }}</span>
-                  {% endif %}
+                    <span>{{ parceiros.count }}</span>
                 </a>
               </p>
             </div>
 
             <div class="miniStats--body">
-              <i class="miniStats--icon fa fa-ticket-alt text-orange"></i>
+              <a href="#">
+                <i class="miniStats--icon fa fa-download text-green" style="opacity: 1;z-index: 1;"></i>
+              </a>
 
-              <p class="miniStats--caption text-orange">Total de</p>
+              <p class="miniStats--caption text-green">Total de</p>
               <h3 class="miniStats--title h4">Parceiros</h3>
-              <p class="miniStats--num text-orange">{{ pedidos_valor_total }}</p>
+              <p class="miniStats--num text-green">{{ parceiros.count }}</p>
             </div>
           </div>
           <!-- Mini Stats Panel End -->
