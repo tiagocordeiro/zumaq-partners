@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AnonymousUser, User, Group
 from django.test import RequestFactory, TestCase, Client
 
-from .views import reports_dashboard, products_report, pedidos_report, parceiros_report
+from .views import reports_dashboard, products_report, pedidos_report, parceiros_report, download_excel_products_data
 
 
 class ReportsViewsTests(TestCase):
@@ -126,5 +126,27 @@ class ReportsViewsTests(TestCase):
         request = self.factory.get('/reports/parceiros/')
         request.user = self.user_gerente
 
-        response = parceiros_report(request)
+        response = download_excel_products_data(request)
+        self.assertEqual(response.status_code, 200)
+
+    # Testa view de ralatório de produtos XLS
+    def test_report_products_xls_anonimo(self):
+        request = self.factory.get('/reports/products/download/xls/')
+        request.user = AnonymousUser()
+
+        response = download_excel_products_data(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_report_products_xls_logado_parceiro(self):
+        request = self.factory.get('/reports/products/download/xls/')
+        request.user = self.user_parceiro
+
+        response = download_excel_products_data(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_report_products_xls_logado_gerente(self):
+        request = self.factory.get('/reports/products/download/xls/')
+        request.user = self.user_gerente
+
+        response = download_excel_products_data(request)
         self.assertEqual(response.status_code, 200)
