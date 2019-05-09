@@ -126,7 +126,7 @@ class ReportsViewsTests(TestCase):
         request = self.factory.get('/reports/parceiros/')
         request.user = self.user_gerente
 
-        response = download_excel_products_data(request)
+        response = parceiros_report(request)
         self.assertEqual(response.status_code, 200)
 
     # Testa view de ralatório de produtos XLS

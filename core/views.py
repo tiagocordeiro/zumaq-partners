@@ -122,6 +122,7 @@ def profile_update(request):
                                                    'user': user, })
 
 
+@login_required
 def parceiro_cadastro(request):
     if request.method == 'POST':
         form = CadastroParceiro(request.POST)
@@ -193,6 +194,13 @@ def parceiro_create(request):
 
 @login_required
 def parceiro_details(request, pk):
+    # Check access role
+    user = User.objects.get(username=request.user)
+    if user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
     try:
         usuario = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
@@ -236,7 +244,5 @@ def parceiro_details(request, pk):
         'usuario': usuario,
         'parceiro': parceiro,
     }
-
-    # return render(request, 'notas/edit.html', context)
 
     return render(request, 'parceiros/details.html', context)
