@@ -29,7 +29,7 @@
             </div>
 
             <div class="miniStats--body">
-              <a href="{% url 'products_report' status='all' %}">
+              <a href="{% url 'products_excel_report' %}">
                 <i class="miniStats--icon fa fa-download text-blue" style="opacity: 1;z-index: 1;"></i>
               </a>
 
@@ -38,25 +38,25 @@
               <p class="miniStats--num text-blue">{{ produtos.count }}</p>
             </div>
 
-            <div class="miniStats--body">
-              <a href="{% url 'products_report' status='ativos' %}">
-                <i class="miniStats--icon fa fa-download text-blue" style="opacity: 1;z-index: 1;"></i>
-              </a>
-
-              <p class="miniStats--caption text-blue">Produtos</p>
-              <h3 class="miniStats--title h4">Ativos</h3>
-              <p class="miniStats--num text-blue">{{ produtos_ativos.count }}</p>
-            </div>
-
-            <div class="miniStats--body">
-              <a href="{% url 'products_report' status='inativos' %}">
-                <i class="miniStats--icon fa fa-download text-blue" style="opacity: 1;z-index: 1;"></i>
-              </a>
-
-              <p class="miniStats--caption text-blue">Produtos</p>
-              <h3 class="miniStats--title h4">Inativos</h3>
-              <p class="miniStats--num text-blue">{{ produtos_inativos.count }}</p>
-            </div>
+{#            <div class="miniStats--body">#}
+{#              <a href="{% url 'products_report' status='ativos' %}">#}
+{#                <i class="miniStats--icon fa fa-download text-blue" style="opacity: 1;z-index: 1;"></i>#}
+{#              </a>#}
+{##}
+{#              <p class="miniStats--caption text-blue">Produtos</p>#}
+{#              <h3 class="miniStats--title h4">Ativos</h3>#}
+{#              <p class="miniStats--num text-blue">{{ produtos_ativos.count }}</p>#}
+{#            </div>#}
+{##}
+{#            <div class="miniStats--body">#}
+{#              <a href="{% url 'products_report' status='inativos' %}">#}
+{#                <i class="miniStats--icon fa fa-download text-blue" style="opacity: 1;z-index: 1;"></i>#}
+{#              </a>#}
+{##}
+{#              <p class="miniStats--caption text-blue">Produtos</p>#}
+{#              <h3 class="miniStats--title h4">Inativos</h3>#}
+{#              <p class="miniStats--num text-blue">{{ produtos_inativos.count }}</p>#}
+{#            </div>#}
 
           </div>
           <!-- Mini Stats Panel End -->
@@ -88,27 +88,25 @@
               <p class="miniStats--num text-orange">{{ pedidos.count }}</p>
             </div>
 
-            <div class="miniStats--body">
-              <a href="{% url 'pedidos_report' status='novos' %}">
-                <i class="miniStats--icon fa fa-download text-orange" style="opacity: 1;z-index: 1;"></i>
-              </a>
-
-              <p class="miniStats--caption text-orange">Pedidos</p>
-              <h3 class="miniStats--title h4">Novos</h3>
-              <p class="miniStats--num text-orange">{{ pedidos_novos.count }}</p>
-            </div>
-
-            <div class="miniStats--body">
-              <a href="{% url 'pedidos_report' status='abertos' %}">
-                <i class="miniStats--icon fa fa-download text-orange" style="opacity: 1;z-index: 1;"></i>
-              </a>
-
-              <p class="miniStats--caption text-orange">Pedidos</p>
-              <h3 class="miniStats--title h4">Abertos</h3>
-              <p class="miniStats--num text-orange">{{ pedidos_abertos.count }}</p>
-            </div>
-
-
+{#            <div class="miniStats--body">#}
+{#              <a href="{% url 'pedidos_report' status='novos' %}">#}
+{#                <i class="miniStats--icon fa fa-download text-orange" style="opacity: 1;z-index: 1;"></i>#}
+{#              </a>#}
+{##}
+{#              <p class="miniStats--caption text-orange">Pedidos</p>#}
+{#              <h3 class="miniStats--title h4">Novos</h3>#}
+{#              <p class="miniStats--num text-orange">{{ pedidos_novos.count }}</p>#}
+{#            </div>#}
+{##}
+{#            <div class="miniStats--body">#}
+{#              <a href="{% url 'pedidos_report' status='abertos' %}">#}
+{#                <i class="miniStats--icon fa fa-download text-orange" style="opacity: 1;z-index: 1;"></i>#}
+{#              </a>#}
+{##}
+{#              <p class="miniStats--caption text-orange">Pedidos</p>#}
+{#              <h3 class="miniStats--title h4">Abertos</h3>#}
+{#              <p class="miniStats--num text-orange">{{ pedidos_abertos.count }}</p>#}
+{#            </div>#}
           </div>
           <!-- Mini Stats Panel End -->
         </div>

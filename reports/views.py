@@ -1,6 +1,7 @@
 import csv
 from datetime import datetime
 
+import xlwt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -175,4 +176,61 @@ def parceiros_report(request):
     for parceiro in parceiros:
         writer.writerow([smart_str(f'{parceiro.username}'), smart_str(f'{parceiro.email}')])
 
+    return response
+
+
+@login_required()
+def download_excel_products_data(request):
+    # Check access role
+    user = User.objects.get(username=request.user)
+    if user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
+    # content-type of response
+    response = HttpResponse(content_type='application/ms-excel')
+
+    # decide file name
+    report_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    response['Content-Disposition'] = f'attachment; filename="produtos-{report_date}.xls"'
+
+    # creating workbook
+    wb = xlwt.Workbook(encoding='utf-8')
+
+    # adding sheet
+    ws = wb.add_sheet("Produtos")
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    # headers are bold
+    font_style.font.bold = True
+
+    # column header names, you can use your own headers here
+    columns = ['Produto', 'Cliente paga - Mínimo em R$', 'Unitário em USD', 'Status']
+
+    # write column headers in sheet
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    # get data from database.
+    produtos = Produto.objects.all()
+
+    # write sheet lines
+    for produto in produtos:
+        row_num = row_num + 1
+        ws.write(row_num, 0, produto.descricao, font_style)
+        ws.write(row_num, 1, produto.cliente_paga(), font_style)
+        ws.write(row_num, 2, produto.unitario_em_dolar(), font_style)
+        if produto.active:
+            ws.write(row_num, 3, 'Ativo', font_style)
+        else:
+            ws.write(row_num, 3, 'Inativo', font_style)
+
+    wb.save(response)
     return response

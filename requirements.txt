@@ -48,3 +48,6 @@ quandl==3.4.8
 
 # Bulk Changes in Admin
 django-mass-edit==3.2.0
+
+# Excel for reports
+xlwt==1.3.0
