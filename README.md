@@ -6,7 +6,7 @@
 [![Python 3](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/python-3-shield.svg)](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/)
 [![codecov](https://codecov.io/gh/tiagocordeiro/zumaq-partners/branch/master/graph/badge.svg)](https://codecov.io/gh/tiagocordeiro/zumaq-partners)
 [![Python 3.7.3](https://img.shields.io/badge/python-3.7.3-blue.svg)](https://www.python.org/downloads/release/python-373/)
-[![Django 2.2](https://img.shields.io/badge/django-2.2-blue.svg)](https://www.djangoproject.com/download/)
+[![Django 2.2.1](https://img.shields.io/badge/django-2.2.1-blue.svg)](https://www.djangoproject.com/download/)
 [![PyBling](https://img.shields.io/badge/bling-API-green.svg)](https://github.com/tiagocordeiro/pybling)
 [![Quandl](https://img.shields.io/badge/quandl-API-green.svg)](https://github.com/quandl/quandl-python)
 
@@ -58,6 +58,6 @@ para relatório de cobertura de testes.
 
 Code style
 ```
-pycodestyle partners/ core/ products/
-pyflakes partners/ core/ products/
+pycodestyle .
+flake8 .
 ```
