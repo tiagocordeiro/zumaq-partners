@@ -1,15 +1,14 @@
 import base64  # for decoding base64 image
 import tempfile  # for setting up tempdir for media
-
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
 
 from django.contrib.auth.models import AnonymousUser, User, Group
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test import RequestFactory, TestCase, Client, override_settings
 from django.urls import reverse
 
 from .models import UserProfile
-from .views import dashboard, profile_update
+from .views import dashboard, profile_update, parceiro_details
 
 
 class DashboardViewTest(TestCase):
@@ -230,3 +229,24 @@ class ParceirosViewsTests(TestCase):
 
         parceiros = User.objects.filter(groups__name__in=['Parceiro'])
         self.assertEqual(len(parceiros), 2)
+
+    def test_view_parceiro_details_anonimo(self):
+        request = self.factory.get('parceiros/details/2/')
+        request.user = AnonymousUser()
+
+        response = parceiro_details(request, pk=self.user_parceiro.pk)
+        self.assertEqual(response.status_code, 302)
+
+    def test_view_parceiro_details_parceiro(self):
+        request = self.factory.get('parceiros/details/2/')
+        request.user = self.user_parceiro
+
+        response = parceiro_details(request, pk=self.user_parceiro.pk)
+        self.assertEqual(response.status_code, 302)
+
+    def test_view_parceiro_details_gerente(self):
+        request = self.factory.get('parceiros/details/2/')
+        request.user = self.user_gerente
+
+        response = parceiro_details(request, pk=self.user_parceiro.pk)
+        self.assertEqual(response.status_code, 200)
