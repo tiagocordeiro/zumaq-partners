@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AnonymousUser, User, Group
 from django.test import RequestFactory, TestCase, Client
 
-from .views import reports_dashboard, products_report, pedidos_report
+from .views import reports_dashboard, products_report, pedidos_report, parceiros_report
 
 
 class ReportsViewsTests(TestCase):
@@ -105,4 +105,26 @@ class ReportsViewsTests(TestCase):
         request.user = self.user_gerente
 
         response = pedidos_report(request)
+        self.assertEqual(response.status_code, 200)
+
+    # Testa views de ralatório de parceiros
+    def test_report_parceiros_anonimo(self):
+        request = self.factory.get('/reports/parceiros/')
+        request.user = AnonymousUser()
+
+        response = parceiros_report(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_report_parceiros_logado_parceiro(self):
+        request = self.factory.get('/reports/parceiros/')
+        request.user = self.user_parceiro
+
+        response = parceiros_report(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_report_parceiros_logado_gerente(self):
+        request = self.factory.get('/reports/parceiros/')
+        request.user = self.user_gerente
+
+        response = parceiros_report(request)
         self.assertEqual(response.status_code, 200)

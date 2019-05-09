@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.utils.encoding import smart_str
 
 from core.models import UserProfile
 from pedidos.models import Pedido
@@ -85,9 +86,12 @@ def products_report(request, status='all'):
     response.write(u'\ufeff'.encode('utf8'))
 
     writer = csv.writer(response, delimiter=';', dialect='excel')
-    writer.writerow(['Descrição', 'Cliente paga - Mínimo (BRL)', 'unitário em Dolar'])
+    # write the headers
+    writer.writerow([smart_str('Descrição'), smart_str('Cliente paga - Mínimo (BRL)'), smart_str('unitário em Dolar')])
     for produto in produtos:
-        writer.writerow([f'{produto.descricao}', f'{produto.cliente_paga()}', f'{produto.unitario_em_dolar()}'])
+        writer.writerow([smart_str(f'{produto.descricao}'),
+                         smart_str(f'{round(produto.cliente_paga(), ndigits=2)}'),
+                         smart_str(f'{round(produto.unitario_em_dolar(), ndigits=2)}')])
 
     return response
 
@@ -129,11 +133,46 @@ def pedidos_report(request, status='all'):
     response.write(u'\ufeff'.encode('utf8'))
 
     writer = csv.writer(response, delimiter=';', dialect='excel')
-    writer.writerow(['Parceiro', 'Email parceiro', 'Data pedido', 'Status'])
+    # write the headers
+    writer.writerow([smart_str('Parceiro'),
+                     smart_str('Email parceiro'),
+                     smart_str('Data pedido'),
+                     smart_str('Status')])
     for pedido in pedidos:
-        writer.writerow([f'{pedido.parceiro}',
-                         f'{pedido.parceiro.email}',
-                         f'{pedido.created.strftime("%d/%m/%Y")}',
-                         f'{pedido.get_status_display()}'])
+        writer.writerow([smart_str(f'{pedido.parceiro}'),
+                         smart_str(f'{pedido.parceiro.email}'),
+                         smart_str(f'{pedido.created.strftime("%d/%m/%Y")}'),
+                         smart_str(f'{pedido.get_status_display()}')])
+
+    return response
+
+
+@login_required
+def parceiros_report(request):
+    """
+    :param request:
+    :return:
+        Retorna um csv com os parceiros.
+    """
+    user = User.objects.get(username=request.user)
+    if user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
+    parceiros = User.objects.filter(groups__name__in=['Parceiro'])
+    report_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="parceiros-{report_date}.csv"'
+
+    response.write(u'\ufeff'.encode('utf8'))
+
+    writer = csv.writer(response, delimiter=';', dialect='excel')
+    # write the headers
+    writer.writerow([smart_str('Parceiro'), smart_str('Email parceiro')])
+    for parceiro in parceiros:
+        writer.writerow([smart_str(f'{parceiro.username}'), smart_str(f'{parceiro.email}')])
 
     return response
