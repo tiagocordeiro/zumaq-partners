@@ -48,7 +48,7 @@
     <div class="panel">
       <!-- Records List Start -->
       <div class="records--list" data-title="Listagem de Produtos">
-        <table id="recordsListView">
+        <table id="recordsListView" data-page-length='-1' data-order='[[2, "asc"]]'>
           <thead>
           <tr>
             <th>Código</th>
@@ -116,6 +116,7 @@
 {% block extra_scripts %}
   <script type="application/javascript">
     $.extend(true, $.fn.dataTable.defaults, {
+      "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
       "oLanguage": {
         "sEmptyTable": "Nenhum registro encontrado.",
         "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
