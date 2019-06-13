@@ -149,9 +149,9 @@ def product_list(request):
     user = User.objects.get(username=request.user)
 
     if user.groups.filter(name='Gerente').exists():
-        produtos = Produto.objects.all()
+        produtos = Produto.objects.all().order_by('descricao')
     else:
-        produtos = Produto.objects.all().filter(active=True)
+        produtos = Produto.objects.all().filter(active=True).order_by('descricao')
 
     total_produtos = len(produtos)
 
