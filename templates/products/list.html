@@ -76,7 +76,7 @@
             </td>
             <td>
               {% if produto.imagem %}
-                <img class="lozad" src="{{ produto.imagem }}" alt="{{ produto.descricao }}">
+                <img class="lozad" src="{{ produto.imagem|load_thumb }}" alt="{{ produto.descricao }}">
               {% else %}
                 <img class="lozad" src="{% static 'assets/img/avatars/01_150x150.png' %}" alt="Produto sem imagem">
               {% endif %}
