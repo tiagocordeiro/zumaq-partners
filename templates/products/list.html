@@ -47,12 +47,13 @@
 
     <div class="panel">
       <!-- Records List Start -->
+      <script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
       <div class="records--list" data-title="Listagem de Produtos">
-        <table id="recordsListView" data-page-length='-1' data-order='[[2, "asc"]]'>
+        <table style="padding: 0px;" id="recordsListView" data-page-length='-1' data-order='[[2, "asc"]]'>
           <thead>
           <tr>
-            <th>Código</th>
-            <th>Imagem</th>
+            <th style="max-width: 100px !important;">Código</th>
+            <th style="max-width: 100px !important;">Imagem</th>
             <th>Descrição</th>
             <th>Preço</th>
             {% if request.user|has_group:"Gerente" %}
@@ -75,9 +76,9 @@
             </td>
             <td>
               {% if produto.imagem %}
-                <img src="{{ produto.imagem }}" alt="{{ produto.descricao }}">
+                <img class="lozad" src="{{ produto.imagem }}" alt="{{ produto.descricao }}">
               {% else %}
-                <img src="{% static 'assets/img/avatars/01_150x150.png' %}" alt="Produto sem imagem">
+                <img class="lozad" src="{% static 'assets/img/avatars/01_150x150.png' %}" alt="Produto sem imagem">
               {% endif %}
             </td>
             <td>
