@@ -82,7 +82,7 @@
               {% endif %}
             </td>
             <td>
-              {{ produto.descricao }}
+              {{ produto.descricao|normalize_for_table }}
             </td>
             <td>
               R$ {{ produto.cliente_paga }}
