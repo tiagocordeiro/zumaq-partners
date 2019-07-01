@@ -69,14 +69,14 @@
                   {{ item_pedido_form.id }}{{ item_pedido_form.item }}
                   <td>{{ item_pedido_form.instance.item }}</td>
                   <td style="text-align: center;">{{ item_pedido_form.quantidade }}</td>
-                  <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario }}</td>
-                  <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario|subtotal:item_pedido_form.instance.quantidade }}</td>
+                  <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario|currency_display }}</td>
+                  <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario|subtotal:item_pedido_form.instance.quantidade|currency_display }}</td>
                   <td style="text-align: center;">{{ item_pedido_form.DELETE }}</td>
                 </tr>
               {% endfor %}
               <tr>
                 <td colspan="3"><strong>Total</strong></td>
-                <td style="text-align: right;"><strong>R$ {{ pedido_total }}</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total|currency_display }}</strong></td>
                 <td style="text-align: center;"><button class="btn btn-rounded btn-success m-3" value="Atualizar"><i class="fa fa-floppy-o"></i> Atualizar</button></td>
               </tr>
               </tbody>

@@ -45,7 +45,7 @@
     <div class="panel">
       <!-- Records List Start -->
       <div class="records--list" data-title="Listagem de Pedidos">
-        <table id="recordsListView">
+        <table style="padding: 0px;" id="recordsListView">
           <thead>
           <tr>
             <th>ID</th>
@@ -70,7 +70,7 @@
               {{ pedido.created|date:"d/m/Y H:m" }}
             </td>
             <td>
-              R$ {{ pedido.valor_total }}
+              R$ {{ pedido.valor_total|currency_display }}
             </td>
           {% if pedido.status == 1 %}
             <td><span class="label label-success">Novo</span></td>

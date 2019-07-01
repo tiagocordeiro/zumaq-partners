@@ -85,7 +85,7 @@
               {{ produto.descricao|normalize_for_table }}
             </td>
             <td>
-              R$ {{ produto.cliente_paga }}
+              R$ {{ produto.cliente_paga|currency_display }}
             </td>
             {% if request.user|has_group:"Gerente" %}
             <td>

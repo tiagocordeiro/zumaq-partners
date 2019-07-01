@@ -1,3 +1,4 @@
+import locale
 from unicodedata import normalize
 
 from django import template
@@ -23,3 +24,10 @@ def normalize_for_table(text):
 @register.filter(name='load_thumb')
 def load_thumb(image_url):
     return image_url.replace('800x800', '100x100')
+
+
+@register.filter(name='currency_display')
+def currency_display(valor):
+    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+    valor = locale.currency(valor, grouping=True, symbol=None)
+    return valor
