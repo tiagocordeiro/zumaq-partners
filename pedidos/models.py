@@ -13,9 +13,8 @@ class Pedido(TimeStampedModel, Active):
         (3, 'Cancelado'),
     )
     parceiro = models.ForeignKey(User, verbose_name='parceiro', on_delete=models.CASCADE)
-    status = models.IntegerField(
-        'Situação', choices=STATUS_CHOICES, default=0, blank=True
-    )
+    status = models.IntegerField('Situação', choices=STATUS_CHOICES, default=0, blank=True)
+    observacoes = models.TextField('Observações', blank=True, null=True)
 
     def __str__(self):
         return str(self.pk) + ' - ' + str(self.parceiro.username)
