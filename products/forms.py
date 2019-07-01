@@ -12,6 +12,7 @@ class ProdutoForm(ModelForm):
                   'impostos_na_china',
                   'porcentagem_importacao',
                   'coeficiente',
+                  'imagem',
                   'active', ]
         widgets = {
             'pago_na_china': TextInput(attrs={'class': 'form-control', 'placeholder': 'Pago na China'}),
@@ -20,6 +21,7 @@ class ProdutoForm(ModelForm):
             'impostos_na_china': TextInput(attrs={'class': 'form-control', 'placeholder': 'Impostos na China'}),
             'porcentagem_importacao': TextInput(attrs={'class': 'form-control', 'placeholder': '% Importação'}),
             'coeficiente': TextInput(attrs={'class': 'form-control', 'placeholder': 'Coeficiente'}),
+            'imagem': TextInput(attrs={'class': 'form-control', 'placeholder': 'Url da imagem'}),
             'active': CheckboxInput(attrs={'class': 'form-control'})
         }
 
