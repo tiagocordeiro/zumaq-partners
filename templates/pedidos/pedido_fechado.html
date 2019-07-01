@@ -99,8 +99,16 @@
                 </tr>
               {% endfor %}
               <tr>
+                <td colspan="3"><strong>Subtotal</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total|currency_display }}</strong></td>
+              </tr>
+              <tr>
+                <td colspan="3"><strong>Tributos</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total|tributos|currency_display }}</strong></td>
+              </tr>
+              <tr>
                 <td colspan="3"><strong>Total</strong></td>
-                <td style="text-align: right;"><strong>R$ {{ pedido_total }}</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total|total_com_tributos|currency_display }}</strong></td>
               </tr>
               </tbody>
             </table>
