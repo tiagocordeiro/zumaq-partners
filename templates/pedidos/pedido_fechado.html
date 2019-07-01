@@ -94,8 +94,8 @@
                 <tr>
                   <td>{{ item.item }}</td>
                   <td style="text-align: center;">{{ item.quantidade }}</td>
-                  <td style="text-align: right;">{{ item.valor_unitario }}</td>
-                  <td style="text-align: right;">{{ item.valor_unitario|subtotal:item.quantidade }}</td>
+                  <td style="text-align: right;">{{ item.valor_unitario|currency_display }}</td>
+                  <td style="text-align: right;">{{ item.valor_unitario|subtotal:item.quantidade|currency_display }}</td>
                 </tr>
               {% endfor %}
               <tr>
