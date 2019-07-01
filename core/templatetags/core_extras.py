@@ -31,3 +31,15 @@ def currency_display(valor):
     locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
     valor = locale.currency(valor, grouping=True, symbol=None)
     return valor
+
+
+@register.filter(name='tributos')
+def tributos(valor):
+    tributo = valor / 100 * 3
+    return tributo
+
+
+@register.filter(name='total_com_tributos')
+def total_com_tributos(valor):
+    total_tributado = valor + (valor / 100 * 3)
+    return total_tributado

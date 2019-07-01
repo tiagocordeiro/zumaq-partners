@@ -75,8 +75,18 @@
                 </tr>
               {% endfor %}
               <tr>
-                <td colspan="3"><strong>Total</strong></td>
+                <td colspan="3"><strong>Subtotal</strong></td>
                 <td style="text-align: right;"><strong>R$ {{ pedido_total|currency_display }}</strong></td>
+                <td style="text-align: center;">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="3"><strong>Tributos</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total|tributos|currency_display }}</strong></td>
+                <td style="text-align: center;">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="3"><strong>Total</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total|total_com_tributos|currency_display }}</strong></td>
                 <td style="text-align: center;"><button class="btn btn-rounded btn-success m-3" value="Atualizar"><i class="fa fa-floppy-o"></i> Atualizar</button></td>
               </tr>
               </tbody>
