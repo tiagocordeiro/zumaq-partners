@@ -1,4 +1,4 @@
-from django.forms import ModelForm, NumberInput
+from django.forms import ModelForm, NumberInput, Textarea
 
 from .models import Pedido, PedidoItem
 
@@ -6,7 +6,10 @@ from .models import Pedido, PedidoItem
 class PedidoForm(ModelForm):
     class Meta:
         model = Pedido
-        fields = []
+        fields = ['observacoes']
+        widgets = {
+            'observacoes': Textarea(attrs={'class': 'form-control'}),
+        }
 
 
 class PedidoItensForm(ModelForm):

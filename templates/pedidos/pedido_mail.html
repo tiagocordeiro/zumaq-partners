@@ -51,6 +51,14 @@
             </tr>
           {% endfor %}
           <tr>
+            <td style="text-align: left;" colspan="5">
+              <p><strong>Observações:</strong></p>
+              {% if pedido.observacoes %}
+                <p>{{ pedido.observacoes }}</p>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
             <td colspan="3"><strong>Subtotal</strong></td>
             <td style="text-align: right;"><strong>R$ {{ pedido_total|currency_display }}</strong></td>
           </tr>
