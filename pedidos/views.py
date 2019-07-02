@@ -1,13 +1,19 @@
+import os
+import ssl
+
 from decouple import config
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.forms.models import inlineformset_factory
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.html import strip_tags
+from xhtml2pdf import pisa
 
 from core.models import UserProfile, User
 from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
@@ -182,6 +188,83 @@ def pedido_details(request, pk):
                                                            'pedido_itens': pedido_itens,
                                                            'pedido_total': pedido_total,
                                                            'pedido_itens_qt': pedido_itens_qt})
+
+
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
+    resources
+    """
+    # use short variable names
+    s_url = settings.STATIC_URL  # Typically /static/
+    s_root = settings.STATIC_ROOT  # Typically /home/userX/project_static/
+    m_url = settings.MEDIA_URL  # Typically /static/media/
+    m_root = settings.MEDIA_ROOT  # Typically /home/userX/project_static/media/
+
+    # convert URIs to absolute system paths
+    if uri.startswith(m_url):
+        path = os.path.join(m_root, uri.replace(m_url, ""))
+    elif uri.startswith(s_url):
+        path = os.path.join(s_root, uri.replace(s_url, ""))
+    else:
+        return uri  # handle absolute uri (ie: http://some.tld/foo.png)
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+        raise Exception(
+            'media URI must start with %s or %s' % (s_url, m_url)
+        )
+    return path
+
+
+@login_required
+def pedido_export_pdf(request, pk):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(username=request.user)
+    pedido = Pedido.objects.get(pk=pk)
+
+    if pedido.parceiro != parceiro:
+        if parceiro.groups.filter(name='Gerente').exists() or request.user.is_superuser:
+            pass
+        else:
+            return redirect('dashboard')
+
+    pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+    pedido_total = 0
+    pedido_itens_qt = 0
+
+    for item in pedido_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedido_total = pedido_total + subtotal
+
+    ssl._create_default_https_context = ssl._create_unverified_context
+
+    template_path = 'pedidos/pedido_pdf.html'
+    context = {'parceiro': parceiro,
+               'usuario': usuario,
+               'pedido': pedido,
+               'pedido_itens': pedido_itens,
+               'pedido_total': pedido_total,
+               'pedido_itens_qt': pedido_itens_qt}
+
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf;charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="Pedido_{pedido.pk}.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(html, dest=response, encoding='utf8', link_callback=link_callback)
+    # if error then show some funy view
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+
+    return response
 
 
 @login_required
