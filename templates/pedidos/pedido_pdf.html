@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_pdf.html" %}
 {% load static %}
 {% load core_extras %}
 
@@ -7,29 +7,13 @@
 
 {% block extra_styles %}
   <style type="text/css">
-  /*CSS para impressão*/
-  @media print {
-    * {
-        background:transparent !important;
-        color:#000 !important;
-        text-shadow:none !important;
-        filter:none !important;
-        -ms-filter:none !important;
-      }
-
-    body {
-      margin:0;
-      padding:0;
-      line-height: 1.4em;
-    }
-
-    @page {
-      margin: 0.5cm;
-    }
-
-    .page--header, .invoice--actions {
-      display: none;
-    }
+  /*CSS para PDF*/
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
+  .page--header, footer {
+    display: none;
   }
   </style>
 {% endblock %}
@@ -75,20 +59,21 @@
 
     <div class="panel">
       <!-- Invoice Start -->
+    <table style="width: 100%;">
+      <tr>
+        <td>
+          <img src="https://cnczumaq.com/newsletter/img/zumaq-logo-mail.png" alt="CNC Zumaq">
+        </td>
+        <td>
+          <h5 class="h5">CNC Zumaq</h5>
+
+          <p>Rua: Viena, 150 / 152 • Utinga</p>
+          <p>Santo André • SP • CEP: 09220-700</p>
+          <p>Telefone: (11) 3969-7997</p>
+        </td>
+      </tr>
+    </table>
       <div id="pedido" class="invoice">
-        <div class="invoice--header">
-          <div class="invoice--logo">
-            <img src="https://cnczumaq.com/newsletter/img/zumaq-logo-mail.png" alt="CNC Zumaq">
-          </div>
-
-          <div class="invoice--address">
-            <h5 class="h5">CNC Zumaq</h5>
-
-            <p>Rua: Viena, 150 / 152 • Utinga</p>
-            <p>Santo André • SP • CEP: 09220-700</p>
-            <p>Telefone: (11) 3969-7997</p>
-          </div>
-        </div>
 
         <div class="invoice--billing">
           <div class="invoice--address">
@@ -157,10 +142,6 @@
             <p>O compartilhamento não autorizado destas informações pode acarretar o seu desligamento da nossa plataforma de revenda.</p>
           </div>
 
-          <div class="invoice--actions">
-            <a href="{% url 'pedido_export_pdf' pk=pedido.pk %}" class="btn btn-rounded btn-outline-secondary">Baixar PDF</a>
-            <a href="#" onClick="window.print()" class="btn btn-rounded btn-info">Imprimir</a>
-          </div>
         </div>
       </div>
       <!-- Invoice End -->

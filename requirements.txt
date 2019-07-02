@@ -51,3 +51,10 @@ django-mass-edit==3.2.0
 
 # Excel for reports
 xlwt==1.3.0
+
+# PDF
+html5lib==1.0.1
+pyPdf2==1.26.0
+reportlab==3.5.23
+webencodings==0.5.1
+xhtml2pdf==0.2.3
