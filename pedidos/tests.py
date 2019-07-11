@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from pedidos.models import Pedido
 from pedidos.views import pedidos_list, pedido_add_item, pedido_aberto, pedido_checkout, pedido_details, \
-    pedido_export_pdf
+    pedido_export_pdf, pedido_delivery_term_pdf
 from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
 
 
@@ -209,4 +209,46 @@ class PedidosTestCase(TestCase):
         request.user = self.user_parceiro2
 
         response = pedido_export_pdf(request, pedido.pk)
+        self.assertEqual(response.status_code, 302)
+
+    def test_pedido_export_delivery_term_pdf_anonimo(self):
+        pedido = self.pedido_aberto
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 0)
+        self.test_pedido_add_item()
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 1)
+        self.test_pedido_checkout()
+
+        self.client.logout()
+        response = self.client.get(reverse('pedido_export_delivery_term_pdf', kwargs={'pk': pedido.pk}))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response,
+                             f'/accounts/login/?next=/pedido/export/pdf/deliveryterm/{pedido.pk}/',
+                             status_code=302,
+                             target_status_code=200)
+
+    def test_pedido_export_delivery_term_pdf_as_gerente(self):
+        pedido = self.pedido_aberto
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 0)
+        self.test_pedido_add_item()
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 1)
+        self.test_pedido_checkout()
+
+        request = self.factory.get(reverse('pedido_export_delivery_term_pdf', kwargs={'pk': pedido.pk}))
+        request.user = self.user_gerente
+
+        response = pedido_delivery_term_pdf(request, pedido.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_pedido_export_delivery_term_pdf_not_owner(self):
+        pedido = self.pedido_aberto
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 0)
+        self.test_pedido_add_item()
+        self.assertEqual(pedido.pedidoitem_set.values().count(), 1)
+        self.test_pedido_checkout()
+
+        request = self.factory.get(reverse('pedido_export_delivery_term_pdf', kwargs={'pk': pedido.pk}))
+        request.user = self.user_parceiro2
+
+        response = pedido_delivery_term_pdf(request, pedido.pk)
         self.assertEqual(response.status_code, 302)

@@ -158,6 +158,9 @@
           </div>
 
           <div class="invoice--actions">
+            {% if request.user|has_group:"Gerente" %}
+              <a href="{% url 'pedido_export_delivery_term_pdf' pk=pedido.pk %}" class="btn btn-rounded btn-outline-primary">Termo de Entrega</a>
+            {% endif %}
             <a href="{% url 'pedido_export_pdf' pk=pedido.pk %}" class="btn btn-rounded btn-outline-secondary">Baixar PDF</a>
             <a href="#" onClick="window.print()" class="btn btn-rounded btn-info">Imprimir</a>
           </div>

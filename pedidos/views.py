@@ -268,6 +268,56 @@ def pedido_export_pdf(request, pk):
 
 
 @login_required
+def pedido_delivery_term_pdf(request, pk):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(username=request.user)
+    pedido = Pedido.objects.get(pk=pk)
+
+    if pedido.parceiro != parceiro:
+        if parceiro.groups.filter(name='Gerente').exists() or request.user.is_superuser:
+            pass
+        else:
+            return redirect('dashboard')
+
+    pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+    pedido_total = 0
+    pedido_itens_qt = 0
+
+    for item in pedido_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedido_total = pedido_total + subtotal
+
+    ssl._create_default_https_context = ssl._create_unverified_context
+
+    template_path = 'pedidos/pedido_delivery_term_pdf.html'
+    context = {'parceiro': parceiro,
+               'usuario': usuario,
+               'pedido': pedido,
+               'pedido_itens': pedido_itens,
+               'pedido_total': pedido_total,
+               'pedido_itens_qt': pedido_itens_qt}
+
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf;charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="Pedido_{pedido.pk}-termo_de_entrega.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(html, dest=response, encoding='utf8', link_callback=link_callback)
+    # if error then show some funy view
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+
+    return response
+
+
+@login_required
 def pedidos_list(request):
     try:
         usuario = UserProfile.objects.get(user=request.user)
