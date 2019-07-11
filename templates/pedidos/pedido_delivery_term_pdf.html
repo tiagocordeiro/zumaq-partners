@@ -1,0 +1,131 @@
+{% extends "base_pdf.html" %}
+{% load static %}
+{% load core_extras %}
+
+{% block title %}Pedido {{ pedido.get_status_display }} - S.I.E.{% endblock %}
+{% block page-title %}Pedido{% endblock %}
+
+{% block extra_styles %}
+  <style type="text/css">
+  /*CSS para PDF*/
+  @page {
+    size: A4;
+    margin: 1cm;
+    @frame content_frame {
+        left: 50pt;
+        width: 512pt;
+        top: 50pt;
+        height: 692pt;
+        -pdf-frame-border: 1;    /* for debugging the layout */
+    }
+    @frame footer_frame {
+      -pdf-frame-content: footer_content;
+      -pdf-frame-border: 1;
+      left: 50pt;
+      width: 512pt;
+      top: 745pt;
+      height: 70pt;
+    }
+  }
+  .page--header, footer {
+    display: none;
+  }
+  </style>
+{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="#">Pedidos</a></li>
+  <li class="breadcrumb-item active"><span>Detalhes</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+
+    <div class="panel">
+      <!-- Invoice Start -->
+      <table style="width: 100%;">
+        <tr>
+          <td style="text-align: center;">
+            <img src="https://cnczumaq.com/newsletter/img/zumaq-logo-mail.png" alt="CNC Zumaq">
+          </td>
+
+        </tr>
+        <tr>
+          <td style="text-align: center; padding-top: 10pt;">
+            <h1 style="font-size: 24px;">TERMO DE ENTREGA DE<br>PEÇAS/EQUIPAMENTOS</h1>
+          </td>
+        </tr>
+      </table>
+
+      <table style="width: 100%; padding: 20pt 0">
+        <tr>
+          <td style="text-align: center; padding-top: 10pt;">
+            <h2>Eu, _________________________________________________________________________,<br><br>
+              portador do RG/CPG nº _________________________________________________________<br><br><br>
+                Declaro ter recebido as mercadorias abaixo discriminadas:
+            </h2>
+          </td>
+        </tr>
+      </table>
+
+      <div id="pedido" class="invoice">
+
+        <div class="invoice--order">
+            <table style="font-size: 16px;" class="table">
+              <thead>
+              <tr>
+                <th style="text-align: left; width: 70%;">Produto</th>
+                <th style="text-align: center; width: 30%;">Quantidade</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for item in pedido_itens %}
+                <tr>
+                  <td>{{ item.item }}</td>
+                  <td style="text-align: center;">{{ item.quantidade }}</td>
+                </tr>
+              {% endfor %}
+              <tr>
+                <td style="text-align: left;" colspan="2">
+                  <br>
+                  <p>
+                    <strong>
+                      Referente ao Pedido:<br>
+                      P{{ pedido.created.year }}-{{ pedido.parceiro_id }}/{{ pedido.pk }} - {{ pedido.parceiro }}
+                    </strong>
+                  </p>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+        </div>
+
+        <div id="footer_content">
+          <table>
+          <tr>
+            <td style="text-align: center;">
+              <h2>Santo André, {% now "j \d\e F \d\e Y" %}</h2>
+              <h2>___________________________________________<br>Portador</h2>
+            </td>
+          </tr>
+        </table>
+        </div>
+
+{#        <table style="width: 100%; padding: 20pt 0">#}
+{#          <tr>#}
+{#            <td style="text-align: center; padding-top: 10pt;">#}
+{#              <h2>Santo André, {% now "j \d\e F \d\e Y" %}</h2>#}
+{#              <h2>___________________________________________<br>Portador</h2>#}
+{##}
+{#            </td>#}
+{#          </tr>#}
+{#        </table>#}
+
+      </div>
+      <!-- Invoice End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+{% endblock %}
