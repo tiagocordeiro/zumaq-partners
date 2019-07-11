@@ -327,9 +327,9 @@ def pedidos_list(request):
     parceiro = User.objects.get(username=request.user)
 
     if parceiro.groups.filter(name='Gerente').exists() or request.user.is_superuser:
-        pedidos = Pedido.objects.all()
+        pedidos = Pedido.objects.all().order_by('-pk')
     else:
-        pedidos = Pedido.objects.all().filter(parceiro=parceiro)
+        pedidos = Pedido.objects.all().filter(parceiro=parceiro).order_by('-pk')
 
     for pedido in pedidos:
         pedido.valor_total = 0
