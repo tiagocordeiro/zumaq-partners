@@ -49,6 +49,7 @@
           <thead>
           <tr>
             <th>ID</th>
+            <th>Código</th>
             {% if request.user|has_group:"Gerente" %}
               <th>Parceiro</th>
             {% endif %}
@@ -60,6 +61,9 @@
           <tbody>
           {% for pedido in pedidos %}
           <tr>
+            <td>
+              <a href="{% url 'pedido_details' pk=pedido.pk %}" class="btn-link">{{ pedido.pk }}</a>
+            </td>
             <td>
               <a href="{% url 'pedido_details' pk=pedido.pk %}" class="btn-link">P{{ pedido.created.year }}-{{ pedido.parceiro_id }}/{{ pedido.pk }}</a>
             </td>
