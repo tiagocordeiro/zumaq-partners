@@ -158,11 +158,23 @@
           </div>
 
           <div class="invoice--actions">
+
             {% if request.user|has_group:"Gerente" %}
-              <a href="{% url 'pedido_export_delivery_term_pdf' pk=pedido.pk %}" class="btn btn-rounded btn-outline-primary">Termo de Entrega</a>
+              <div class="btn-group-list">
+                <div class="btn-group show">
+                  <button class="btn btn-rounded btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><i class="fa mr-2 fa-download"></i> Download PDF</button>
+                  <div class="dropdown-menu" data-x-placement="bottom-start" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 40px, 0px);">
+                    <a href="{% url 'pedido_export_pdf' pk=pedido.pk %}" class="dropdown-item"><i class="fa mr-2 fa-file-pdf"></i> Pedido</a>
+                    <a href="{% url 'pedido_export_delivery_term_pdf' pk=pedido.pk %}" class="dropdown-item"><i class="fa mr-2 fa-file-pdf"></i> Termo de Entrega</a>
+                    <a href="{% url 'pedido_export_complete_pdf' pk=pedido.pk %}" class="dropdown-item"><i class="fa mr-2 fa-file-pdf"></i> Ambos</a>
+                  </div>
+                </div>
+                <a href="#" onClick="window.print()" class="btn btn-rounded btn-info"><i class="fa mr-2 fa-print"></i> Imprimir</a>
+              </div>
+            {% else %}
+              <a href="{% url 'pedido_export_pdf' pk=pedido.pk %}" class="btn btn-rounded btn-outline-secondary"><i class="fa mr-2 fa-file-pdf"></i> Baixar PDF</a>
+              <a href="#" onClick="window.print()" class="btn btn-rounded btn-info"><i class="fa mr-2 fa-print"></i> Imprimir</a>
             {% endif %}
-            <a href="{% url 'pedido_export_pdf' pk=pedido.pk %}" class="btn btn-rounded btn-outline-secondary">Baixar PDF</a>
-            <a href="#" onClick="window.print()" class="btn btn-rounded btn-info">Imprimir</a>
           </div>
         </div>
       </div>

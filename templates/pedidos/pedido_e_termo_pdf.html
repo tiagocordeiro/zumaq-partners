@@ -1,0 +1,222 @@
+{% extends "base_pdf.html" %}
+{% load static %}
+{% load core_extras %}
+
+{% block title %}Pedido {{ pedido.get_status_display }} - S.I.E.{% endblock %}
+{% block page-title %}Pedido{% endblock %}
+
+{% block extra_styles %}
+  <style type="text/css">
+  /*CSS para PDF*/
+  @page {
+    size: A4;
+    margin: 1cm;
+    @frame content_frame {
+        left: 50pt;
+        width: 512pt;
+        top: 50pt;
+        height: 692pt;
+    }
+    @frame footer_frame {
+      -pdf-frame-content: footer_content;
+      left: 50pt;
+      width: 512pt;
+      top: 745pt;
+      height: 70pt;
+    }
+  }
+  @page pedido {
+    size: A4;
+    margin: 1cm;
+    @frame content_frame {
+      left: 50pt;
+      width: 512pt;
+      top: 50pt;
+      height: 750pt;
+      -pdf-frame-border: 1;    /* for debugging the layout */
+    }
+  }
+  .page--header, footer {
+    display: none;
+  }
+  </style>
+{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="#">Pedidos</a></li>
+  <li class="breadcrumb-item active"><span>Detalhes</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+
+    <div class="panel">
+      <!-- Invoice Start -->
+      <table style="width: 100%;">
+        <tr>
+          <td style="text-align: center;">
+            <img src="https://cnczumaq.com/newsletter/img/zumaq-logo-mail.png" alt="CNC Zumaq">
+          </td>
+
+        </tr>
+        <tr>
+          <td style="text-align: center; padding-top: 10pt;">
+            <h1 style="font-size: 24px;">TERMO DE ENTREGA DE<br>PEÇAS/EQUIPAMENTOS</h1>
+          </td>
+        </tr>
+      </table>
+
+      <table style="width: 100%; padding: 20pt 0">
+        <tr>
+          <td style="text-align: center; padding-top: 10pt;">
+            <h2>Eu, _________________________________________________________________________,<br><br>
+              portador do RG/CPG nº _________________________________________________________<br><br><br>
+                Declaro ter recebido as mercadorias abaixo discriminadas:
+            </h2>
+          </td>
+        </tr>
+      </table>
+
+      <div id="pedido" class="invoice">
+
+        <div class="invoice--order">
+            <table style="font-size: 16px;" class="table">
+              <thead>
+              <tr>
+                <th style="text-align: left; width: 600pt;">Produto</th>
+                <th style="text-align: center; width: 100pt;">Quantidade</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for item in pedido_itens %}
+                <tr>
+                  <td>{{ item.item }}</td>
+                  <td style="text-align: center;">{{ item.quantidade }}</td>
+                </tr>
+              {% endfor %}
+              <tr>
+                <td style="text-align: left;" colspan="2">
+                  <br>
+                  <p>
+                    <strong>
+                      Referente ao Pedido:<br>
+                      P{{ pedido.created.year }}-{{ pedido.parceiro_id }}/{{ pedido.pk }} - {{ pedido.parceiro }}
+                    </strong>
+                  </p>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+        </div>
+
+        <div id="footer_content">
+          <table>
+          <tr>
+            <td style="text-align: center;">
+              <h2>Santo André, {% now "j \d\e F \d\e Y" %}</h2>
+              <h2>___________________________________________<br>Portador</h2>
+            </td>
+          </tr>
+        </table>
+        </div>
+
+      </div>
+      <!-- Invoice End -->
+    </div>
+
+    <pdf:nexttemplate name="pedido">
+    <pdf:nextpage>
+
+    <div class="panel">
+      <!-- Invoice Start -->
+      <table style="width: 100%;">
+        <tr>
+          <td>
+            <img src="https://cnczumaq.com/newsletter/img/zumaq-logo-mail.png" alt="CNC Zumaq">
+          </td>
+          <td>
+            <h5 class="h5">CNC Zumaq</h5>
+
+            <p>Rua: Viena, 150 / 152 • Utinga</p>
+            <p>Santo André • SP • CEP: 09220-700</p>
+            <p>Telefone: (11) 3969-7997</p>
+          </td>
+        </tr>
+      </table>
+      <div id="pedido" class="invoice">
+
+        <div class="invoice--billing">
+          <div class="invoice--address">
+            <h3 class="h3"><span>Pedido: P{{ pedido.created.year }}-{{ pedido.parceiro_id }}/{{ pedido.pk }}</span></h3>
+
+            <h5 class="h5">Parceiro / Revenda: {{ pedido.parceiro }}</h5>
+            <p>Email: {{ pedido.parceiro.email }}</p>
+            <p>Telefone: </p>
+          </div>
+
+          <div class="invoice--info">
+            <h5 class="h5"><span>Status:</span> {{ pedido.get_status_display }}</h5>
+            <p>Data: <strong>{{ pedido.created }}</strong></p>
+            <p>Atualizado: <strong>{{ pedido.modified }}</strong></p>
+          </div>
+        </div>
+
+        <div class="invoice--order">
+            <table style="width: 100% !important;" class="table">
+              <thead>
+              <tr>
+                <th style="width: 800pt; !important;">Produto</th>
+                <th style="text-align: center; width: 100pt !important;">Quant.</th>
+                <th style="text-align: right; width: 100pt !important;">Valor Un.</th>
+                <th style="text-align: right; width: 100pt !important;">Valor Total</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for item in pedido_itens %}
+                <tr>
+                  <td>{{ item.item }}</td>
+                  <td style="text-align: center;">{{ item.quantidade }}</td>
+                  <td style="text-align: right;">{{ item.valor_unitario|currency_display }}</td>
+                  <td style="text-align: right;">{{ item.valor_unitario|subtotal:item.quantidade|currency_display }}</td>
+                </tr>
+              {% endfor %}
+              <tr>
+                <td style="text-align: left;" colspan="5">
+                  <p><strong>Observações:</strong></p>
+                  {% if pedido.observacoes %}
+                    <p>{{ pedido.observacoes }}</p>
+                  {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="3"><strong>Subtotal</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total|currency_display }}</strong></td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="3"><strong>Tributos</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total|tributos|currency_display }}</strong></td>
+              </tr>
+              <tr>
+                <td style="text-align: right;" colspan="3"><strong>Total</strong></td>
+                <td style="text-align: right;"><strong>R$ {{ pedido_total|total_com_tributos|currency_display }}</strong></td>
+              </tr>
+              </tbody>
+            </table>
+        </div>
+
+        <div class="invoice--footer">
+          <div class="invoice--payment">
+            <p><strong>Atenção:</strong> Os valores dos produtos apresentados em nossa plataforma é disponibilizado apenas para você.</p>
+            <p>O compartilhamento não autorizado destas informações pode acarretar o seu desligamento da nossa plataforma de revenda.</p>
+          </div>
+
+        </div>
+      </div>
+      <!-- Invoice End -->
+    </div>
+
+  </section>
+  <!-- Main Content End -->
+{% endblock %}
