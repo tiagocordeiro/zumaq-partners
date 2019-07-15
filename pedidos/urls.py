@@ -9,5 +9,6 @@ urlpatterns = [
     path('details/<pk>/', views.pedido_details, name='pedido_details'),
     path('export/pdf/<pk>/', views.pedido_export_pdf, name='pedido_export_pdf'),
     path('export/pdf/deliveryterm/<pk>/', views.pedido_delivery_term_pdf, name='pedido_export_delivery_term_pdf'),
+    path('export/pdf/completo/<pk>/', views.pedido_delivery_term_with_order_pdf, name='pedido_export_complete_pdf'),
     path('list/', views.pedidos_list, name='pedidos_list'),
 ]
