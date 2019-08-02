@@ -44,6 +44,25 @@ class Produto(TimeStampedModel, Active):
         verbose_name = "produto"
 
 
+class ProdutoAtacado(TimeStampedModel, Active):
+    produto = models.ForeignKey(Produto, null=False, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField('Quantidade atacado', null=False, blank=False)
+    coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
+
+    def valor_unitario(self):
+        return round(self.produto.custo_da_peca() * (self.coeficiente + self.produto.custo_da_peca()), ndigits=2)
+
+    def valor_atacado(self):
+        return round(self.valor_unitario() * self.quantidade, ndigits=2)
+
+    def __str__(self):
+        return str(self.produto.descricao + '-' + str(self.quantidade))
+
+    class Meta:
+        verbose_name = "Produto atacado"
+        verbose_name_plural = "Produtos atacado"
+
+
 class CustomCoeficiente(models.Model):
     parceiro = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
     coeficiente_padrao = models.DecimalField('Coeficidente padrão (%)',

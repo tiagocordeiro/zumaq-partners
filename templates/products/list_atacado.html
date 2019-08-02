@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load static %}
+{% load core_extras %}
+
+{% block title %}Produtos - S.I.E.{% endblock %}
+{% block page-title %}Produtos{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item active"><span>Produtos Atacado</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+    <div class="panel">
+      <!-- Records Header Start -->
+      <div class="records--header">
+        <div class="title fa-shopping-bag">
+          <h3 class="h3">Produtos Atacado</h3>
+          <p>{{ total_str }}</p>
+        </div>
+
+        <div class="actions">
+          <form action="#" class="search flex-wrap flex-md-nowrap">
+              <input id="txtSearch" type="text" class="form-control" placeholder="Produto...">
+              <button type="submit" class="btn btn-rounded" disabled><i class="fa fa-search"></i></button>
+          </form>
+          {% if request.user|has_group:"Gerente" %}
+            <a href="{% url 'product_add' %}" class="addProduct btn btn-lg btn-rounded btn-warning">Adicionar</a>
+          {% endif %}
+        </div>
+      </div>
+      <!-- Records Header End -->
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message|safe }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="panel">
+      <!-- Records List Start -->
+      <script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
+      <div class="records--list" data-title="Listagem de Produtos">
+        <table style="padding: 0px;" id="recordsListView" data-page-length='-1' data-order='[[2, "asc"]]'>
+          <thead>
+          <tr>
+            <th style="max-width: 100px !important;">Código</th>
+            <th style="max-width: 100px !important;">Imagem</th>
+            <th>Descrição</th>
+            <th>Preço Un.</th>
+            <th>Preço Atacado</th>
+            {% if request.user|has_group:"Gerente" %}
+            <th>Un. em Dolar</th>
+            <th>Status</th>
+            {% else %}
+              <th>Adicionar</th>
+            {% endif %}
+          </tr>
+          </thead>
+          <tbody>
+          {% for produto in produtos %}
+          <tr>
+            <td>
+              {% if request.user|has_group:"Gerente" %}
+                <a href="{% url 'product_update' codigo=produto.produto.codigo %}" class="btn-link">{{ produto.produto.codigo }}</a>
+              {% else %}
+                {{ produto.produto.codigo }}
+              {% endif %}
+            </td>
+            <td>
+              {% if produto.produto.imagem %}
+                <img class="lozad" src="{{ produto.produto.imagem|load_thumb }}" alt="{{ produto.produto.descricao }}">
+              {% else %}
+                <img class="lozad" src="{% static 'assets/img/avatars/01_150x150.png' %}" alt="Produto sem imagem">
+              {% endif %}
+            </td>
+            <td>
+              <strong>{{ produto.produto.descricao|normalize_for_table }}</strong>
+            </td>
+            <td>
+              R$ {{ produto.cliente_paga }} <span class="label label-blue">x {{ produto.quantidade }}</span>
+            </td>
+            <td>
+              R$ {{ produto.total }}
+            </td>
+            {% if request.user|has_group:"Gerente" %}
+            <td>
+              USD {{ produto.unitario_em_dolar }}
+            </td>
+            <td>
+              {% if produto.active %}
+                <span class="label label-success">Ativo</span>
+              {% else %}
+                <span class="label label-warning">Inativo</span>
+              {% endif %}
+            </td>
+            {% else %}
+            <td>
+              <a href="{% url 'pedido_add_item_atacado' codigo=produto.produto.codigo quantidade=produto.quantidade %}" class="btn btn-success btn-sm"><i class="fa mr-2 fa-cart-plus"></i> Adicionar</a>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- Records List End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+{% endblock %}
+
+{% block extra_scripts %}
+  <script type="application/javascript">
+    $.extend(true, $.fn.dataTable.defaults, {
+      "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+      "oLanguage": {
+        "sEmptyTable": "Nenhum registro encontrado.",
+        "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+        "sInfoPostFix": "",
+        "sInfoThousands": ".",
+        "sLengthMenu": "_MENU_ resultados por página",
+        "sLoadingRecords": "Carregando...",
+        "sProcessing": "Processando...",
+        "sZeroRecords": "Nenhum registro encontrado",
+        "sSearch": "Pesquisar",
+        "oPaginate": {
+          "sNext": "Próximo",
+          "sPrevious": "Anterior",
+          "sFirst": "Primeiro",
+          "sLast": "Último"
+        },
+        "oAria": {
+          "sSortAscending": ": Ordenar colunas de forma ascendente",
+          "sSortDescending": ": Ordenar colunas de forma descendente"
+        }
+      }
+    });
+    $(document).ready(function () {
+      $('#recordsListView').DataTable();
+
+      $('#recordsListView_filter').hide(); // Hide default search datatables where example is the ID of table
+
+        $('#txtSearch').on('keyup', function() {
+            $('#recordsListView')
+                .DataTable()
+                .search($('#txtSearch').val(), false, true)
+                .draw();
+        });
+    });
+  </script>
+{% endblock %}

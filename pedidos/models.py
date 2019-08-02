@@ -29,6 +29,7 @@ class PedidoItem(models.Model):
     item = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField('Quantidade', default=1)
     valor_unitario = models.DecimalField('Valor Un.', max_digits=10, decimal_places=2, null=True, blank=True)
+    atacado = models.BooleanField('atacado', default=False)
 
     def __str__(self):
         return str(self.item.descricao)

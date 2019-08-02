@@ -44,7 +44,7 @@
           <tbody>
           {% for item in pedido_itens %}
             <tr>
-              <td style="text-align: left;">{{ item.item }}</td>
+              <td style="text-align: left;">{{ item.item }} {% if item.atacado %}<span class="label label-blue">[ATACADO]</span>{% endif %}</td>
               <td style="text-align: center;">{{ item.quantidade }}</td>
               <td style="text-align: right;">{{ item.valor_unitario }}</td>
               <td style="text-align: right;">{{ item.valor_unitario|subtotal:item.quantidade }}</td>

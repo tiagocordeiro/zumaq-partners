@@ -104,12 +104,17 @@ class ProductsTestCase(TestCase):
 
         form_data = {'codigo': 'TYL-1080',
                      'descricao': 'Tubo de Laser Yong Li - 80w - R3',
-                     'pago_na_china': 880,
-                     'reminmbi': 6.84,
-                     'dolar_cotado': 3.89,
-                     'impostos_na_china': 0,
-                     'porcentagem_importacao': 0.52,
-                     'coeficiente': 0.49, }
+                     'main-pago_na_china': 880,
+                     'main-reminmbi': 6.84,
+                     'main-dolar_cotado': 3.89,
+                     'main-impostos_na_china': 0,
+                     'main-porcentagem_importacao': 0.52,
+                     'main-coeficiente': 0.49,
+                     'product-TOTAL_FORMS': 0,
+                     'product-INITIAL_FORMS': 0,
+                     'product-MIN_NUM_FORMS': 0,
+                     'product-MAX_NUM_FORMS': 1000,
+                     }
 
         request = self.factory.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
         request.user = self.user_gerente
@@ -118,7 +123,6 @@ class ProductsTestCase(TestCase):
         setattr(request, '_messages', messages)
 
         response = product_update(request, codigo=produto.codigo)
-        # response = self.factory.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
 
         produto.refresh_from_db()
         self.assertEqual(produto.coeficiente, Decimal('0.49'))

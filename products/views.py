@@ -1,13 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.forms.models import inlineformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render
 from pybling.products import get_product
 
 from core.models import UserProfile, User
 from pedidos.models import Pedido, PedidoItem
-from .forms import ProdutoForm
-from .models import Produto, CustomCoeficiente, CustomCoeficienteItens
+from .forms import ProdutoForm, ProdutoAtacadoForm
+from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
 
 
 @login_required
@@ -113,19 +114,37 @@ def product_update(request, codigo):
     except Produto.DoesNotExist:
         return redirect('product_create', codigo=codigo)
 
+    try:
+        produto_atacado = ProdutoAtacado.objects.all().filter(produto=produto)
+    except ProdutoAtacado.DoesNotExist:
+        produto_atacado = None
+
+    produto_atacado_formset = inlineformset_factory(
+        Produto, ProdutoAtacado, form=ProdutoAtacadoForm, extra=0, can_delete=True)
+
     if request.method == 'POST':
-        form = ProdutoForm(request.POST, instance=produto)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Produto atualizado.")
-            return redirect('product_update', codigo=codigo)
+        form = ProdutoForm(request.POST, instance=produto, prefix='main')
+        formset = produto_atacado_formset(request.POST, instance=produto, prefix='product')
+
+        try:
+            if form.is_valid() and formset.is_valid():
+                form.save()
+                formset.save()
+                messages.success(request, "Produto atualizado.")
+                return redirect('product_update', codigo=codigo)
+
+        except Exception as e:
+            messages.warning(request, 'Ocorreu um erro ao atualizar: {}'.format(e))
 
     else:
-        form = ProdutoForm(instance=produto)
+        form = ProdutoForm(instance=produto, prefix='main')
+        formset = produto_atacado_formset(instance=produto, prefix='product')
 
     return render(request, 'products/update.html', {'usuario': usuario,
                                                     'form': form,
+                                                    'formset': formset,
                                                     'produto': produto,
+                                                    'produto_atacado': produto_atacado,
                                                     'context': context})
 
 
@@ -195,3 +214,48 @@ def product_list(request):
                                                   'produtos': produtos,
                                                   'total_str': total_str,
                                                   'pedido_itens_qt': pedido_itens_qt})
+
+
+@login_required
+def product_atacado_list(request):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(username=request.user)
+    user = User.objects.get(username=request.user)
+
+    if user.groups.filter(name='Gerente').exists():
+        produtos = ProdutoAtacado.objects.all().order_by('produto__descricao', 'coeficiente')
+    else:
+        produtos = ProdutoAtacado.objects.all().filter(active=True).order_by('produto__descricao', 'coeficiente')
+
+    total_produtos = len(produtos)
+
+    # TODO: Separar lógica de negócio
+
+    for produto in produtos:
+        produto.cliente_paga = round(
+            produto.produto.custo_da_peca() + (produto.coeficiente * produto.produto.custo_da_peca()), ndigits=2)
+        produto.total = produto.cliente_paga * produto.quantidade
+
+    if total_produtos == 1:
+        total_str = f"Encontrado {total_produtos} produto"
+    elif total_produtos == 0:
+        total_str = f"Nenhum produto cadastrado"
+    else:
+        total_str = f"Encontrados {total_produtos} produtos"
+
+    parceiro = User.objects.get(username=request.user)
+
+    pedido = Pedido.objects.filter(parceiro=parceiro, status=0).first()
+    if pedido is None:
+        pedido_itens_qt = 0
+    else:
+        pedido_itens_qt = PedidoItem.objects.filter(pedido=pedido).count()
+
+    return render(request, 'products/list_atacado.html', {'usuario': usuario,
+                                                          'produtos': produtos,
+                                                          'total_str': total_str,
+                                                          'pedido_itens_qt': pedido_itens_qt})
