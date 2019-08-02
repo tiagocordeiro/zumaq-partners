@@ -8,7 +8,7 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
-from products.models import Produto
+from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
 from products.views import product_add, product_update
 
 
@@ -28,6 +28,10 @@ class ProductsTestCase(TestCase):
         self.group_parceiro = Group.objects.create(name='Parceiro')
         self.group_parceiro.user_set.add(self.user_parceiro)
 
+        # User Parceiro 2
+        self.user_parceiro2 = User.objects.create_user(username='james', email='james@foo.bar', password='secret')
+        self.group_parceiro.user_set.add(self.user_parceiro2)
+
         # Produto
         self.product = Produto.objects.create(codigo='TYL-1080',
                                               descricao='Tubo de Laser Yong Li - 80w - R3',
@@ -37,6 +41,19 @@ class ProductsTestCase(TestCase):
                                               impostos_na_china=0,
                                               porcentagem_importacao=0.52,
                                               coeficiente=0.50)
+
+        # Custom coeficiente de parceiro
+        self.parceiro_coeficiente = CustomCoeficiente.objects.create(parceiro=self.user_parceiro,
+                                                                     coeficiente_padrao=0.48)
+
+        # Custom coeficiente de parceiro / produto
+        self.parceiro_product_coeficiente = CustomCoeficienteItens.objects.create(parceiro=self.parceiro_coeficiente,
+                                                                                  produto=self.product,
+                                                                                  coeficiente=0.45)
+
+        # Custom coeficiente de parceiro2
+        # O coeficiente padrão deve ser .50
+        self.parceiro2_coefiente = CustomCoeficiente.objects.create(parceiro=self.user_parceiro2)
 
     def test_retorno_ch_sem_imposto(self):
         produto = Produto.objects.get(codigo='TYL-1080')
@@ -92,7 +109,7 @@ class ProductsTestCase(TestCase):
                      'dolar_cotado': 3.89,
                      'impostos_na_china': 0,
                      'porcentagem_importacao': 0.52,
-                     'coeficiente': 0.11, }
+                     'coeficiente': 0.49, }
 
         request = self.factory.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
         request.user = self.user_gerente
@@ -104,7 +121,7 @@ class ProductsTestCase(TestCase):
         # response = self.factory.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
 
         produto.refresh_from_db()
-        self.assertEqual(produto.coeficiente, Decimal('0.11'))
+        self.assertEqual(produto.coeficiente, Decimal('0.49'))
         self.assertEqual(response.status_code, 302)
 
     def test_product_create_exist_status_code_gerente(self):
@@ -136,6 +153,51 @@ class ProductsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TYL-1080')
+
+    def test_product_list_view_parceiro(self):
+        self.client.force_login(self.user_parceiro)
+        response = self.client.get(reverse('product_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'TYL-1080')
+
+    def test_product_parceiro_custom_coeficiente(self):
+        self.client.force_login(self.user_parceiro)
+        response = self.client.get(reverse('product_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.parceiro_coeficiente.coeficiente_padrao, 0.48)
+        self.assertEqual(self.parceiro_product_coeficiente.coeficiente, 0.45)
+
+    def test_product_list_view_parceiro_custom_price_in_template(self):
+        self.client.force_login(self.user_parceiro)
+        response = self.client.get(reverse('product_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'R$ 1.739,61')
+
+    def test_product_list_view_parceiro_product_is_promo(self):
+        self.client.force_login(self.user_parceiro)
+        response = self.client.get(reverse('product_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<span class="label label-red">Promoção</span>')
+
+    def test_product_list_view_parceiro2_product_is_not_promo(self):
+        self.client.force_login(self.user_parceiro2)
+        response = self.client.get(reverse('product_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, '<span class="label label-red">Promoção</span>')
+
+    def test_product_list_view_parceiro_without_custom_product_coeficiente(self):
+        self.client.force_login(self.user_parceiro2)
+        response = self.client.get(reverse('product_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.parceiro2_coefiente.coeficiente_padrao, 0.50)
+        self.assertContains(response, 'R$ 1.799,60')
+        self.assertEqual(response.context['produtos'][0].cliente_paga, Decimal('1799.60'))
 
     def test_product_view_gerente(self):
         self.client.force_login(self.user_gerente)

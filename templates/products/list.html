@@ -82,7 +82,11 @@
               {% endif %}
             </td>
             <td>
-              {{ produto.descricao|normalize_for_table }}
+              {% if produto.coeficiente <= .45 %}
+                <strong>{{ produto.descricao|normalize_for_table }}</strong> <span class="label label-red">Promoção</span>
+              {% else %}
+                {{ produto.descricao|normalize_for_table }}
+              {% endif %}
             </td>
             <td>
               R$ {{ produto.cliente_paga|currency_display }}

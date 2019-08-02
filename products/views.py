@@ -168,6 +168,7 @@ def product_list(request):
                 if c_price:
                     produto.cliente_paga = round(produto.cliente_paga() + (produto.cliente_paga() * c_price),
                                                  ndigits=2)
+                    produto.coeficiente = c_price
             except IndexError:
                 produto.cliente_paga = round(produto.cliente_paga() + (produto.cliente_paga() * parceiro_coeficiente),
                                              ndigits=2)
