@@ -16,7 +16,7 @@ from django.utils.html import strip_tags
 from xhtml2pdf import pisa
 
 from core.models import UserProfile, User
-from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
+from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
 from .forms import PedidoForm, PedidoItensForm
 from .models import Pedido, PedidoItem
 
@@ -65,6 +65,42 @@ def pedido_add_item(request, **kwargs):
                   f'{produto.descricao} adicionado ao pedido... '
                   f'<a href="{reverse("pedido_aberto")}" class="alert-link">Ver pedido</a>.')
     return redirect(reverse('product_list'))
+
+
+@login_required
+def pedido_add_item_atacado(request, **kwargs):
+    parceiro = User.objects.get(username=request.user)
+
+    produto = Produto.objects.get(codigo=kwargs.get('codigo'))
+    quantidade = kwargs.get('quantidade')
+    produto_atacado = ProdutoAtacado.objects.get(produto=produto, quantidade=quantidade)
+    quantidade = produto_atacado.quantidade
+
+    pedido = Pedido.objects.filter(parceiro=parceiro, status=0).first()
+    if pedido is None:
+        pedido = Pedido.objects.create(parceiro=parceiro)
+
+    if pedido.pedidoitem_set.all().filter(item=produto).exists():
+        messages.info(request,
+                      f'{produto.descricao} Já está no pedido. '
+                      f'<a href="{reverse("pedido_aberto")}" class="alert-link">Ver pedido</a>.')
+        return redirect(reverse('product_list_atacado'))
+
+    custo_da_peca = produto.custo_da_peca()
+    valor_unitario = round(custo_da_peca + (produto_atacado.coeficiente * custo_da_peca), ndigits=2)
+
+    PedidoItem.objects.create(pedido=pedido,
+                              item=produto,
+                              valor_unitario=valor_unitario,
+                              quantidade=quantidade,
+                              atacado=True)
+
+    pedido.save()
+
+    messages.info(request,
+                  f'{produto.descricao} adicionado ao pedido... '
+                  f'<a href="{reverse("pedido_aberto")}" class="alert-link">Ver pedido</a>.')
+    return redirect(reverse('product_list_atacado'))
 
 
 @login_required

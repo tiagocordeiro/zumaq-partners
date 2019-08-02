@@ -1,13 +1,21 @@
 from django.contrib import admin
 
-from .models import Produto, CustomCoeficiente, CustomCoeficienteItens
+from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
 
 
 # Register your models here.
+class ProdutoAtacadoInLine(admin.StackedInline):
+    model = ProdutoAtacado
+    extra = 1
+
+
 class ProdutoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'descricao')
     actions = admin.ModelAdmin.actions + ['mass_change_selected']
     massadmin_exclude = ['codigo', 'descricao', 'pago_na_china', ]
+    inlines = [
+        ProdutoAtacadoInLine,
+    ]
 
 
 class CustomCoeficienteInline(admin.StackedInline):

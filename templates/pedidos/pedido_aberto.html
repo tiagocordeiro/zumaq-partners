@@ -66,8 +66,13 @@
               {% for item_pedido_form in formset %}
                 <tr>
                   {{ item_pedido_form.id }}{{ item_pedido_form.item }}
-                  <td>{{ item_pedido_form.instance.item }}</td>
-                  <td style="text-align: center;">{{ item_pedido_form.quantidade }}</td>
+                  {% if item_pedido_form.instance.atacado == True %}
+                    <td>{{ item_pedido_form.instance.item }} <span class="label label-blue">Atacado</span></td>
+                    <td style="text-align: center;">{{ item_pedido_form.instance.quantidade }} <div style="display: none">{{ item_pedido_form.quantidade }}</div> </td>
+                  {% else %}
+                    <td>{{ item_pedido_form.instance.item }}</td>
+                    <td style="text-align: center;">{{ item_pedido_form.quantidade }}</td>
+                  {% endif %}
                   <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario|currency_display }}</td>
                   <td style="text-align: right;">{{ item_pedido_form.instance.valor_unitario|subtotal:item_pedido_form.instance.quantidade|currency_display }}</td>
                   <td style="text-align: center;">{{ item_pedido_form.DELETE }}</td>
