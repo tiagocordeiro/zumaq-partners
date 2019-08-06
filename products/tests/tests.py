@@ -8,7 +8,7 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
-from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
+from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
 from products.views import product_add, product_update
 
 
@@ -41,6 +41,8 @@ class ProductsTestCase(TestCase):
                                               impostos_na_china=0,
                                               porcentagem_importacao=0.52,
                                               coeficiente=0.50)
+
+        self.product_atacado = ProdutoAtacado.objects.create(produto=self.product, quantidade=6, coeficiente=0.45)
 
         # Custom coeficiente de parceiro
         self.parceiro_coeficiente = CustomCoeficiente.objects.create(parceiro=self.user_parceiro,
@@ -128,6 +130,45 @@ class ProductsTestCase(TestCase):
         self.assertEqual(produto.coeficiente, Decimal('0.49'))
         self.assertEqual(response.status_code, 302)
 
+    def test_product_atacado_update(self):
+        produto = self.product
+        produto_atacado = self.product_atacado
+
+        # self.client.force_login(self.user_gerente)
+
+        form_data = {'codigo': 'TYL-1080',
+                     'descricao': 'Tubo de Laser Yong Li - 80w - R3',
+                     'main-pago_na_china': 880,
+                     'main-reminmbi': 6.84,
+                     'main-dolar_cotado': 3.89,
+                     'main-impostos_na_china': 0,
+                     'main-porcentagem_importacao': 0.52,
+                     'main-coeficiente': 0.49,
+                     'product-TOTAL_FORMS': 1,
+                     'product-INITIAL_FORMS': 1,
+                     'product-MIN_NUM_FORMS': 0,
+                     'product-MAX_NUM_FORMS': 1000,
+                     'product-0-id': self.product_atacado.pk,
+                     'product-0-produto': self.product.pk,
+                     'product-0-quantidade': 6,
+                     'product-0-coeficiente': 0.44,
+                     }
+
+        request = self.factory.post(reverse('product_update', kwargs={'codigo': produto.codigo}), form_data)
+        request.user = self.user_gerente
+
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        response = product_update(request, codigo=produto.codigo)
+
+        produto.refresh_from_db()
+        self.assertEqual(produto.coeficiente, Decimal('0.49'))
+        produto_atacado.refresh_from_db()
+        self.assertEqual(produto_atacado.coeficiente, Decimal('0.44'))
+        self.assertEqual(response.status_code, 302)
+
     def test_product_create_exist_status_code_gerente(self):
         self.client.force_login(self.user_gerente)
         response = self.client.post(reverse('product_create', kwargs={'codigo': self.product.codigo}))
@@ -151,12 +192,30 @@ class ProductsTestCase(TestCase):
         self.assertRedirects(response, '/accounts/login/?next=/products/list/',
                              status_code=302, target_status_code=200)
 
+    def test_product_atacado_list_view_anonimo(self):
+        self.client.logout()
+        response = self.client.get(reverse('product_list_atacado'))
+
+        # response = product_list(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/products/list/atacado/',
+                             status_code=302, target_status_code=200)
+
     def test_product_list_view_gerente(self):
         self.client.force_login(self.user_gerente)
         response = self.client.get(reverse('product_list'))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TYL-1080')
+        self.assertContains(response, 'R$ 1.199,73')
+
+    def test_product_atacado_list_view_gerente(self):
+        self.client.force_login(self.user_gerente)
+        response = self.client.get(reverse('product_list_atacado'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'TYL-1080')
+        self.assertContains(response, 'R$ 1.159,74')
 
     def test_product_list_view_parceiro(self):
         self.client.force_login(self.user_parceiro)
@@ -164,6 +223,15 @@ class ProductsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TYL-1080')
+        self.assertContains(response, 'R$ 1.739,61')
+
+    def test_product_atacado_list_view_parceiro(self):
+        self.client.force_login(self.user_parceiro)
+        response = self.client.get(reverse('product_list_atacado'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'TYL-1080')
+        self.assertContains(response, 'R$ 1.159,74')
 
     def test_product_parceiro_custom_coeficiente(self):
         self.client.force_login(self.user_parceiro)

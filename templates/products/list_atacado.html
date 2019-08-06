@@ -86,10 +86,10 @@
               <strong>{{ produto.produto.descricao|normalize_for_table }}</strong>
             </td>
             <td>
-              R$ {{ produto.cliente_paga }} <span class="label label-blue">x {{ produto.quantidade }}</span>
+              R$ {{ produto.cliente_paga|currency_display }} <span class="label label-blue">x {{ produto.quantidade }}</span>
             </td>
             <td>
-              R$ {{ produto.total }}
+              R$ {{ produto.total|currency_display }}
             </td>
             {% if request.user|has_group:"Gerente" %}
             <td>
