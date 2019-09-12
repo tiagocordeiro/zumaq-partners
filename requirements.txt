@@ -18,7 +18,7 @@ gunicorn==19.9.0
 Pillow==6.1.0
 
 # Cloudinary
-certifi==2019.6.16
+certifi==2019.9.11
 chardet==3.0.4
 cloudinary==1.17.0
 django-cloudinary-storage==0.2.3
