@@ -88,11 +88,15 @@ def products_report(request, status='all'):
 
     writer = csv.writer(response, delimiter=';', dialect='excel')
     # write the headers
-    writer.writerow([smart_str('Descrição'), smart_str('Cliente paga - Mínimo (BRL)'), smart_str('unitário em Dolar')])
+    writer.writerow([smart_str('Descrição'), smart_str('Cliente paga - Mínimo (BRL)'), smart_str('unitário em Dolar'),
+                     smart_str('China sem imposto'), smart_str('China com imposto'), smart_str('custo da peça')])
     for produto in produtos:
         writer.writerow([smart_str(f'{produto.descricao}'),
                          smart_str(f'{round(produto.cliente_paga(), ndigits=2)}'),
-                         smart_str(f'{round(produto.unitario_em_dolar(), ndigits=2)}')])
+                         smart_str(f'{round(produto.unitario_em_dolar(), ndigits=2)}'),
+                         smart_str(f'{round(produto.ch_sem_imposto(), ndigits=2)}'),
+                         smart_str(f'{round(produto.ch_com_imposto(), ndigits=2)}'),
+                         smart_str(f'{round(produto.custo_da_peca(), ndigits=2)}')])
 
     return response
 
@@ -209,7 +213,8 @@ def download_excel_products_data(request):
     font_style.font.bold = True
 
     # column header names, you can use your own headers here
-    columns = ['Produto', 'Cliente paga - Mínimo em R$', 'Unitário em USD', 'Status']
+    columns = ['Código', 'Produto', 'Cliente paga - Mínimo em R$', 'Unitário em USD', 'China sem imposto',
+               'China com imposto', 'Custo da Peça', 'Status']
 
     # write column headers in sheet
     for col_num in range(len(columns)):
@@ -224,13 +229,17 @@ def download_excel_products_data(request):
     # write sheet lines
     for produto in produtos:
         row_num = row_num + 1
-        ws.write(row_num, 0, produto.descricao, font_style)
-        ws.write(row_num, 1, produto.cliente_paga(), font_style)
-        ws.write(row_num, 2, produto.unitario_em_dolar(), font_style)
+        ws.write(row_num, 0, produto.codigo, font_style)
+        ws.write(row_num, 1, produto.descricao, font_style)
+        ws.write(row_num, 2, produto.cliente_paga(), font_style)
+        ws.write(row_num, 3, produto.unitario_em_dolar(), font_style)
+        ws.write(row_num, 4, produto.ch_sem_imposto(), font_style)
+        ws.write(row_num, 5, produto.ch_com_imposto(), font_style)
+        ws.write(row_num, 6, produto.custo_da_peca(), font_style)
         if produto.active:
-            ws.write(row_num, 3, 'Ativo', font_style)
+            ws.write(row_num, 7, 'Ativo', font_style)
         else:
-            ws.write(row_num, 3, 'Inativo', font_style)
+            ws.write(row_num, 7, 'Inativo', font_style)
 
     wb.save(response)
     return response
