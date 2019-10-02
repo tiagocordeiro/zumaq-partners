@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     'products',
     'pedidos',
     'reports',
+
+    # Logging
+    'simple_history',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Logging
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 # Django DebugToolbar

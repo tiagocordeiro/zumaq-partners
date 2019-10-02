@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from core.models import Active, TimeStampedModel
 from core.models import User
@@ -16,6 +17,7 @@ class Produto(TimeStampedModel, Active):
     porcentagem_importacao = models.DecimalField('Porcentagem Importação (%)', max_digits=10, decimal_places=2)
     coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
     imagem = models.URLField(blank=True, null=True, default='https://via.placeholder.com/150')
+    history = HistoricalRecords()
 
     def compra_do_cambio(self):
         return round(self.dolar_cotado + Decimal('0.20'), ndigits=2)
@@ -48,6 +50,7 @@ class ProdutoAtacado(TimeStampedModel, Active):
     produto = models.ForeignKey(Produto, null=False, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField('Quantidade atacado', null=False, blank=False)
     coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
+    history = HistoricalRecords()
 
     def valor_unitario(self):
         return round(self.produto.custo_da_peca() * (self.coeficiente + self.produto.custo_da_peca()), ndigits=2)
@@ -69,9 +72,11 @@ class CustomCoeficiente(models.Model):
                                              max_digits=10,
                                              decimal_places=2,
                                              default=.50)
+    history = HistoricalRecords()
 
 
 class CustomCoeficienteItens(models.Model):
     parceiro = models.ForeignKey(CustomCoeficiente, null=True, on_delete=models.SET_NULL)
     produto = models.ForeignKey(Produto, null=True, on_delete=models.SET_NULL)
     coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
+    history = HistoricalRecords()
