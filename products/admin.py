@@ -1,4 +1,5 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
 
@@ -9,7 +10,7 @@ class ProdutoAtacadoInLine(admin.StackedInline):
     extra = 1
 
 
-class ProdutoAdmin(admin.ModelAdmin):
+class ProdutoAdmin(SimpleHistoryAdmin, admin.ModelAdmin):
     list_display = ('codigo', 'descricao')
     actions = admin.ModelAdmin.actions + ['mass_change_selected']
     massadmin_exclude = ['codigo', 'descricao', 'pago_na_china', ]
@@ -23,7 +24,7 @@ class CustomCoeficienteInline(admin.StackedInline):
     extra = 1
 
 
-class CustomCoeficienteAdmin(admin.ModelAdmin):
+class CustomCoeficienteAdmin(SimpleHistoryAdmin, admin.ModelAdmin):
     list_display = ('parceiro',)
     inlines = [
         CustomCoeficienteInline,

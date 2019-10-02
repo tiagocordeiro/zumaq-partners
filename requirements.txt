@@ -58,3 +58,6 @@ pyPdf2==1.26.0
 reportlab==3.5.28
 webencodings==0.5.1
 xhtml2pdf==0.2.3
+
+# Loggin
+django-simple-history==2.7.3
