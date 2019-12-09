@@ -20,7 +20,7 @@ Pillow==6.2.0
 # Cloudinary
 certifi==2019.9.11
 chardet==3.0.4
-cloudinary==1.18.0
+cloudinary==1.19.1
 django-cloudinary-storage==0.2.3
 idna==2.8
 mock==3.0.5
