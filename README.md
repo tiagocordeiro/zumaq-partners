@@ -5,8 +5,8 @@
 [![Updates](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/shield.svg)](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/)
 [![Python 3](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/python-3-shield.svg)](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/)
 [![codecov](https://codecov.io/gh/tiagocordeiro/zumaq-partners/branch/master/graph/badge.svg)](https://codecov.io/gh/tiagocordeiro/zumaq-partners)
-[![Python 3.7.4](https://img.shields.io/badge/python-3.7.4-blue.svg)](https://www.python.org/downloads/release/python-374/)
-[![Django 2.2.6](https://img.shields.io/badge/django-2.2.6-blue.svg)](https://www.djangoproject.com/download/)
+[![Python 3.7.5](https://img.shields.io/badge/python-3.7.5-blue.svg)](https://www.python.org/downloads/release/python-375/)
+[![Django 2.2.8](https://img.shields.io/badge/django-2.2.8-blue.svg)](https://www.djangoproject.com/download/)
 [![PyBling](https://img.shields.io/badge/bling-API-green.svg)](https://github.com/tiagocordeiro/pybling)
 [![Quandl](https://img.shields.io/badge/quandl-API-green.svg)](https://github.com/quandl/quandl-python)
 
