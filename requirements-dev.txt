@@ -12,7 +12,7 @@ django-debug-toolbar==2.1
 sqlparse==0.3.0
 
 # Coverage
-coverage==4.5.4
+coverage==5.0
 
 # responses
 responses==0.10.8
