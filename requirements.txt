@@ -15,7 +15,7 @@ whitenoise==5.0.1
 gunicorn==20.0.4
 
 # Images
-Pillow==6.2.1
+Pillow==7.0.0
 
 # Cloudinary
 certifi==2019.11.28
@@ -33,18 +33,18 @@ urllib3==1.25.7
 pybling==0.0.9
 
 # Sentry
-sentry-sdk==0.13.5
+sentry-sdk==0.14.0
 
 # Crispy Forms
 django-crispy-forms==1.8.1
 
 # Quandl
 inflection==0.3.1
-more-itertools==7.2.0
-numpy==1.17.4
+more-itertools==8.0.2
+numpy==1.18.1
 pandas==0.25.3
 python-dateutil==2.8.1
-quandl==3.4.8
+quandl==3.5.0
 
 # Bulk Changes in Admin
 django-mass-edit==3.2.0
