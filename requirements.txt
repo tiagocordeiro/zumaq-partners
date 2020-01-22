@@ -27,7 +27,7 @@ mock==3.0.5
 pbr==5.4.4
 requests==2.22.0
 six==1.14.0
-urllib3==1.25.7
+urllib3==1.25.8
 
 # Bling
 pybling==0.0.9
