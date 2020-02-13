@@ -1,10 +1,11 @@
 # Django
-Django==2.2.9
+Django==3.0.3
+asgiref==3.2.3
 pytz==2019.3
 
 # Decouple
 python-decouple==3.3
-python-dotenv==0.10.3
+python-dotenv==0.11.0
 
 # Heroku
 dj-database-url==0.5.0
@@ -20,29 +21,29 @@ Pillow==7.0.0
 # Cloudinary
 certifi==2019.11.28
 chardet==3.0.4
-cloudinary==1.19.1
-django-cloudinary-storage==0.2.3
+cloudinary==1.20.0
+git+git://github.com/tiagocordeiro/django-cloudinary-storage@Django3Support
 idna==2.8
-mock==3.0.5
+mock==4.0.1
 pbr==5.4.4
 requests==2.22.0
 six==1.14.0
-urllib3==1.25.7
+urllib3==1.25.8
 
 # Bling
 pybling==0.0.9
 
 # Sentry
-sentry-sdk==0.14.0
+sentry-sdk==0.14.1
 
 # Crispy Forms
 django-crispy-forms==1.8.1
 
 # Quandl
 inflection==0.3.1
-more-itertools==8.1.0
+more-itertools==8.2.0
 numpy==1.18.1
-pandas==0.25.3
+pandas==1.0.1
 python-dateutil==2.8.1
 quandl==3.5.0
 
@@ -57,7 +58,7 @@ html5lib==1.0.1
 pyPdf2==1.26.0
 reportlab==3.5.34
 webencodings==0.5.1
-xhtml2pdf==0.2.3
+xhtml2pdf==0.2.4
 
 # Loggin
 django-simple-history==2.8.0
