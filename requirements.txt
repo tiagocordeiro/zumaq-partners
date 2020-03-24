@@ -1,6 +1,6 @@
 # Django
 Django==3.0.4
-asgiref==3.2.3
+asgiref==3.2.7
 pytz==2019.3
 
 # Decouple
