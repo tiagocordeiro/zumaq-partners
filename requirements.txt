@@ -40,7 +40,7 @@ sentry-sdk==0.14.2
 django-crispy-forms==1.9.0
 
 # Quandl
-inflection==0.3.1
+inflection==0.4.0
 more-itertools==8.2.0
 numpy==1.18.1
 pandas==1.0.1
