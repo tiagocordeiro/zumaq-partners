@@ -157,7 +157,7 @@ def parceiro_list(request):
     if total_parceiros == 1:
         total_str = f"Encontrado {total_parceiros} parceiro"
     elif total_parceiros == 0:
-        total_str = f"Nenhum parceiro cadastrado"
+        total_str = "Nenhum parceiro cadastrado"
     else:
         total_str = f"Encontrados {total_parceiros} parceiros"
 

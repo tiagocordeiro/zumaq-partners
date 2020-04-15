@@ -198,7 +198,7 @@ def product_list(request):
     if total_produtos == 1:
         total_str = f"Encontrado {total_produtos} produto"
     elif total_produtos == 0:
-        total_str = f"Nenhum produto cadastrado"
+        total_str = "Nenhum produto cadastrado"
     else:
         total_str = f"Encontrados {total_produtos} produtos"
 
@@ -243,7 +243,7 @@ def product_atacado_list(request):
     if total_produtos == 1:
         total_str = f"Encontrado {total_produtos} produto"
     elif total_produtos == 0:
-        total_str = f"Nenhum produto cadastrado"
+        total_str = "Nenhum produto cadastrado"
     else:
         total_str = f"Encontrados {total_produtos} produtos"
 
