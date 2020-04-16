@@ -229,7 +229,8 @@ def product_atacado_list(request):
     if user.groups.filter(name='Gerente').exists():
         produtos = ProdutoAtacado.objects.all().order_by('produto__descricao', 'coeficiente')
     else:
-        produtos = ProdutoAtacado.objects.all().filter(active=True).order_by('produto__descricao', 'coeficiente')
+        produtos = ProdutoAtacado.objects.all().filter(
+            produto__active=True).order_by('produto__descricao', 'coeficiente')
 
     total_produtos = len(produtos)
 

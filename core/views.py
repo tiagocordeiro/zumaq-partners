@@ -1,8 +1,3 @@
-import os
-from datetime import date, timedelta
-
-import pandas as pd
-import quandl
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -12,35 +7,16 @@ from django.shortcuts import render, redirect
 from pedidos.models import Pedido, PedidoItem
 from products.forms import CustomCoeficienteForm, CustomCoeficienteItensForm
 from products.models import CustomCoeficiente, CustomCoeficienteItens, Produto
+from .facade import cotacoes
 from .forms import ProfileForm, CadastroParceiro
 from .models import UserProfile
 
 
 @login_required
 def dashboard(request):
-    quandl.ApiConfig.api_key = os.environ.get('QUANDL_KEY')
-    hoje = date.today()
-    periodo = hoje - timedelta(weeks=4)
-    cotacao_moedas = quandl.get(["BUNDESBANK/BBEX3_D_CNY_USD_CA_AC_000",
-                                 "BUNDESBANK/BBEX3_D_BRL_USD_CA_AB_000"],
-                                start_date=periodo.isoformat(), returns="pandas")
-
-    df = pd.DataFrame(cotacao_moedas)
-    df.reset_index(level=0, inplace=True)
-
-    df.fillna(method='ffill', inplace=True)
-    df.fillna(method='bfill', inplace=True)
-
-    cotacao_cny = []
-    cotacao_brl = []
-    cny_spark = []
-
-    for cotacao in df.values:
-        cotacao_cny.append({'data': cotacao[0].strftime('%d/%m/%Y'), 'valor': round(cotacao[1], ndigits=2)})
-        cotacao_brl.append({'data': cotacao[0].strftime('%d/%m/%Y'), 'valor': round(cotacao[2], ndigits=2)})
-        cny_spark.append(round(cotacao[1], ndigits=2))
-
-    cny_spark_str = str(cny_spark).strip('[]')
+    cotacoes_moedas = cotacoes()
+    cotacao_cny = cotacoes_moedas['cotacao_cny']
+    cotacao_brl = cotacoes_moedas['cotacao_brl']
 
     try:
         usuario = UserProfile.objects.get(user=request.user)
@@ -77,8 +53,6 @@ def dashboard(request):
                'user': user,
                'cotacao_cny': cotacao_cny,
                'cotacao_brl': cotacao_brl,
-               'cny_spark': cny_spark,
-               'cny_spark_str': cny_spark_str,
                'pedido_itens_qt': pedido_itens_qt,
                'pedidos_qt_all': pedidos_qt_all,
                'pedidos_qt_parceiro': pedidos_qt_parceiro,

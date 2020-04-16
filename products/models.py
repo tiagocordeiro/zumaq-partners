@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.db import models
 from simple_history.models import HistoricalRecords
 
-from core.models import Active, TimeStampedModel
+from core.models import Active, TimeStampedModel, CotacoesMoedas
 from core.models import User
 
 
@@ -13,6 +13,12 @@ class Produto(TimeStampedModel, Active):
     pago_na_china = models.DecimalField('Preço de custo em ¥', max_digits=16, decimal_places=10)
     reminmbi = models.DecimalField('Reminmbi ¥', max_digits=16, decimal_places=10)
     dolar_cotado = models.DecimalField('Em reais (R$)', max_digits=16, decimal_places=10)
+    dolar_automatico = models.BooleanField('Dolar automático',
+                                           help_text='''Se selecionado o
+                                           valor de venda será baseado na
+                                           cotação do dolar mais recente ao
+                                           inves do dolar cotado''',
+                                           default=True)
     impostos_na_china = models.DecimalField('Impostos na China (%)', max_digits=10, decimal_places=2)
     porcentagem_importacao = models.DecimalField('Porcentagem Importação (%)', max_digits=10, decimal_places=2)
     coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
@@ -20,6 +26,11 @@ class Produto(TimeStampedModel, Active):
     history = HistoricalRecords()
 
     def compra_do_cambio(self):
+        if self.dolar_automatico:
+            try:
+                return round(CotacoesMoedas.objects.last().usd + Decimal('0.20'), ndigits=2)
+            except AttributeError:
+                pass
         return round(self.dolar_cotado + Decimal('0.20'), ndigits=2)
 
     def ch_sem_imposto(self):
