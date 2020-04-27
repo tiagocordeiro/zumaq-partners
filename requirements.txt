@@ -61,4 +61,4 @@ webencodings==0.5.1
 xhtml2pdf==0.2.4
 
 # Loggin
-django-simple-history==2.8.0
+django-simple-history==2.10.0
