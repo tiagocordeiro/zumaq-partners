@@ -54,7 +54,7 @@ django-mass-edit==3.2.0
 xlwt==1.3.0
 
 # PDF
-html5lib==1.0.1
+html5lib==1.1
 pyPdf2==1.26.0
 reportlab==3.5.42
 webencodings==0.5.1
