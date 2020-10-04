@@ -1,6 +1,6 @@
 # Flake8
 entrypoints==0.3
-flake8==3.8.2
+flake8==3.8.4
 mccabe==0.6.1
 
 # CodeStyle
