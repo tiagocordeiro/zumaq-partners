@@ -58,7 +58,7 @@ html5lib==1.0.1
 pyPdf2==1.26.0
 reportlab==3.5.42
 webencodings==0.5.1
-xhtml2pdf==0.2.4
+xhtml2pdf==0.2.5
 
 # Loggin
 django-simple-history==2.10.0
