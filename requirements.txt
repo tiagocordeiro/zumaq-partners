@@ -16,7 +16,7 @@ whitenoise==5.1.0
 gunicorn==20.0.4
 
 # Images
-Pillow==7.1.2
+Pillow==8.0.0
 
 # Cloudinary
 certifi==2020.4.5.1
