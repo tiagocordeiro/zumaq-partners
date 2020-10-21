@@ -294,9 +294,33 @@ class ProductsTestCase(TestCase):
         self.assertContains(response, 'TYL-1080')
         self.assertContains(response, '1739.61')
 
-    def test_product_list_json_viewgerente(self):
+    def test_product_list_json_view_gerente(self):
         self.client.force_login(self.user_gerente)
         response = self.client.get(reverse('product_list_json'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'TYL-1080')
+        self.assertContains(response, '1199.73')
+
+    def test_product_detail_json_view_anonimo(self):
+        self.client.logout()
+        response = self.client.get(reverse('product_detail_json', kwargs={'codigo': 'TYL-1080'}))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/products/json/TYL-1080/',
+                             status_code=302, target_status_code=200)
+
+    def test_product_detail_json_view_parceiro(self):
+        self.client.force_login(self.user_parceiro)
+        response = self.client.get(reverse('product_detail_json', kwargs={'codigo': 'TYL-1080'}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'TYL-1080')
+        self.assertContains(response, '1739.61')
+
+    def test_product_detail_json_view_gerente(self):
+        self.client.force_login(self.user_gerente)
+        response = self.client.get(reverse('product_detail_json', kwargs={'codigo': 'TYL-1080'}))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TYL-1080')

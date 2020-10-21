@@ -1,6 +1,26 @@
 from products.models import CustomCoeficiente, CustomCoeficienteItens
 
 
+def get_partner_price(parceiro, produto):
+    try:
+        custom_coeficiente = CustomCoeficiente.objects.get(parceiro=parceiro)
+        custom_prices = CustomCoeficienteItens.objects.all().filter(parceiro=custom_coeficiente)
+        parceiro_coeficiente = custom_coeficiente.coeficiente_padrao
+        try:
+            c_price = custom_prices.filter(produto__codigo=produto.codigo).values("coeficiente")[0]["coeficiente"]
+            if c_price:
+                produto.cliente_paga = round(produto.cliente_paga() + (produto.cliente_paga() * c_price), ndigits=2)
+
+        except IndexError:
+            produto.cliente_paga = round(produto.cliente_paga() + (produto.cliente_paga() * parceiro_coeficiente),
+                                         ndigits=2)
+
+    except CustomCoeficiente.DoesNotExist:
+        produto.cliente_paga = produto.cliente_paga()
+
+    return produto.cliente_paga
+
+
 def get_partner_prices(parceiro, produtos):
     partner_prices = []
     try:

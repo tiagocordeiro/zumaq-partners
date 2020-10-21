@@ -10,4 +10,5 @@ urlpatterns = [
     path('product/create/<str:codigo>/', views.product_create, name='product_create'),
     path('product/update/<str:codigo>/', views.product_update, name='product_update'),
     path('json/', views.product_list_json, name='product_list_json'),
+    path('json/<str:codigo>/', views.product_detail_json, name='product_detail_json'),
 ]
