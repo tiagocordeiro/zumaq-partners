@@ -159,6 +159,31 @@ def product_add(request):
     return render(request, 'products/add.html')
 
 
+def api_product_list(request, secret_key):
+    perfil_parceiro = get_object_or_404(UserProfile, api_secret_key=secret_key)
+    parceiro = User.objects.get(username=perfil_parceiro.user.username)
+
+    produtos = Produto.objects.all().order_by('descricao')
+
+    partner_prices = get_partner_prices(parceiro, produtos)
+
+    data = {"results": partner_prices}
+    return JsonResponse(data)
+
+
+def api_product_detail(request, codigo, secret_key):
+    perfil_parceiro = get_object_or_404(UserProfile, api_secret_key=secret_key)
+    parceiro = User.objects.get(username=perfil_parceiro.user.username)
+    produto = get_object_or_404(Produto, codigo=codigo)
+    data = {"results": {
+        "codigo": produto.codigo,
+        "descricao": produto.descricao,
+        "estoque": produto.active,
+        "valor": get_partner_price(parceiro, produto)
+    }}
+    return JsonResponse(data)
+
+
 @login_required
 def product_list_json(request):
     parceiro = User.objects.get(username=request.user)
