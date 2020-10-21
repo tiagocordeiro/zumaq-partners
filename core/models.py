@@ -1,5 +1,11 @@
+import uuid
+
 from django.contrib.auth.models import User
 from django.db import models
+
+
+def make_secret():
+    return str(uuid.uuid4())
 
 
 class TimeStampedModel(models.Model):
@@ -28,9 +34,16 @@ class Active(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='profiles/')
+    api_view = models.BooleanField("Habilitar API programática", default=False)
+    api_secret_key = models.CharField("Secret key needed for no logged json viewing",
+                                      max_length=36, default=make_secret, unique=True)
 
     class Meta:
         verbose_name_plural = "Profiles"
+
+    def update(self):
+        if self.api_secret_key is not None:
+            self.api_secret_key = self.api_secret_key
 
 
 class CotacoesMoedas(models.Model):

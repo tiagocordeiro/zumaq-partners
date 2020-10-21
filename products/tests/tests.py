@@ -1,13 +1,17 @@
+import base64  # for decoding base64 image
 import json
 import os
 from decimal import Decimal
+from io import BytesIO
 
 import responses
 from django.contrib.auth.models import User, Group
 from django.contrib.messages.storage.fallback import FallbackStorage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
+from core.models import UserProfile
 from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
 from products.views import product_add, product_update
 
@@ -27,6 +31,22 @@ class ProductsTestCase(TestCase):
         self.user_parceiro = User.objects.create_user(username='joe', email='joe@…', password='top_secret')
         self.group_parceiro = Group.objects.create(name='Parceiro')
         self.group_parceiro.user_set.add(self.user_parceiro)
+
+        # User Profile Parceiro
+        image_thumb = '''
+                        R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
+                        '''.strip()
+
+        self.image = InMemoryUploadedFile(
+            BytesIO(base64.b64decode(image_thumb)),  # use io.BytesIO
+            field_name='tempfile',
+            name='tempfile.png',
+            content_type='image/png',
+            size=len(image_thumb),
+            charset='utf-8',
+        )
+
+        self.user_profile_parceiro = UserProfile.objects.create(user=self.user_parceiro, avatar=str(self.image))
 
         # User Parceiro 2
         self.user_parceiro2 = User.objects.create_user(username='james', email='james@foo.bar', password='secret')
@@ -277,6 +297,27 @@ class ProductsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TYL-1080')
+
+    def test_api_product_list_view(self):
+        self.client.logout()
+        api_token = self.user_parceiro.userprofile.api_secret_key
+
+        response = self.client.get(reverse('api_product_list', kwargs={"secret_key": api_token}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'TYL-1080')
+        self.assertContains(response, '1739.61')
+
+    def test_api_product_detail_view(self):
+        self.client.logout()
+        api_token = self.user_parceiro.userprofile.api_secret_key
+
+        response = self.client.get(reverse('api_product_detail', kwargs={"secret_key": api_token,
+                                                                         "codigo": self.product.codigo}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'TYL-1080')
+        self.assertContains(response, '1739.61')
 
     def test_product_list_json_view_anonimo(self):
         self.client.logout()

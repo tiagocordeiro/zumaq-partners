@@ -79,6 +79,21 @@
                 {{ formset.as_p }}
               </div>
             </div>
+            {% if user.userprofile.api_secret_key and user.userprofile.api_view %}
+              <div class="row">
+                <div class="col-md-12 col-sm-12">
+                  <details class="details-api-token">
+                    <summary>API Token</summary>
+                    Token: {{ user.userprofile.api_secret_key }}
+                    <p>Como usar:</p>
+                    <ul>
+                      <li>/products/api/{{ user.userprofile.api_secret_key }}</li>
+                      <li>/products/api/CODIGO_PRODUTO/{{ user.userprofile.api_secret_key }}</li>
+                    </ul>
+                  </details>
+                </div>
+              </div>
+            {% endif %}
             <hr>
             <div class="row">
               <div class="col-md-12 col-sm-12">
@@ -94,19 +109,19 @@
 
 {% block extra_scripts %}
   <script>
-    // window.onload
-    window.onload = function () {
-      cumstomAvatarFilePick();
-    };
+      // window.onload
+      window.onload = function () {
+          cumstomAvatarFilePick();
+      };
 
-    function cumstomAvatarFilePick() {
-      var avatar = document.querySelector("#avatar-col > p:nth-child(9)").innerHTML;
-      var res = avatar.replace(avatar, '<span class="label-text"><label for="id_email">Foto do perfil</label></span>\n' +
-          '<label for="id_userprofile-0-avatar" class="custom-file">\n' +
-          '  <input type="file" name="userprofile-0-avatar" accept="image/*" id="id_userprofile-0-avatar" class="custom-file-input">\n' +
-          '  <span class="custom-file-label">Escolher arquivo</span>\n' +
-          '</label>');
-      document.querySelector("#avatar-col > p:nth-child(9)").innerHTML = res;
-    }
+      function cumstomAvatarFilePick() {
+          var avatar = document.querySelector("#avatar-col > p:nth-child(9)").innerHTML;
+          var res = avatar.replace(avatar, '<span class="label-text"><label for="id_email">Foto do perfil</label></span>\n' +
+              '<label for="id_userprofile-0-avatar" class="custom-file">\n' +
+              '  <input type="file" name="userprofile-0-avatar" accept="image/*" id="id_userprofile-0-avatar" class="custom-file-input">\n' +
+              '  <span class="custom-file-label">Escolher arquivo</span>\n' +
+              '</label>');
+          document.querySelector("#avatar-col > p:nth-child(9)").innerHTML = res;
+      }
   </script>
 {% endblock %}

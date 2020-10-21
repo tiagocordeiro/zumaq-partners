@@ -11,4 +11,6 @@ urlpatterns = [
     path('product/update/<str:codigo>/', views.product_update, name='product_update'),
     path('json/', views.product_list_json, name='product_list_json'),
     path('json/<str:codigo>/', views.product_detail_json, name='product_detail_json'),
+    path('api/<str:secret_key>/', views.api_product_list, name='api_product_list'),
+    path('api/<str:codigo>/<str:secret_key>/', views.api_product_detail, name='api_product_detail'),
 ]
