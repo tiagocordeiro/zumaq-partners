@@ -2,13 +2,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms.models import inlineformset_factory
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
 from pybling.products import get_product
 
 from core.models import UserProfile, User
 from pedidos.models import Pedido, PedidoItem
-from .facade import get_partner_prices
+from .facade import get_partner_prices, get_partner_price
 from .forms import ProdutoForm, ProdutoAtacadoForm
 from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
 
@@ -167,6 +167,19 @@ def product_list_json(request):
     partner_prices = get_partner_prices(parceiro, produtos)
 
     data = {"results": partner_prices}
+    return JsonResponse(data)
+
+
+@login_required
+def product_detail_json(request, codigo):
+    produto = get_object_or_404(Produto, codigo=codigo)
+    parceiro = User.objects.get(username=request.user)
+    data = {"results": {
+        "codigo": produto.codigo,
+        "descricao": produto.descricao,
+        "estoque": produto.active,
+        "valor": get_partner_price(parceiro, produto)
+    }}
     return JsonResponse(data)
 
 
