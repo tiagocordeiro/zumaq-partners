@@ -34,8 +34,7 @@ class Active(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='profiles/')
-    api_view = models.BooleanField("Habilitar API programática", default=False)
-    api_secret_key = models.UUIDField(default=make_secret)
+
 
     class Meta:
         verbose_name_plural = "Profiles"
