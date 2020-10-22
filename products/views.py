@@ -184,6 +184,41 @@ def api_product_detail(request, codigo, secret_key):
     return JsonResponse(data)
 
 
+def api_product_list_header_token(request):
+    try:
+        secret_key = request.headers["Token"]
+        perfil_parceiro = get_object_or_404(UserProfile, api_secret_key=secret_key)
+        parceiro = User.objects.get(username=perfil_parceiro.user.username)
+
+        produtos = Produto.objects.all().order_by('descricao')
+
+        partner_prices = get_partner_prices(parceiro, produtos)
+
+        data = {"results": partner_prices}
+        return JsonResponse(data)
+    except KeyError:
+        response = JsonResponse({"status": "false", "message": "Token não informado"}, status=500)
+        return response
+
+
+def api_product_detail_header_token(request, codigo):
+    try:
+        secret_key = request.headers["Token"]
+        perfil_parceiro = get_object_or_404(UserProfile, api_secret_key=secret_key)
+        parceiro = User.objects.get(username=perfil_parceiro.user.username)
+        produto = get_object_or_404(Produto, codigo=codigo)
+        data = {"results": {
+            "codigo": produto.codigo,
+            "descricao": produto.descricao,
+            "estoque": produto.active,
+            "valor": get_partner_price(parceiro, produto)
+        }}
+        return JsonResponse(data)
+    except KeyError:
+        response = JsonResponse({"status": "false", "message": "Token não informado"}, status=500)
+        return response
+
+
 @login_required
 def product_list_json(request):
     parceiro = User.objects.get(username=request.user)

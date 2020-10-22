@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^admin/', include(massadmin_urls)),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('core.urls')),
-    path('products/', include('products.urls')),
+    path('', include('products.urls')),
     path('pedido/', include('pedidos.urls')),
     path('reports/', include('reports.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
