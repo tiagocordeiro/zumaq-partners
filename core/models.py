@@ -35,15 +35,10 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='profiles/')
     api_view = models.BooleanField("Habilitar API programática", default=False)
-    api_secret_key = models.CharField("Secret key needed for no logged json viewing",
-                                      max_length=36, default=make_secret, unique=True)
+    api_secret_key = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
 
     class Meta:
         verbose_name_plural = "Profiles"
-
-    def update(self):
-        if self.api_secret_key is not None:
-            self.api_secret_key = self.api_secret_key
 
 
 class CotacoesMoedas(models.Model):
