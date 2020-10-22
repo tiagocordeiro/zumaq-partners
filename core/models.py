@@ -34,10 +34,16 @@ class Active(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='profiles/')
-
+    api_view = models.BooleanField("Habilitar API programática", default=False)
+    api_secret_key = models.CharField(max_length=36, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Profiles"
+
+    def save(self, *args, **kwargs):
+        if self.api_secret_key is None:
+            self.api_secret_key = make_secret()
+        super(UserProfile, self).save(*args, **kwargs)
 
 
 class CotacoesMoedas(models.Model):
