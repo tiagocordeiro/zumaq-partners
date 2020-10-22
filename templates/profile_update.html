@@ -86,10 +86,16 @@
                     <summary>API Token</summary>
                     Token: {{ user.userprofile.api_secret_key }}
                     <p>Como usar:</p>
+                    <p>Você pode usar as URLs públicas com o Token. Ex.:</p>
                     <ul>
-                      <li>/products/api/{{ user.userprofile.api_secret_key }}</li>
-                      <li>/products/api/CODIGO_PRODUTO/{{ user.userprofile.api_secret_key }}</li>
+                      <li>/products/json/public/{{ user.userprofile.api_secret_key }}</li>
+                      <li>/products/json/public/CODIGO_PRODUTO/{{ user.userprofile.api_secret_key }}</li>
                     </ul>
+                    <p>
+                      ou enviar o Token no cabeçalho da requisição. Ex.:<br>
+                      <code>'Token': '{{ user.userprofile.api_secret_key }}'</code>
+                    </p>
+
                   </details>
                 </div>
               </div>
