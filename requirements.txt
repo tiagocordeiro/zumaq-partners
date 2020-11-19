@@ -32,7 +32,7 @@ urllib3==1.25.11
 pybling==0.0.9
 
 # Sentry
-sentry-sdk==0.19.1
+sentry-sdk==0.19.4
 
 # Crispy Forms
 django-crispy-forms==1.9.2
