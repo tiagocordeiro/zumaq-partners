@@ -10,7 +10,7 @@ addons:
   postgresql: '9.5'
 # command to install dependencies
 install:
-  - cp contrib/env-sample .env
+  - cp contrib/env-sample-travis .env
   - pip install -r requirements-dev.txt codecov
 before_script:
   - psql -c "CREATE DATABASE travis_ci_db;" -U postgres
