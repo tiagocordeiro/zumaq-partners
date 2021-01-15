@@ -1,49 +1,33 @@
 # Django
-Django==3.1.2
+Django==3.1.5
 
 # Decouple
-python-decouple==3.3
-python-dotenv==0.14.0
+python-decouple==3.4
 
 # Heroku
 dj-database-url==0.5.0
 django-heroku==0.3.1
 psycopg2==2.8.6
 psycopg2-binary==2.8.6
-whitenoise==5.2.0
 gunicorn==20.0.4
 
 # Images
-Pillow==8.0.0
+Pillow==8.1.0
 
 # Cloudinary
-certifi==2020.6.20
-chardet==3.0.4
-cloudinary==1.22.0
 dj3-cloudinary-storage==0.0.3
-idna==2.10
-mock==4.0.2
-pbr==5.5.1
-requests==2.24.0
-six==1.15.0
-urllib3==1.25.11
 
 # Bling
 pybling==0.0.9
 
 # Sentry
-sentry-sdk==0.19.1
+sentry-sdk==0.19.5
 
 # Crispy Forms
-django-crispy-forms==1.9.2
+django-crispy-forms==1.10.0
 
 # Quandl
-inflection==0.5.1
-more-itertools==8.5.0
-numpy==1.19.2
-pandas==1.1.3
-python-dateutil==2.8.1
-quandl==3.5.3
+quandl==3.6.0
 
 # Bulk Changes in Admin
 django-mass-edit==3.2.0
@@ -52,10 +36,6 @@ django-mass-edit==3.2.0
 xlwt==1.3.0
 
 # PDF
-html5lib==1.1
-pyPdf2==1.26.0
-reportlab==3.5.53
-webencodings==0.5.1
 xhtml2pdf==0.2.5
 
 # Loggin
