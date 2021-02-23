@@ -268,20 +268,6 @@ class ProductsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'R$ 1.739,61')
 
-    def test_product_list_view_parceiro_product_is_promo(self):
-        self.client.force_login(self.user_parceiro)
-        response = self.client.get(reverse('product_list'))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<span class="label label-red">Promoção</span>')
-
-    def test_product_list_view_parceiro2_product_is_not_promo(self):
-        self.client.force_login(self.user_parceiro2)
-        response = self.client.get(reverse('product_list'))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, '<span class="label label-red">Promoção</span>')
-
     def test_product_list_view_parceiro_without_custom_product_coeficiente(self):
         self.client.force_login(self.user_parceiro2)
         response = self.client.get(reverse('product_list'))
