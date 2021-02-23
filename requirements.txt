@@ -1,5 +1,5 @@
 # Django
-Django==3.1.5
+Django==3.1.7
 
 # Decouple
 python-decouple==3.4
@@ -21,10 +21,10 @@ dj3-cloudinary-storage==0.0.3
 pybling==0.0.9
 
 # Sentry
-sentry-sdk==0.19.5
+sentry-sdk==0.20.3
 
 # Crispy Forms
-django-crispy-forms==1.10.0
+django-crispy-forms==1.11.1
 
 # Quandl
 quandl==3.6.0
