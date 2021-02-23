@@ -249,9 +249,7 @@ class ProductsTestCase(TestCase):
         self.client.force_login(self.user_parceiro)
         response = self.client.get(reverse('product_list_atacado'))
 
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'TYL-1080')
-        self.assertContains(response, 'R$ 1.159,74')
+        self.assertEqual(response.status_code, 302)
 
     def test_product_parceiro_custom_coeficiente(self):
         self.client.force_login(self.user_parceiro)
