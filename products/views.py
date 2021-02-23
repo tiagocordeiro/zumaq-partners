@@ -311,6 +311,10 @@ def product_atacado_list(request):
 
     parceiro = User.objects.get(username=request.user)
     user = User.objects.get(username=request.user)
+    if user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
 
     if user.groups.filter(name='Gerente').exists():
         produtos = ProdutoAtacado.objects.all().order_by('produto__descricao', 'coeficiente')
@@ -333,8 +337,6 @@ def product_atacado_list(request):
         total_str = "Nenhum produto cadastrado"
     else:
         total_str = f"Encontrados {total_produtos} produtos"
-
-    parceiro = User.objects.get(username=request.user)
 
     pedido = Pedido.objects.filter(parceiro=parceiro, status=0).first()
     if pedido is None:

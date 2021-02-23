@@ -143,12 +143,14 @@
               <span>Varejo</span>
             </a>
           </li>
+          {% if request.user|has_group:"Gerente" %}
           <li>
             <a href="{% url 'product_list_atacado' %}">
               <i class="fa fa-th-list"></i>
               <span>Atacado</span>
             </a>
           </li>
+        {% endif %}
         </ul>
       </li>
 

@@ -70,6 +70,11 @@ def pedido_add_item(request, **kwargs):
 @login_required
 def pedido_add_item_atacado(request, **kwargs):
     parceiro = User.objects.get(username=request.user)
+    user = User.objects.get(username=request.user)
+    if user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
 
     produto = Produto.objects.get(codigo=kwargs.get('codigo'))
     quantidade = kwargs.get('quantidade')
