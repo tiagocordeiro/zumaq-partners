@@ -29,6 +29,9 @@ PEDIDO_MAIL=
 CLOUDINARY_URL=
 BLING_API_KEY=
 QUANDL_KEY=
+# Analytics
+CLICKY_SITE_ID=XXXXXXXXX
+GOOGLE_ANALYTICS_GTAG_PROPERTY_ID=G-XXXXXXXXX
 """.strip() % get_random_string(50, chars)
 
 # Writing our configuration file to '.env'
