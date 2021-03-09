@@ -1,14 +1,17 @@
+{% load analytical %}
+{% load clicky %}
 <!DOCTYPE html>
 {% load static %}
 <html dir="ltr" lang="en" class="no-outlines">
 <head>
+  {% analytical_head_top %}
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- ==== Document Title ==== -->
-    <title>{% block title %}Zumaq Partners{% endblock %}</title>
+  <!-- ==== Document Title ==== -->
+  <title>{% block title %}Zumaq Partners{% endblock %}</title>
 
   <!-- ==== Document Meta ==== -->
   <meta name="author" content="Tiago Cordeiro">
@@ -42,8 +45,10 @@
   {% block extra_styles %}
   {% endblock %}
 
+  {% analytical_head_bottom %}
 </head>
 <body>
+{% analytical_body_top %}
 
 <!-- Wrapper Start -->
 <div class="wrapper">
@@ -130,5 +135,7 @@
 {% block extra_scripts %}
 {% endblock %}
 
+{% analytical_body_bottom %}
+{% clicky %}
 </body>
 </html>

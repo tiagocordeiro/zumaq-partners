@@ -54,6 +54,9 @@ INSTALLED_APPS = [
 
     # Logging
     'simple_history',
+
+    # Analytics
+    'analytical',
 ]
 
 MIDDLEWARE = [
@@ -186,3 +189,6 @@ if CLOUDINARY_URL:  # pragma: no cover
 
 # Sentry
 sentry_sdk.init(dsn=config('SENTRY_DSN'), integrations=[DjangoIntegration()])
+
+# Clicky Analytics
+CLICKY_SITE_ID = '101305269'
