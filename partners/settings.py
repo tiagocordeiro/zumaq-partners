@@ -191,7 +191,7 @@ if CLOUDINARY_URL:  # pragma: no cover
 sentry_sdk.init(dsn=config('SENTRY_DSN'), integrations=[DjangoIntegration()])
 
 # Clicky Analytics
-CLICKY_SITE_ID = '101305269'
+CLICKY_SITE_ID = config('CLICKY_SITE_ID')
 
 # Google Analytics
-GOOGLE_ANALYTICS_GTAG_PROPERTY_ID = 'G-6P4KRSEG7V'
+GOOGLE_ANALYTICS_GTAG_PROPERTY_ID = config('GOOGLE_ANALYTICS_GTAG_PROPERTY_ID')
