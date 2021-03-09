@@ -1,73 +1,78 @@
+{% load analytical %}
+{% load clicky %}
 <!DOCTYPE html>
 {% load static %}
 <html dir="ltr" lang="en" class="no-outlines">
 <head>
+  {% analytical_head_top %}
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- ==== Document Title ==== -->
+  <title>Zumaq Partners</title>
 
-    <!-- ==== Document Title ==== -->
-    <title>Zumaq Partners</title>
+  <!-- ==== Document Meta ==== -->
+  <meta name="author" content="Tiago Cordeiro">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
 
-    <!-- ==== Document Meta ==== -->
-    <meta name="author" content="Tiago Cordeiro">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
+  <!-- ==== Favicon ==== -->
+  <link rel="icon" href="{% static 'favicon.png' %}" type="image/png">
 
-    <!-- ==== Favicon ==== -->
-    <link rel="icon" href="{% static 'favicon.png' %}" type="image/png">
+  <!-- ==== Google Font ==== -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700%7CMontserrat:400,500">
 
-    <!-- ==== Google Font ==== -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700%7CMontserrat:400,500">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/fontawesome-all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/perfect-scrollbar.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/morris.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/jquery-jvectormap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/horizontal-timeline.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/weather-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/dropzone.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/ion.rangeSlider.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/ion.rangeSlider.skinFlat.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/datatables.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/fullcalendar.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/fontawesome-all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/perfect-scrollbar.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/morris.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/select2.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/jquery-jvectormap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/horizontal-timeline.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/weather-icons.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/dropzone.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/ion.rangeSlider.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/ion.rangeSlider.skinFlat.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/datatables.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/fullcalendar.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-
-    <!-- Page Level Stylesheets -->
-
+  <!-- Page Level Stylesheets -->
+  {% analytical_head_bottom %}
 </head>
 <body>
+{% analytical_body_top %}
 
-    <!-- Wrapper Start -->
-    {% block content %}
-    {% endblock %}
-    <!-- Wrapper End -->
+<!-- Wrapper Start -->
+{% block content %}
+{% endblock %}
+<!-- Wrapper End -->
 
-    <!-- Scripts -->
-    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
-    <script src="{% static 'assets/js/jquery-ui.min.js' %}"></script>
-    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'assets/js/perfect-scrollbar.min.js' %}"></script>
-    <script src="{% static 'assets/js/jquery.sparkline.min.js' %}"></script>
-    <script src="{% static 'assets/js/raphael.min.js' %}"></script>
-    <script src="{% static 'assets/js/morris.min.js' %}"></script>
-    <script src="{% static 'assets/js/select2.min.js' %}"></script>
-    <script src="{% static 'assets/js/jquery-jvectormap.min.js' %}"></script>
-    <script src="{% static 'assets/js/jquery-jvectormap-world-mill.min.js' %}"></script>
-    <script src="{% static 'assets/js/horizontal-timeline.min.js' %}"></script>
-    <script src="{% static 'assets/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'assets/js/jquery.steps.min.js' %}"></script>
-    <script src="{% static 'assets/js/dropzone.min.js' %}"></script>
-    <script src="{% static 'assets/js/ion.rangeSlider.min.js' %}"></script>
-    <script src="{% static 'assets/js/datatables.min.js' %}"></script>
-    <script src="{% static 'assets/js/main.js' %}"></script>
+<!-- Scripts -->
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/perfect-scrollbar.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.sparkline.min.js' %}"></script>
+<script src="{% static 'assets/js/raphael.min.js' %}"></script>
+<script src="{% static 'assets/js/morris.min.js' %}"></script>
+<script src="{% static 'assets/js/select2.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery-jvectormap.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery-jvectormap-world-mill.min.js' %}"></script>
+<script src="{% static 'assets/js/horizontal-timeline.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.validate.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.steps.min.js' %}"></script>
+<script src="{% static 'assets/js/dropzone.min.js' %}"></script>
+<script src="{% static 'assets/js/ion.rangeSlider.min.js' %}"></script>
+<script src="{% static 'assets/js/datatables.min.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
 
-    <!-- Page Level Scripts -->
+<!-- Page Level Scripts -->
 
+{% analytical_body_bottom %}
+{% clicky %}
 </body>
 </html>
