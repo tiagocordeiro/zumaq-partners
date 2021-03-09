@@ -1,10 +1,12 @@
 {% load analytical %}
+{% load google_analytics_gtag %}
 {% load clicky %}
 <!DOCTYPE html>
 {% load static %}
 <html dir="ltr" lang="en" class="no-outlines">
 <head>
   {% analytical_head_top %}
+  {% google_analytics_gtag %}
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -77,6 +79,5 @@
 {% block extra_scripts %}
 {% endblock %}
 {% analytical_body_bottom %}
-{% clicky %}
 </body>
 </html>
