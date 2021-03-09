@@ -49,6 +49,7 @@ jobs:
     - name: Test with coverage
       env:
         DJANGO_SETTINGS_MODULE: "partners.settings"
+        QUANDL_KEY: ${{ secrets.QUANDL_KEY }}
       run: |
         coverage run manage.py test -v 2
     - name: Posting Coverage
