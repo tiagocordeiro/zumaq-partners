@@ -192,3 +192,6 @@ sentry_sdk.init(dsn=config('SENTRY_DSN'), integrations=[DjangoIntegration()])
 
 # Clicky Analytics
 CLICKY_SITE_ID = '101305269'
+
+# Google Analytics
+GOOGLE_ANALYTICS_GTAG_PROPERTY_ID = 'G-6P4KRSEG7V'
