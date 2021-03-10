@@ -152,12 +152,14 @@ def pedido_aberto(request):
 
     return render(request, 'pedidos/pedido_aberto.html', {'parceiro': parceiro,
                                                           'usuario': usuario,
+                                                          'user': parceiro,
                                                           'pedido': pedido,
                                                           'pedido_itens': pedido_itens,
                                                           'pedido_total': pedido_total,
                                                           'pedido_itens_qt': pedido_itens_qt,
                                                           'form': form,
-                                                          'formset': formset})
+                                                          'formset': formset,
+                                                          'page_title': 'Pedido aberto'})
 
 
 @login_required
@@ -193,10 +195,12 @@ def pedido_checkout(request, pk):
 
     return render(request, 'pedidos/pedido_fechado.html', {'parceiro': parceiro,
                                                            'usuario': usuario,
+                                                           'user': parceiro,
                                                            'pedido': pedido,
                                                            'pedido_itens': pedido_itens,
                                                            'pedido_total': pedido_total,
-                                                           'pedido_itens_qt': pedido_itens_qt})
+                                                           'pedido_itens_qt': pedido_itens_qt,
+                                                           'page_title': 'Pedido fechado'})
 
 
 @login_required
@@ -225,10 +229,12 @@ def pedido_details(request, pk):
 
     return render(request, 'pedidos/pedido_fechado.html', {'parceiro': parceiro,
                                                            'usuario': usuario,
+                                                           'user': parceiro,
                                                            'pedido': pedido,
                                                            'pedido_itens': pedido_itens,
                                                            'pedido_total': pedido_total,
-                                                           'pedido_itens_qt': pedido_itens_qt})
+                                                           'pedido_itens_qt': pedido_itens_qt,
+                                                           'page_title': 'Detalhes do pedido'})
 
 
 def link_callback(uri, rel):
@@ -439,8 +445,10 @@ def pedidos_list(request):
 
     context = {'parceiro': parceiro,
                'usuario': usuario,
+               'user': parceiro,
                'pedidos': pedidos,
-               'pedido_itens_qt': pedido_itens_qt, }
+               'pedido_itens_qt': pedido_itens_qt,
+               'page_title': 'Lista de pedidos'}
 
     return render(request, 'pedidos/list.html', context)
 

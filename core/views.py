@@ -57,6 +57,7 @@ def dashboard(request):
                'pedidos_qt_all': pedidos_qt_all,
                'pedidos_qt_parceiro': pedidos_qt_parceiro,
                'pedidos_valor_total': pedidos_valor_total,
+               'page_title': 'Dashboard',
                }
 
     return render(request, 'dashboard_demo.html', context)
@@ -93,7 +94,8 @@ def profile_update(request):
     return render(request, 'profile_update.html', {'form': form,
                                                    'formset': formset,
                                                    'usuario': usuario,
-                                                   'user': user, })
+                                                   'user': user,
+                                                   'page_title': 'Atualizar perfil'})
 
 
 @login_required
@@ -109,7 +111,8 @@ def parceiro_cadastro(request):
             return redirect('parceiro_list')
     else:
         form = CadastroParceiro()
-    return render(request, 'registration/cadastro_parceiro.html', {'form': form})
+    return render(request, 'registration/cadastro_parceiro.html', {'form': form,
+                                                                   'page_title': 'Cadastro parceiro'})
 
 
 @login_required
@@ -136,8 +139,10 @@ def parceiro_list(request):
         total_str = f"Encontrados {total_parceiros} parceiros"
 
     return render(request, 'parceiros/list.html', {'usuario': usuario,
+                                                   'user': user,
                                                    'parceiros': parceiros,
-                                                   'total_parceiros': total_str, })
+                                                   'total_parceiros': total_str,
+                                                   'page_title': 'Listagem de parceiros'})
 
 
 @login_required
@@ -161,7 +166,9 @@ def parceiro_create(request):
         else:
             form = CadastroParceiro()
         return render(request, 'parceiros/create.html', {'form': form,
-                                                         'usuario': usuario})
+                                                         'usuario': usuario,
+                                                         'user': user,
+                                                         'page_title': 'Criar parceiro'})
     else:
         return redirect('dashboard')
 
@@ -216,7 +223,9 @@ def parceiro_details(request, pk):
         'form': form,
         'formset': formset,
         'usuario': usuario,
+        'user': user,
         'parceiro': parceiro,
+        'page_title': 'Detalhes do parceiro',
     }
 
     return render(request, 'parceiros/details.html', context)
