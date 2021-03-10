@@ -45,8 +45,6 @@ def reports_dashboard(request):
         'pedidos': pedidos,
         'pedidos_novos': pedidos_novos,
         'pedidos_abertos': pedidos_abertos,
-        'user': user,
-        'page_title': 'Relatórios'
     }
 
     return render(request, 'reports/reports.html', context)

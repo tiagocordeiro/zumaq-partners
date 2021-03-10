@@ -133,18 +133,6 @@
 {% block extra_scripts %}
 {% endblock %}
 
-<script type="text/javascript">
-  var clicky_custom = {
-    href: '{{ request.path }}',
-    title: '{{ page_title }}',
-    session: {
-      username: '{{ user }}',
-      email: '{{ user.email }}'
-    },
-    timer: 200
-  };
-</script>
-
 {% analytical_body_bottom %}
 </body>
 </html>
