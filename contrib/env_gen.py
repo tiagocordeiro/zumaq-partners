@@ -32,6 +32,7 @@ QUANDL_KEY=
 # Analytics
 CLICKY_SITE_ID=XXXXXXXXX
 GOOGLE_ANALYTICS_GTAG_PROPERTY_ID=G-XXXXXXXXX
+SECURE_REFERRER_POLICY=origin-when-cross-origin
 """.strip() % get_random_string(50, chars)
 
 # Writing our configuration file to '.env'
