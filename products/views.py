@@ -37,7 +37,9 @@ def product_view(request, codigo):
 
     return render(request, 'products/product.html', {'context': context,
                                                      'produto': produto,
-                                                     'usuario': usuario})
+                                                     'usuario': usuario,
+                                                     'user': usuario,
+                                                     'page_title': 'Detalhes do produto'})
 
 
 @login_required
@@ -89,6 +91,8 @@ def product_create(request, codigo):
         form = ProdutoForm()
 
     return render(request, 'products/create.html', {'usuario': usuario,
+                                                    'user': usuario,
+                                                    'page_title': 'Criar produto',
                                                     'form': form,
                                                     'context': context})
 
@@ -143,6 +147,8 @@ def product_update(request, codigo):
         formset = produto_atacado_formset(instance=produto, prefix='product')
 
     return render(request, 'products/update.html', {'usuario': usuario,
+                                                    'user': usuario,
+                                                    'page_title': 'Atualiza produto',
                                                     'form': form,
                                                     'formset': formset,
                                                     'produto': produto,
@@ -297,6 +303,8 @@ def product_list(request):
         pedido_itens_qt = PedidoItem.objects.filter(pedido=pedido).count()
 
     return render(request, 'products/list.html', {'usuario': usuario,
+                                                  'user': user,
+                                                  'page_title': 'Lista produtos',
                                                   'produtos': produtos,
                                                   'total_str': total_str,
                                                   'pedido_itens_qt': pedido_itens_qt})
@@ -345,6 +353,8 @@ def product_atacado_list(request):
         pedido_itens_qt = PedidoItem.objects.filter(pedido=pedido).count()
 
     return render(request, 'products/list_atacado.html', {'usuario': usuario,
+                                                          'user': user,
+                                                          'page_title': 'Lista produtos atacado',
                                                           'produtos': produtos,
                                                           'total_str': total_str,
                                                           'pedido_itens_qt': pedido_itens_qt})
