@@ -2,7 +2,7 @@
 flake8==3.8.4
 
 # CodeStyle
-pycodestyle==2.6.0
+pycodestyle==2.7.0
 
 # DebugToolbar
 django-debug-toolbar==3.2
