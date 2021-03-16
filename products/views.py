@@ -10,7 +10,7 @@ from core.models import UserProfile, User
 from pedidos.models import Pedido, PedidoItem
 from .facade import get_partner_prices, get_partner_price
 from .forms import ProdutoForm, ProdutoAtacadoForm
-from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
+from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, BlockedProducts
 
 
 @login_required
@@ -256,7 +256,8 @@ def product_list(request):
     if user.groups.filter(name='Gerente').exists():
         produtos = Produto.objects.all().order_by('descricao')
     else:
-        produtos = Produto.objects.all().filter(active=True).order_by('descricao')
+        bloqueados = BlockedProducts.objects.filter(parceiro__parceiro=parceiro).values_list('produto__codigo')
+        produtos = Produto.objects.all().filter(active=True).order_by('descricao').exclude(codigo__in=bloqueados)
 
     total_produtos = len(produtos)
 
@@ -319,8 +320,9 @@ def product_atacado_list(request):
     if user.groups.filter(name='Gerente').exists():
         produtos = ProdutoAtacado.objects.all().order_by('produto__descricao', 'coeficiente')
     else:
+        bloqueados = BlockedProducts.objects.filter(parceiro__parceiro=parceiro).values_list('produto__codigo')
         produtos = ProdutoAtacado.objects.all().filter(
-            produto__active=True).order_by('produto__descricao', 'coeficiente')
+            produto__active=True).order_by('produto__descricao', 'coeficiente').exclude(produto__codigo__in=bloqueados)
 
     total_produtos = len(produtos)
 

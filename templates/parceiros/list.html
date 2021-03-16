@@ -34,10 +34,9 @@
           <thead>
           <tr>
             <th>Usuário</th>
-            <th>Nome</th>
-            <th>Sobrenome</th>
             <th>E-mail</th>
             <th>Coeficiente</th>
+            <th>Itens bloqueados</th>
           </tr>
           </thead>
           <tbody>
@@ -47,16 +46,14 @@
               <a href="{% url 'parceiro_details' pk=parceiro.pk %}" class="btn-link">{{ parceiro.username }}</a>
             </td>
             <td>
-              {{ parceiro.first_name }}
-            </td>
-            <td>
-              {{ parceiro.last_name }}
-            </td>
-            <td>
               {{ parceiro.email }}
             </td>
             <td>
               {{ parceiro.customcoeficiente.coeficiente_padrao }}
+            </td>
+            <td>
+              <span class="label label-danger"><a style="color: whitesmoke" href="{% url 'parceiro_blocked_details' pk=parceiro.pk %}" class="btn-link btn-light"> {{ parceiro.customblocked.blockedproducts_set.values_list|length }} </a></span>
+              <a href="{% url 'parceiro_blocked_details' pk=parceiro.pk %}" class="btn-link"> <i class="fa fa-ellipsis-v"></i> Editar itens </a>
             </td>
           </tr>
           {% endfor %}

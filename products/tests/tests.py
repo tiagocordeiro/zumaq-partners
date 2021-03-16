@@ -12,7 +12,8 @@ from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
 from core.models import UserProfile
-from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
+from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, CustomBlocked, \
+    BlockedProducts
 from products.views import product_add, product_update
 
 
@@ -76,6 +77,14 @@ class ProductsTestCase(TestCase):
         # Custom coeficiente de parceiro2
         # O coeficiente padrão deve ser .50
         self.parceiro2_coefiente = CustomCoeficiente.objects.create(parceiro=self.user_parceiro2)
+
+        # User Parceiro 3 - testing blocked items
+        self.user_parceiro3 = User.objects.create_user(username='john', email='john@foo.bar', password='secret')
+        self.group_parceiro.user_set.add(self.user_parceiro3)
+
+        # Custom blocked items setup
+        self.custom_blocked = CustomBlocked.objects.create(parceiro=self.user_parceiro3)
+        self.blocked_items = BlockedProducts.objects.create(parceiro=self.custom_blocked, produto=self.product)
 
     def test_retorno_ch_sem_imposto(self):
         produto = Produto.objects.get(codigo='TYL-1080')
@@ -244,6 +253,13 @@ class ProductsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TYL-1080')
         self.assertContains(response, 'R$ 1.739,61')
+
+    def test_product_list_view_parceiro_blocked(self):
+        self.client.force_login(self.user_parceiro3)
+        response = self.client.get(reverse('product_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'TYL-1080')
 
     def test_product_atacado_list_view_parceiro(self):
         self.client.force_login(self.user_parceiro)

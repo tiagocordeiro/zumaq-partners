@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput, Select, NumberInput, CheckboxInput
 
-from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
+from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, CustomBlocked, BlockedProducts
 
 
 class ProdutoForm(ModelForm):
@@ -55,4 +55,20 @@ class CustomCoeficienteItensForm(ModelForm):
             'parceiro': Select(attrs={'class': 'form-control', 'placeholder': 'Parceiro', 'disabled': ''}),
             'produto': Select(attrs={'class': 'form-control'}),
             'coeficiente': NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+class CustomBlockedForm(ModelForm):
+    class Meta:
+        model = CustomBlocked
+        fields = ['parceiro']
+
+
+class BlockedProductsForm(ModelForm):
+    class Meta:
+        model = BlockedProducts
+        fields = ['parceiro', 'produto']
+        widgets = {
+            'parceiro': Select(attrs={'class': 'form-control', 'placeholder': 'Parceiro', 'disabled': ''}),
+            'produto': Select(attrs={'class': 'form-control'}),
         }

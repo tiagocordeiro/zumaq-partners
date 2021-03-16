@@ -16,7 +16,7 @@ from django.utils.html import strip_tags
 from xhtml2pdf import pisa
 
 from core.models import UserProfile, User
-from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
+from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, BlockedProducts
 from .forms import PedidoForm, PedidoItensForm
 from .models import Pedido, PedidoItem
 
@@ -24,8 +24,17 @@ from .models import Pedido, PedidoItem
 @login_required
 def pedido_add_item(request, **kwargs):
     parceiro = User.objects.get(username=request.user)
+    bloqueados = BlockedProducts.objects.filter(parceiro__parceiro=parceiro)  # .values_list('produto__codigo')
+    bloqueados_list = []
+
+    for item in bloqueados:
+        bloqueados_list.append(item.produto.codigo)
 
     produto = Produto.objects.get(codigo=kwargs.get('codigo'))
+
+    if produto.codigo in bloqueados_list:
+        messages.info(request, f'{produto.descricao} Não está disponível para pedido.')
+        return redirect(reverse('product_list'))
 
     pedido = Pedido.objects.filter(parceiro=parceiro, status=0).first()
     if pedido is None:
@@ -124,9 +133,22 @@ def pedido_aberto(request):
 
     pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
     pedido_total = 0
+    pedido_itens_list = []
     for item in pedido_itens:
         subtotal = item.quantidade * item.valor_unitario
         pedido_total = pedido_total + subtotal
+        pedido_itens_list.append(item.item.codigo)
+
+    bloqueados = BlockedProducts.objects.filter(parceiro__parceiro=parceiro)  # .values_list('produto__codigo')
+    bloqueados_list = []
+
+    for item in bloqueados:
+        bloqueados_list.append(item.produto.codigo)
+        if item.produto.codigo in pedido_itens_list:
+            PedidoItem.objects.get(pedido__exact=pedido, item__codigo=item.produto.codigo).delete()
+
+            messages.info(request, f'{item.produto} Não está disponível para pedido.')
+            return redirect(reverse('pedido_aberto'))
 
     itens_pedido_formset = inlineformset_factory(
         Pedido, PedidoItem, form=PedidoItensForm, extra=0, can_delete=True)

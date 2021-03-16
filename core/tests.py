@@ -8,7 +8,7 @@ from django.test import RequestFactory, TestCase, Client, override_settings
 from django.urls import reverse
 
 from .models import UserProfile
-from .views import dashboard, profile_update, parceiro_details
+from .views import dashboard, profile_update, parceiro_details, parceiro_blocked_details
 
 
 class DashboardViewTest(TestCase):
@@ -249,4 +249,18 @@ class ParceirosViewsTests(TestCase):
         request.user = self.user_gerente
 
         response = parceiro_details(request, pk=self.user_parceiro.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_parceiro_blocked_parceiro(self):
+        request = self.factory.get('parceiros/blocked/2/')
+        request.user = self.user_parceiro
+
+        response = parceiro_blocked_details(request, pk=self.user_parceiro.pk)
+        self.assertEqual(response.status_code, 302)
+
+    def test_view_parceiro_blocked_gerente(self):
+        request = self.factory.get('parceiros/blocked/2/')
+        request.user = self.user_gerente
+
+        response = parceiro_blocked_details(request, pk=self.user_parceiro.pk)
         self.assertEqual(response.status_code, 200)

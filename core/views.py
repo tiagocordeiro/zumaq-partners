@@ -5,8 +5,8 @@ from django.forms.models import inlineformset_factory
 from django.shortcuts import render, redirect
 
 from pedidos.models import Pedido, PedidoItem
-from products.forms import CustomCoeficienteForm, CustomCoeficienteItensForm
-from products.models import CustomCoeficiente, CustomCoeficienteItens, Produto
+from products.forms import CustomCoeficienteForm, CustomCoeficienteItensForm, BlockedProductsForm, CustomBlockedForm
+from products.models import CustomCoeficiente, CustomCoeficienteItens, Produto, BlockedProducts, CustomBlocked
 from .facade import cotacoes
 from .forms import ProfileForm, CadastroParceiro
 from .models import UserProfile
@@ -220,3 +220,59 @@ def parceiro_details(request, pk):
     }
 
     return render(request, 'parceiros/details.html', context)
+
+
+@login_required
+def parceiro_blocked_details(request, pk):
+    # Check access role
+    user = User.objects.get(username=request.user)
+    if user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(pk=pk)
+
+    try:
+        parceiro_blocked_items = CustomBlocked.objects.get(parceiro=parceiro)
+    except CustomBlocked.DoesNotExist:
+        parceiro_blocked_items = CustomBlocked.objects.create(parceiro=parceiro)
+
+    custom_blocked = BlockedProducts.objects.all().filter(parceiro=parceiro_blocked_items)
+
+    custom_itens_formset = inlineformset_factory(
+        CustomBlocked, BlockedProducts, form=BlockedProductsForm, extra=0, can_delete=True)
+
+    if request.method == 'POST':
+        form = CustomBlockedForm(request.POST, instance=parceiro_blocked_items, prefix='main')
+        formset = custom_itens_formset(request.POST, instance=parceiro_blocked_items, prefix='product')
+
+        try:
+            if formset.is_valid() and form.is_valid():
+                form.save()
+                formset.save()
+                messages.success(request, "Produtos restritos atualizados.")
+                return redirect(parceiro_blocked_details, pk=parceiro.pk)
+
+        except Exception as e:
+            messages.warning(request, 'Ocorreu um erro ao atualizar: {}'.format(e))
+
+    else:
+        form = CustomBlockedForm(instance=parceiro_blocked_items, prefix='main')
+        formset = custom_itens_formset(instance=parceiro_blocked_items, prefix='product')
+
+    context = {
+        'custom_blocked': custom_blocked,
+        'parceiro_blocked_items': parceiro_blocked_items,
+        'form': form,
+        'formset': formset,
+        'usuario': usuario,
+        'parceiro': parceiro,
+    }
+
+    return render(request, 'parceiros/blocked.html', context)

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado
+from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, CustomBlocked, BlockedProducts
 
 
 # Register your models here.
@@ -33,5 +33,18 @@ class CustomCoeficienteAdmin(SimpleHistoryAdmin, admin.ModelAdmin):
     massadmin_exclude = ['parceiro', ]
 
 
+class BlockedProductInLine(admin.StackedInline):
+    model = BlockedProducts
+    extra = 1
+
+
+class BlockedProductsAdmin(admin.ModelAdmin):
+    list_display = ('parceiro',)
+    inlines = [
+        BlockedProductInLine,
+    ]
+
+
 admin.site.register(Produto, ProdutoAdmin)
 admin.site.register(CustomCoeficiente, CustomCoeficienteAdmin)
+admin.site.register(CustomBlocked, BlockedProductsAdmin)
