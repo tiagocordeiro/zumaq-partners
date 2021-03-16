@@ -91,3 +91,18 @@ class CustomCoeficienteItens(models.Model):
     produto = models.ForeignKey(Produto, null=True, on_delete=models.SET_NULL)
     coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
     history = HistoricalRecords()
+
+
+class CustomBlocked(models.Model):
+    parceiro = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
+
+
+class BlockedProducts(models.Model):
+    parceiro = models.ForeignKey(CustomBlocked, null=True, on_delete=models.SET_NULL)
+    produto = models.ForeignKey(Produto, null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return str(self.produto.codigo + ' - ' + self.produto.descricao)
+
+    class Meta:
+        unique_together = [('parceiro', 'produto')]

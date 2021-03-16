@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Parceiro - itens bloqueados - S.I.E.{% endblock %}
+{% block page-title %}Itens restritos para parceiro{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'parceiro_list' %}">Perceiros</a></li>
+  <li class="breadcrumb-item active"><span>Itens bloqueados</span></li>
+{% endblock %}
+
+{% block content %}
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+          crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(function () {
+      $("#add-item").click(function (ev) {
+        ev.preventDefault();
+        var count = $('#nota').children().length;
+        var tmplMarkup = $("#item-nota").html();
+        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+        $("div#nota").append(compiledTmpl);
+        // update form count
+        $('#id_product-TOTAL_FORMS').attr('value', count + 1);
+        // update css
+        $('.input-group')[count].childNodes[1].className = 'col-lg-11 col-md-12 col-sm-12';
+        $('.input-group')[count].childNodes[3].className = 'col-lg-1 col-md-12 col-sm-12';
+      });
+    });
+  </script>
+  <section class="main--content">
+    <div class="panel">
+      <div class="records--header">
+        <div class="title fa-user">
+          <h3 class="h3">{{ parceiro }} <a href="{% url 'parceiro_list' %}" class="btn btn-sm btn-outline-info">Ver todos</a></h3>
+        </div>
+        <div class="actions">
+          <span class="addProduct btn btn-sm btn-rounded btn-primary disabled">Bloqueados {{ custom_blocked|length }}</span>
+        </div>
+      </div>
+    </div>
+
+    {% if form.errors %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      {{ form.errors }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+
+    {% if formset.errors %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ formset.errors }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    {% endif %}
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="panel">
+      <!-- Edit Product Start -->
+      <div class="records--body">
+        <div class="title">
+          <h6 class="h6">{{ parceiro.username }} - {{ parceiro.email }}</h6>
+        </div>
+
+
+
+        <form action="." method="POST">
+          {% csrf_token %}
+
+          <div style="display: none;">
+            <div class="row form-row spacer mb-4">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                {{ form }}
+              </div>
+            </div>
+          </div>
+
+          {{ formset.management_form|crispy }}
+
+          <legend class="lead">PRODUTOS BLOQUEADOS</legend>
+
+          <div id="nota">
+            {% for custom_item in formset %}
+              <div id="item-{{ forloop.counter0 }}" class="row form-row spacer">
+                <div class="input-group">
+                  {{ custom_item.id }}
+                  {{ custom_item.parceiro }}
+                  <div class="col-lg-11 col-md-12 col-sm-12">
+                    {{ custom_item.produto|as_crispy_field }}
+                  </div>
+                  <div class="col-lg-1 col-md-12 col-sm-12" style="margin: 30px 0 0 0;">
+                    {{ custom_item.DELETE|as_crispy_field }}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <a class="btn btn-info" id="add-item"><i class="fa fa-plus"></i> Add Item</a>
+
+              <a href="{% url 'parceiro_list' %}" class="btn btn-warning pull-right"><i class="fa fa-times"></i>
+                Cancelar</a>
+              <button class="btn btn-rounded btn-success" value="Atualizar"><i class="fa fa-floppy-o"></i> Atualizar
+              </button>
+
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+    <script type="text/html" id="item-nota">
+      <div id="item-__prefix__" style="margin-top: 10px" class="row form-row spacer">
+        <div class="input-group">
+          {{ custom_item.id }}
+          {{ custom_item.parceiro }}
+          <div class="col-lg-11 col-md-12 col-sm-12">
+            {{ formset.empty_form.produto|as_crispy_field }}
+          </div>
+          <div class="col-lg-1 col-md-12 col-sm-12" style="margin: 30px 0 0 0;">
+            {{ formset.empty_form.DELETE|as_crispy_field }}
+          </div>
+        </div>
+      </div>
+    </script>
+
+  </section>
+  <!-- Main Content End -->
+{% endblock %}
