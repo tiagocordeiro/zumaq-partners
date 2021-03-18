@@ -81,6 +81,7 @@ class ProductsTestCase(TestCase):
         # User Parceiro 3 - testing blocked items
         self.user_parceiro3 = User.objects.create_user(username='john', email='john@foo.bar', password='secret')
         self.group_parceiro.user_set.add(self.user_parceiro3)
+        self.user_profile_parceiro3 = UserProfile.objects.create(user=self.user_parceiro3, avatar=str(self.image))
 
         # Custom blocked items setup
         self.custom_blocked = CustomBlocked.objects.create(parceiro=self.user_parceiro3)
@@ -319,6 +320,19 @@ class ProductsTestCase(TestCase):
         self.assertContains(response, 'TYL-1080')
         self.assertContains(response, '1739.61')
 
+    def test_api_product_detail_blocked_view(self):
+        self.client.logout()
+        api_token = self.user_parceiro3.userprofile.api_secret_key
+
+        response = self.client.get(reverse('api_product_detail', kwargs={"secret_key": api_token,
+                                                                         "codigo": self.product.codigo}))
+
+        self.assertEqual(response.status_code, 403)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'status': 'false', 'message': 'Produto não disponível'}
+        )
+
     def test_product_list_json_view_anonimo(self):
         self.client.logout()
         response = self.client.get(reverse('product_list_json'))
@@ -358,6 +372,16 @@ class ProductsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TYL-1080')
         self.assertContains(response, '1739.61')
+
+    def test_product_detail_json_view_blocked_parceiro(self):
+        self.client.force_login(self.user_parceiro3)
+        response = self.client.get(reverse('product_detail_json', kwargs={'codigo': 'TYL-1080'}))
+
+        self.assertEqual(response.status_code, 403)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'status': 'false', 'message': 'Produto não disponível'}
+        )
 
     def test_product_detail_json_view_gerente(self):
         self.client.force_login(self.user_gerente)
