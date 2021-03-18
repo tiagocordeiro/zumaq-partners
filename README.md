@@ -43,6 +43,11 @@ Cria usuário
 python manage.py createsuperuser --username dev --email dev@foo.bar
 ```
 
+Atualiza cotações de moedas
+```
+python manage.py atualiza_cotacoes
+```
+
 ### Testes
 
 ##### Rode os testes

@@ -391,6 +391,80 @@ class ProductsTestCase(TestCase):
         self.assertContains(response, 'TYL-1080')
         self.assertContains(response, '1199.73')
 
+    def test_api_product_list_header_token_without_token(self):
+        self.client.logout()
+        response = self.client.get(reverse('api_product_list_header_token'))
+
+        self.assertEqual(response.status_code, 500)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'status': 'false', 'message': 'Token não informado'}
+        )
+
+    def test_api_product_list_header_token_with_token(self):
+        self.client.logout()
+        api_token = self.user_parceiro3.userprofile.api_secret_key
+        header = {'HTTP_Token': api_token}
+
+        response = self.client.get(reverse('api_product_list_header_token'), **header)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'results': []}
+        )
+
+        bloqueado = BlockedProducts.objects.get(parceiro=self.custom_blocked, produto=self.product)
+        bloqueado.delete()
+
+        response = self.client.get(reverse('api_product_list_header_token'), **header)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'results': [{'codigo': 'TYL-1080',
+                          'descricao': 'Tubo de Laser Yong Li - 80w - R3',
+                          'estoque': True,
+                          'valor': '1199.73'}]}
+        )
+
+    def test_api_product_detail_header_token_without_token(self):
+        self.client.logout()
+        response = self.client.get(reverse('api_product_detail_header_token', kwargs={'codigo': 'TYL-1080'}))
+
+        self.assertEqual(response.status_code, 500)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'status': 'false', 'message': 'Token não informado'}
+        )
+
+    def test_api_product_detail_header_token_with_token(self):
+        self.client.logout()
+        api_token = self.user_parceiro3.userprofile.api_secret_key
+        header = {'HTTP_Token': api_token}
+
+        response = self.client.get(reverse('api_product_detail_header_token', kwargs={'codigo': 'TYL-1080'}), **header)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'message': 'Produto não disponível', 'status': 'false'}
+        )
+
+        bloqueado = BlockedProducts.objects.get(parceiro=self.custom_blocked, produto=self.product)
+        bloqueado.delete()
+
+        response = self.client.get(reverse('api_product_detail_header_token', kwargs={'codigo': 'TYL-1080'}), **header)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'results': {'codigo': 'TYL-1080',
+                         'descricao': 'Tubo de Laser Yong Li - 80w - R3',
+                         'estoque': True,
+                         'valor': '1199.73'}}
+        )
+
     @responses.activate
     def test_product_create(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
