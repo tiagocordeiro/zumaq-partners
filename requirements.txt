@@ -24,7 +24,7 @@ pybling==0.0.9
 sentry-sdk==1.0.0
 
 # Crispy Forms
-django-crispy-forms==1.11.1
+django-crispy-forms==1.11.2
 
 # Quandl
 quandl==3.6.1
