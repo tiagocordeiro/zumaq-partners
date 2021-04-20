@@ -39,7 +39,7 @@ xlwt==1.3.0
 xhtml2pdf==0.2.5
 
 # Loggin
-django-simple-history==2.12.0
+django-simple-history==3.0.0
 
 # Analytics
 django-analytical==3.0.0
