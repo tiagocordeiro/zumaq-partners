@@ -1,12 +1,13 @@
 # zumaq-partners
 ## Sistema de revendas parceiras da Zumaq
 
+![Deploy workflow](https://github.com/tiagocordeiro/zumaq-partners/actions/workflows/python-app.yml/badge.svg)
 [![Build Status](https://travis-ci.org/tiagocordeiro/zumaq-partners.svg?branch=master)](https://travis-ci.org/tiagocordeiro/zumaq-partners)
 [![Updates](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/shield.svg)](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/)
 [![Python 3](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/python-3-shield.svg)](https://pyup.io/repos/github/tiagocordeiro/zumaq-partners/)
 [![codecov](https://codecov.io/gh/tiagocordeiro/zumaq-partners/branch/master/graph/badge.svg)](https://codecov.io/gh/tiagocordeiro/zumaq-partners)
-[![Python 3.8.6](https://img.shields.io/badge/python-3.8.6-blue.svg)](https://www.python.org/downloads/release/python-386/)
-[![Django 3.1.2](https://img.shields.io/badge/django-3.1.2-blue.svg)](https://www.djangoproject.com/download/)
+[![Python 3.9.2](https://img.shields.io/badge/python-3.9.2-blue.svg)](https://www.python.org/downloads/release/python-392/)
+[![Django 3.2](https://img.shields.io/badge/django-3.2-blue.svg)](https://www.djangoproject.com/download/)
 [![PyBling](https://img.shields.io/badge/bling-API-green.svg)](https://github.com/tiagocordeiro/pybling)
 [![Quandl](https://img.shields.io/badge/quandl-API-green.svg)](https://github.com/quandl/quandl-python)
 
