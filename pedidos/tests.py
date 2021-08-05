@@ -1,11 +1,17 @@
+import base64  # for decoding base64 image
+from io import BytesIO
+
 from django.contrib.auth.models import User, Group
 from django.contrib.messages.storage.fallback import FallbackStorage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 
+from core.models import UserProfile
 from pedidos.models import Pedido
 from pedidos.views import pedidos_list, pedido_add_item, pedido_aberto, pedido_checkout, pedido_details, \
-    pedido_export_pdf, pedido_delivery_term_pdf, pedido_delivery_term_with_order_pdf
+    pedido_export_pdf, pedido_delivery_term_pdf, pedido_delivery_term_with_order_pdf, pedidos_list_separacao, \
+    pedidos_list_separados, pedido_separacao
 from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens
 
 
@@ -45,6 +51,23 @@ class PedidosTestCase(TestCase):
         self.custom_coeficiente_item = CustomCoeficienteItens.objects.create(parceiro=self.custom_coeficiente,
                                                                              produto=self.product,
                                                                              coeficiente=0.10)
+
+        # User Profiles
+        image_thumb = '''
+                        R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
+                        '''.strip()
+
+        self.image = InMemoryUploadedFile(
+            BytesIO(base64.b64decode(image_thumb)),  # use io.BytesIO
+            field_name='tempfile',
+            name='tempfile.png',
+            content_type='image/png',
+            size=len(image_thumb),
+            charset='utf-8',
+        )
+
+        self.user_profile_parceiro = UserProfile.objects.create(user=self.user_parceiro, avatar=str(self.image))
+        self.user_profile_gerente = UserProfile.objects.create(user=self.user_gerente, avatar=str(self.image))
 
         self.pedido_aberto = Pedido.objects.create(parceiro=self.user_parceiro)
 
@@ -93,6 +116,111 @@ class PedidosTestCase(TestCase):
         request.user = self.user_parceiro
 
         response = pedidos_list(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_pedidos_para_separar_list_view_anonimo(self):
+        self.client.logout()
+        response = self.client.get(reverse('pedidos_list_separacao'))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/pedido/list/separacao/',
+                             status_code=302, target_status_code=200)
+
+    def test_pedidos_para_separar_list_view_parceiro(self):
+        request = self.factory.get(reverse('pedidos_list_separacao'))
+        request.user = self.user_parceiro
+
+        response = pedidos_list_separacao(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_pedidos_para_separar_list_view_gerente(self):
+        pedido = self.pedido_aberto
+        request = self.factory.get(reverse('pedidos_list_separacao'))
+        request.user = self.user_gerente
+
+        response = pedidos_list_separacao(request)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(pedido.get_status_display(), 'Aberto')
+
+        # Parceiro adiciona item ao pedido
+        self.test_pedido_add_item()
+
+        # Parceiro faz checkout
+        self.test_pedido_checkout()
+
+        # Testa se pedido alterou status para 'Enviado'
+        self.assertEqual(pedido.get_status_display(), 'Enviado')
+
+        response = pedidos_list_separacao(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'R$ 1.319,70')
+
+    def test_pedidos_separados_list_view_anonimo(self):
+        self.client.logout()
+        response = self.client.get(reverse('pedidos_list_separados'))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/pedido/list/separados/',
+                             status_code=302, target_status_code=200)
+
+    def test_pedidos_separados_list_view_parceiro(self):
+        request = self.factory.get(reverse('pedidos_list_separados'))
+        request.user = self.user_parceiro
+
+        response = pedidos_list_separados(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_pedidos_separados_list_view_gerente(self):
+        pedido = self.pedido_aberto
+        request = self.factory.get(reverse('pedidos_list_separados'))
+        request.user = self.user_gerente
+
+        response = pedidos_list_separados(request)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(pedido.get_status_display(), 'Aberto')
+
+        # Parceiro adiciona item ao pedido
+        self.test_pedido_add_item()
+
+        # Parceiro faz checkout
+        self.test_pedido_checkout()
+
+        # Testa se pedido alterou status para 'Enviado'
+        self.assertEqual(pedido.get_status_display(), 'Enviado')
+
+        # Marca pedido como separado
+        pedido.separado = True
+        pedido.save()
+
+        response = pedidos_list_separados(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'R$ 1.319,70')
+
+    def test_pedido_em_separacao_view_anonimo(self):
+        pedido = self.pedido_aberto
+        self.client.logout()
+        response = self.client.get(reverse('pedido_separacao', kwargs={'pk': pedido.pk}))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f'/accounts/login/?next=/pedido/separacao/{pedido.pk}/',
+                             status_code=302, target_status_code=200)
+
+    def test_pedido_em_separacao_view_parceiro(self):
+        pedido = self.pedido_aberto
+        request = self.factory.get(reverse('pedido_separacao', kwargs={'pk': pedido.pk}))
+        request.user = self.user_parceiro
+
+        response = pedido_separacao(request, self.pedido_aberto.pk)
+        self.assertEqual(response.status_code, 302)
+
+    def test_pedido_em_separacao_view_gerente(self):
+        pedido = self.pedido_aberto
+        request = self.factory.get(reverse('pedido_separacao', kwargs={'pk': pedido.pk}))
+        request.user = self.user_gerente
+
+        response = pedido_separacao(request, self.pedido_aberto.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_pedido_checkout(self):
