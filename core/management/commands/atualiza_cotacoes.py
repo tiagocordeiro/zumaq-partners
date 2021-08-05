@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from django.core.management import BaseCommand
 
-from core.facade import cotacoes
+from core.facade import get_usd_cny_exchange
 from core.models import CotacoesMoedas
 
 
@@ -8,26 +10,30 @@ class Command(BaseCommand):
     help = '''Atualiza cotações no banco de dados'''
 
     def handle(self, *args, **options):
-        cotacoes_moedas = cotacoes()
-        cotacoes_moedas = cotacoes_moedas['df']
-        cotacoes_moedas.columns = ['date', 'cny', 'usd']
-        cotacoes_dict = []
-        for cotacao in cotacoes_moedas.itertuples():
-            cotacao = CotacoesMoedas(date=cotacao[1],
-                                     cny=cotacao[2],
-                                     usd=cotacao[3])
-            cotacoes_dict.append(cotacao)
+        cotacoes_moedas = get_usd_cny_exchange()
 
-        last_in_dict = cotacoes_dict[-1].date
-        try:
-            last_in_db = CotacoesMoedas.objects.last().date
-            if last_in_db < last_in_dict:
-                print(f"No banco: {last_in_db}, mais recente: {last_in_dict}")
-                CotacoesMoedas.objects.all().delete()
-                CotacoesMoedas.objects.bulk_create(cotacoes_dict)
-                print("Cotações atualizadas")
+        for cotacao in cotacoes_moedas['cotacao_cny']:
+            data = datetime.strptime(cotacao["data"], "%d/%m/%Y")
+            valor = cotacao["valor"]
 
-        except AttributeError:
-            print(f"No banco: vazio, mais recente: {last_in_dict}")
-            CotacoesMoedas.objects.bulk_create(cotacoes_dict)
-            print("Cotações adicionadas")
+            try:
+                obj = CotacoesMoedas.objects.get(date=data)
+                obj.cny = valor
+                obj.save()
+
+            except CotacoesMoedas.DoesNotExist:
+                new_obj = CotacoesMoedas.objects.create(date=data, cny=valor)
+                new_obj.save()
+
+        for cotacao in cotacoes_moedas['cotacao_brl']:
+            data = datetime.strptime(cotacao["data"], "%d/%m/%Y")
+            valor = cotacao["valor"]
+
+            try:
+                obj = CotacoesMoedas.objects.get(date=data)
+                obj.usd = valor
+                obj.save()
+
+            except CotacoesMoedas.DoesNotExist:
+                new_obj = CotacoesMoedas.objects.create(date=data, usd=valor)
+                new_obj.save()

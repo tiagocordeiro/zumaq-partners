@@ -48,5 +48,5 @@ class UserProfile(models.Model):
 
 class CotacoesMoedas(models.Model):
     date = models.DateField(primary_key=True)
-    usd = models.DecimalField(decimal_places=2, max_digits=20)
-    cny = models.DecimalField(decimal_places=2, max_digits=20)
+    usd = models.DecimalField(decimal_places=2, max_digits=20, blank=True, null=True)
+    cny = models.DecimalField(decimal_places=2, max_digits=20, blank=True, null=True)
