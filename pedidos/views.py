@@ -12,12 +12,13 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import get_template
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.html import strip_tags
 from xhtml2pdf import pisa
 
 from core.models import UserProfile, User
 from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, BlockedProducts
-from .forms import PedidoForm, PedidoItensForm
+from .forms import PedidoForm, PedidoItensForm, PedidoItensSeparacaoForm, PedidoSeparacaoForm
 from .models import Pedido, PedidoItem
 
 
@@ -431,6 +432,117 @@ def pedido_delivery_term_with_order_pdf(request, pk):
 
 
 @login_required
+def pedidos_list_separacao(request):
+    # Check access role
+    usuario = UserProfile.objects.get(user=request.user)
+    if usuario.user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
+    pedidos = Pedido.objects.all().order_by('-pk').filter(separado=False, status__gte=1)
+
+    for pedido in pedidos:
+        pedido.valor_total = 0
+        pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+        for item in pedido_itens:
+            subtotal = item.quantidade * item.valor_unitario
+            pedido.valor_total = pedido.valor_total + subtotal
+
+    context = {'usuario': usuario,
+               'pedidos': pedidos,
+               'current_page': 'Pedidos para separação'}
+
+    return render(request, 'pedidos/list_separacao.html', context)
+
+
+@login_required
+def pedidos_list_separados(request):
+    # Check access role
+    usuario = UserProfile.objects.get(user=request.user)
+    if usuario.user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
+    pedidos = Pedido.objects.all().order_by('-pk').filter(separado=True, status__gte=1)
+
+    for pedido in pedidos:
+        pedido.valor_total = 0
+        pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+        for item in pedido_itens:
+            subtotal = item.quantidade * item.valor_unitario
+            pedido.valor_total = pedido.valor_total + subtotal
+
+    context = {'usuario': usuario,
+               'pedidos': pedidos,
+               'current_page': 'Pedidos separados'}
+
+    return render(request, 'pedidos/list_separacao.html', context)
+
+
+@login_required
+def pedido_separacao(request, pk):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+    # Check access role
+    if usuario.user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
+    pedido = Pedido.objects.get(pk=pk)
+    pedido_itens = PedidoItem.objects.all().filter(pedido__exact=pedido)
+    pedido_itens_qt = pedido_itens.count()
+    pedido_total = 0
+    pedido_itens_list = []
+    for item in pedido_itens:
+        subtotal = item.quantidade * item.valor_unitario
+        pedido_total = pedido_total + subtotal
+        pedido_itens_list.append(item.item.codigo)
+
+    itens_pedido_formset = inlineformset_factory(
+        Pedido, PedidoItem, form=PedidoItensSeparacaoForm, extra=0, can_delete=False)
+
+    if request.method == 'POST':
+        form = PedidoSeparacaoForm(request.POST, instance=pedido, prefix='main')
+        formset = itens_pedido_formset(request.POST, request.FILES, instance=pedido, prefix='product')
+
+        try:
+            if form.is_valid():
+                pedido_separado = form.save(commit=False)
+                formset = itens_pedido_formset(request.POST, request.FILES, instance=pedido_separado, prefix='product')
+
+                if formset.is_valid():
+                    pedido_separado.save()
+                    formset.save()
+
+                    # Atualiza dados no banco
+                    pedido.separado_por = usuario.user
+                    pedido.separado_data = timezone.localtime(timezone.now())
+                    pedido.status = 2
+                    pedido.save()
+                    messages.success(request, "Pedido atualizado")
+                    return redirect(pedido_separacao, pk=pedido.pk)
+        except Exception as e:
+            messages.warning(request, 'Ocorreu um erro ao atualizar: {}'.format(e))
+
+    else:
+        form = PedidoSeparacaoForm(instance=pedido, prefix='main')
+        formset = itens_pedido_formset(instance=pedido, prefix='product')
+
+    return render(request, 'pedidos/pedido_separacao.html', {'usuario': usuario,
+                                                             'pedido': pedido,
+                                                             'pedido_itens': pedido_itens,
+                                                             'pedido_total': pedido_total,
+                                                             'pedido_itens_qt': pedido_itens_qt,
+                                                             'form': form,
+                                                             'formset': formset})
+
+
+@login_required
 def pedidos_list(request):
     try:
         usuario = UserProfile.objects.get(user=request.user)
@@ -442,7 +554,7 @@ def pedidos_list(request):
     if parceiro.groups.filter(name='Gerente').exists() or request.user.is_superuser:
         pedidos = Pedido.objects.all().order_by('-pk')
     else:
-        pedidos = Pedido.objects.all().filter(parceiro=parceiro).order_by('-pk')
+        pedidos = Pedido.objects.all().filter(parceiro=parceiro, status__gte=1).order_by('-pk')
 
     for pedido in pedidos:
         pedido.valor_total = 0
@@ -462,7 +574,8 @@ def pedidos_list(request):
     context = {'parceiro': parceiro,
                'usuario': usuario,
                'pedidos': pedidos,
-               'pedido_itens_qt': pedido_itens_qt}
+               'pedido_itens_qt': pedido_itens_qt,
+               'current_page': 'Pedidos'}
 
     return render(request, 'pedidos/list.html', context)
 

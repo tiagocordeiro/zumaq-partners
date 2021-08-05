@@ -12,4 +12,7 @@ urlpatterns = [
     path('export/pdf/deliveryterm/<pk>/', views.pedido_delivery_term_pdf, name='pedido_export_delivery_term_pdf'),
     path('export/pdf/completo/<pk>/', views.pedido_delivery_term_with_order_pdf, name='pedido_export_complete_pdf'),
     path('list/', views.pedidos_list, name='pedidos_list'),
+    path('list/separacao/', views.pedidos_list_separacao, name='pedidos_list_separacao'),
+    path('list/separados/', views.pedidos_list_separados, name='pedidos_list_separados'),
+    path('separacao/<pk>/', views.pedido_separacao, name='pedido_separacao'),
 ]

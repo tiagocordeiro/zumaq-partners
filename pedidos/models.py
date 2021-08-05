@@ -15,6 +15,9 @@ class Pedido(TimeStampedModel, Active):
     parceiro = models.ForeignKey(User, verbose_name='parceiro', on_delete=models.CASCADE)
     status = models.IntegerField('Situação', choices=STATUS_CHOICES, default=0, blank=True)
     observacoes = models.TextField('Observações', blank=True, null=True)
+    separado = models.BooleanField('Pedido separado', default=False)
+    separado_por = models.ForeignKey(User, related_name='gerente', on_delete=models.CASCADE, blank=True, null=True)
+    separado_data = models.DateTimeField('separado em', blank=True, null=True)
 
     def __str__(self):
         return str(self.pk) + ' - ' + str(self.parceiro.username)
@@ -30,6 +33,9 @@ class PedidoItem(models.Model):
     quantidade = models.PositiveIntegerField('Quantidade', default=1)
     valor_unitario = models.DecimalField('Valor Un.', max_digits=10, decimal_places=2, null=True, blank=True)
     atacado = models.BooleanField('atacado', default=False)
+    separado = models.BooleanField('Item separado', default=False)
+    separado_nota = models.TextField('Observações', blank=True, null=True)
+    separado_imagem = models.ImageField(upload_to='pedidos-separacao/', blank=True, null=True)
 
     def __str__(self):
         return str(self.item.descricao)

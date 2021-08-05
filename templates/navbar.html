@@ -144,13 +144,13 @@
             </a>
           </li>
           {% if request.user|has_group:"Gerente" %}
-          <li>
-            <a href="{% url 'product_list_atacado' %}">
-              <i class="fa fa-th-list"></i>
-              <span>Atacado</span>
-            </a>
-          </li>
-        {% endif %}
+            <li>
+              <a href="{% url 'product_list_atacado' %}">
+                <i class="fa fa-th-list"></i>
+                <span>Atacado</span>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
 
@@ -185,6 +185,20 @@
               <span>Todos os pedidos</span>
             </a>
           </li>
+          {% if request.user|has_group:"Gerente" %}
+            <li>
+              <a href="{% url 'pedidos_list_separacao' %}">
+                <i class="fa fa-tasks"></i>
+                <span>Para separação</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'pedidos_list_separados' %}">
+                <i class="fa fa-tasks"></i>
+                <span>Separados</span>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
 
