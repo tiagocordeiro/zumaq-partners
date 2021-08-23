@@ -71,7 +71,7 @@ def get_usd_cny_exchange(start_date=None, end_date=None):
     result_cny = response_cny.json()
     if result_cny:
         data_indexed_cny = [
-            (item['timestamp'], item['ask']) for item in result_cny[1:]
+            (item['timestamp'], item['ask']) for item in result_cny
         ]
 
         data_indexed_cny.reverse()

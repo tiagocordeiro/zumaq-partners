@@ -2,12 +2,12 @@
 flake8==3.9.2
 
 # DebugToolbar
-django-debug-toolbar==3.2.1
+django-debug-toolbar==3.2.2
 
 # Coverage
 coverage==5.5
 
 # responses
-responses==0.13.3
+responses==0.13.4
 
 -r requirements.txt
