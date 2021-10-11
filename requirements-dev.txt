@@ -1,11 +1,11 @@
 # Flake8
-flake8==3.9.2
+flake8==4.0.1
 
 # DebugToolbar
 django-debug-toolbar==3.2.2
 
 # Coverage
-coverage==6.0
+coverage==6.0.1
 
 # responses
 responses==0.14.0

@@ -26,9 +26,6 @@ sentry-sdk==1.4.3
 # Crispy Forms
 django-crispy-forms==1.13.0
 
-# Quandl
-quandl==3.6.1
-
 # Bulk Changes in Admin
 django-mass-edit==3.3.0
 
