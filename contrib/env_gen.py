@@ -28,11 +28,13 @@ PEDIDO_MAIL=
 # Cloudinary for static e media files
 CLOUDINARY_URL=
 BLING_API_KEY=
-QUANDL_KEY=
 # Analytics
 CLICKY_SITE_ID=XXXXXXXXX
 GOOGLE_ANALYTICS_GTAG_PROPERTY_ID=G-XXXXXXXXX
 SECURE_REFERRER_POLICY=origin-when-cross-origin
+# Cotação de Moedas
+X_RAPIDAPI_KEY=
+X_RAPIDAPI_HOST=
 """.strip() % get_random_string(50, chars)
 
 # Writing our configuration file to '.env'
