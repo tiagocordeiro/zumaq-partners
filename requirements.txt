@@ -15,7 +15,7 @@ gunicorn==20.1.0
 Pillow==8.3.2
 
 # Cloudinary
-dj3-cloudinary-storage==0.0.5
+dj3-cloudinary-storage==0.0.6
 
 # Bling
 pybling==0.0.9
