@@ -150,3 +150,25 @@ class ReportsViewsTests(TestCase):
 
         response = download_excel_products_data(request)
         self.assertEqual(response.status_code, 200)
+
+    # Testa view de relatório de acessos revendas
+    def test_report_reseller_access_anonimo(self):
+        request = self.factory.get('/parceiros/access/')
+        request.user = AnonymousUser()
+
+        response = parceiros_report(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_report_reseller_access_logado_parceiro(self):
+        request = self.factory.get('/parceiros/access/')
+        request.user = self.user_parceiro
+
+        response = parceiros_report(request)
+        self.assertEqual(response.status_code, 302)
+
+    def test_report_reseller_access_logado_gerente(self):
+        request = self.factory.get('/parceiros/access/')
+        request.user = self.user_gerente
+
+        response = parceiros_report(request)
+        self.assertEqual(response.status_code, 200)

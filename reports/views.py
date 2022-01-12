@@ -243,3 +243,31 @@ def download_excel_products_data(request):
 
     wb.save(response)
     return response
+
+
+@login_required
+def reseller_access_report(request):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    user = User.objects.get(username=request.user)
+    if user.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
+    parceiros = User.objects.filter(groups__name__in=['Parceiro']).order_by("-last_login")
+    total_parceiros = len(parceiros)
+
+    if total_parceiros == 1:
+        total_str = f"Encontrado {total_parceiros} parceiro"
+    elif total_parceiros == 0:
+        total_str = "Nenhum parceiro cadastrado"
+    else:
+        total_str = f"Encontrados {total_parceiros} parceiros"
+
+    return render(request, 'parceiros/access_report.html', {'usuario': usuario,
+                                                            'parceiros': parceiros,
+                                                            'total_parceiros': total_str, })
