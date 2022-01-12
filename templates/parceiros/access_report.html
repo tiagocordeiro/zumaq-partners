@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Parceiros - S.I.E.{% endblock %}
+{% block page-title %}Parceiros{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item active"><span>Acessos Revendas</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+    <div class="panel">
+      <!-- Records Header Start -->
+      <div class="records--header">
+        <div class="title fa-user">
+          <h3 class="h3">Parceiros</h3>
+          <p>{{ total_parceiros }}</p>
+        </div>
+
+        <div class="actions">
+          <form action="#" class="search flex-wrap flex-md-nowrap">
+            <input id="txtSearch" type="text" class="form-control" placeholder="Pesquisar...">
+            <button type="submit" class="btn btn-rounded" disabled>
+              <i class="fa fa-search"></i></button>
+          </form>
+        </div>
+      </div>
+      <!-- Records Header End -->
+    </div>
+
+    <div class="panel">
+      <!-- Records List Start -->
+      <div class="records--list" data-title="Acessos Revendas">
+        <table id="recordsListView">
+          <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>E-mail</th>
+            <th>Ultimo acesso</th>
+            <th>Ultimo pedido</th>
+            <th>Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for parceiro in parceiros %}
+            <tr>
+              <td>
+                <a href="{% url 'parceiro_details' pk=parceiro.pk %}" class="btn-link">{{ parceiro.username }}</a>
+              </td>
+              <td>
+                {{ parceiro.email }}
+              </td>
+              <td>
+                {% if parceiro.last_login %}
+                  {{ parceiro.last_login }}
+                {% else %}
+                  Nunca acessou
+                {% endif %}
+              </td>
+              <td>
+                {% if parceiro.pedido_set.last.pk %}
+                  <a href="{% url 'pedido_details' pk=parceiro.pedido_set.last.pk %}" class="btn-link">{{ parceiro.pedido_set.last.created|date:"d/m/Y" }}
+                    -
+                    P{{ parceiro.pedido_set.last.created.year }}-{{ parceiro.pedido_set.last.parceiro_id }}/{{ parceiro.pedido_set.last.pk }}</a>
+                {% else %}
+                  Nunca pediu
+                {% endif %}
+              </td>
+
+              {% if parceiro.pedido_set.last.status == 0 %}
+                <td><span class="label label-warning">Em Aberto</span></td>
+              {% elif parceiro.pedido_set.last.status == 1 %}
+                <td><span class="label label-success">Novo</span></td>
+              {% elif parceiro.pedido_set.last.status == 2 %}
+                <td><span class="label label-info">Atendido</span></td>
+              {% elif parceiro.pedido_set.last.status == 3 %}
+                <td><span class="label label-danger">Cancelado</span></td>
+              {% elif parceiro.pedido_set.last.status == None %}
+                <td><span class="label label-danger">Vazio</span></td>
+              {% else %}
+                <td>
+                  <span class="label label-warning">{{ pedido.get_status_display }}</span>
+                </td>
+              {% endif %}
+
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- Records List End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+{% endblock %}
+
+{% block extra_scripts %}
+  <script type="application/javascript">
+      $.extend(true, $.fn.dataTable.defaults, {
+          "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+          "oLanguage": {
+              "sEmptyTable": "Nenhum registro encontrado.",
+              "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+              "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+              "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+              "sInfoPostFix": "",
+              "sInfoThousands": ".",
+              "sLengthMenu": "_MENU_ resultados por página",
+              "sLoadingRecords": "Carregando...",
+              "sProcessing": "Processando...",
+              "sZeroRecords": "Nenhum registro encontrado",
+              "sSearch": "Pesquisar",
+              "oPaginate": {
+                  "sNext": "Próximo",
+                  "sPrevious": "Anterior",
+                  "sFirst": "Primeiro",
+                  "sLast": "Último"
+              },
+              "oAria": {
+                  "sSortAscending": ": Ordenar colunas de forma ascendente",
+                  "sSortDescending": ": Ordenar colunas de forma descendente"
+              }
+          }
+      });
+      $(document).ready(function () {
+          $('#recordsListView').DataTable();
+
+          $('#recordsListView_filter').hide(); // Hide default search datatables where example is the ID of table
+
+          $('#txtSearch').on('keyup', function () {
+              $('#recordsListView')
+                  .DataTable()
+                  .search($('#txtSearch').val(), false, true)
+                  .draw();
+          });
+      });
+  </script>
+{% endblock %}

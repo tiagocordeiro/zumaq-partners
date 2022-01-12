@@ -10,4 +10,5 @@ urlpatterns = [
     path('pedidos/', views.pedidos_report, name='pedidos_report_all'),
     path('pedidos/<str:status>/', views.pedidos_report, name='pedidos_report'),
     path('parceiros/', views.parceiros_report, name='parceiros_report_all'),
+    path('parceiros/access/', views.reseller_access_report, name='reseller_access_report'),
 ]
