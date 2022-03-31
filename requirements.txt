@@ -33,7 +33,7 @@ django-mass-edit==3.4.1
 xlwt==1.3.0
 
 # PDF
-xhtml2pdf==0.2.6
+xhtml2pdf==0.2.7
 
 # Loggin
 django-simple-history==3.0.0
