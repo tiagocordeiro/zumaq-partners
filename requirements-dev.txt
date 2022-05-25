@@ -8,6 +8,6 @@ django-debug-toolbar==3.2.4
 coverage==6.3.2
 
 # responses
-responses==0.20.0
+responses==0.21.0
 
 -r requirements.txt
