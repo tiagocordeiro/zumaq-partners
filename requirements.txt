@@ -21,7 +21,7 @@ dj3-cloudinary-storage==0.0.6
 pybling==0.0.9
 
 # Sentry
-sentry-sdk==1.5.10
+sentry-sdk==1.9.4
 
 # Crispy Forms
 django-crispy-forms==1.14.0
