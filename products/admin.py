@@ -1,10 +1,10 @@
 from django.contrib import admin
+from massadmin.massadmin import mass_change_selected
 from simple_history.admin import SimpleHistoryAdmin
 
 from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, CustomBlocked, BlockedProducts
 
 
-# Register your models here.
 class ProdutoAtacadoInLine(admin.StackedInline):
     model = ProdutoAtacado
     extra = 1
@@ -12,7 +12,7 @@ class ProdutoAtacadoInLine(admin.StackedInline):
 
 class ProdutoAdmin(SimpleHistoryAdmin, admin.ModelAdmin):
     list_display = ('codigo', 'descricao')
-    actions = admin.ModelAdmin.actions + ['mass_change_selected']
+    actions = [mass_change_selected]
     massadmin_exclude = ['codigo', 'descricao', 'pago_na_china', ]
     inlines = [
         ProdutoAtacadoInLine,
@@ -29,7 +29,7 @@ class CustomCoeficienteAdmin(SimpleHistoryAdmin, admin.ModelAdmin):
     inlines = [
         CustomCoeficienteInline,
     ]
-    actions = admin.ModelAdmin.actions + ['mass_change_selected']
+    actions = [mass_change_selected]
     massadmin_exclude = ['parceiro', ]
 
 
