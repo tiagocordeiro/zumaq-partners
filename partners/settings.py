@@ -199,3 +199,8 @@ CLICKY_SITE_ID = config('CLICKY_SITE_ID')
 GOOGLE_ANALYTICS_GTAG_PROPERTY_ID = config('GOOGLE_ANALYTICS_GTAG_PROPERTY_ID')
 
 SECURE_REFERRER_POLICY = config('SECURE_REFERRER_POLICY', default='same-origin')
+
+# By default, all models registered in the admin will get Mass Edit action.
+MASSEDIT = {
+    'ADD_ACTION_GLOBALLY': False,
+}

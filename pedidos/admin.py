@@ -1,4 +1,5 @@
 from django.contrib import admin
+from massadmin.massadmin import mass_change_selected
 
 from .models import Pedido, PedidoItem
 
@@ -13,7 +14,7 @@ class PedidoAdmin(admin.ModelAdmin):
     inlines = [
         PedidoInline,
     ]
-    actions = admin.ModelAdmin.actions + ['mass_change_selected']
+    actions = [mass_change_selected]
     massadmin_exclude = ['parceiro', ]
 
 
