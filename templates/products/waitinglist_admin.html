@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+{% load core_extras %}
+
+{% block title %}Lista de Espera - S.I.E.{% endblock %}
+{% block page-title %}Lista de espera{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'pedidos_list' %}">Pedidos</a>
+  </li>
+  <li class="breadcrumb-item active"><span>Lista de espera</span></li>
+{% endblock %}
+
+{% block content %}
+  <!-- Main Content Start -->
+  <section class="main--content">
+
+    {% if form.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ form.errors }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+
+    {% if formset.errors %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ formset.errors }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="panel">
+      {% if waitinglist_items.count == 0 %}
+        <!-- Records Header Start -->
+        <div class="records--header">
+          <div class="title fa-shopping-bag">
+            <h3 class="h3">A lista de espera está vazia</h3>
+          </div>
+        </div>
+        <!-- Records Header End -->
+      {% else %}
+        <!-- Records Header Start -->
+        <div class="records--header">
+          <div class="title fa-shopping-bag">
+            <h3 class="h3">Lista de espera</h3>
+            <p>Produtos na lista de espera</p>
+          </div>
+          <div class="actions">
+            <form action="#" class="search flex-wrap flex-md-nowrap">
+              <input id="txtSearch" type="text" class="form-control" placeholder="Produto...">
+              <button type="submit" class="btn btn-rounded" disabled>
+                <i class="fa fa-search"></i></button>
+            </form>
+          </div>
+        </div>
+        <!-- Records Header End -->
+
+        <!-- Invoice Start -->
+        <div class="records--list" data-title="Listagem de Produtos">
+        <script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
+        <table style="padding: 0px;" id="recordsListView" data-page-length='-1' data-order='[[2, "des"]]'>
+          <thead>
+          <tr>
+            <th style="width: 10%;">Código</th>
+            <th style="width: 75%;">Produto</th>
+            <th style="width: 15%;">Parceiros</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for item in waitinglist_data %}
+            <tr>
+              <td>{{ item.produto.produto.codigo }}</td>
+              <td>{{ item.produto.produto.descricao|normalize_for_table }}</td>
+              <td><span class="label label-info"><a style="color: whitesmoke" href="#parceirosProduto{{ item.produto.produto.codigo }}Modal" class="btn-link btn-light" data-toggle="modal"> {{ item.parceiros|length }} </a></span>
+              <a href="#parceirosProduto{{ item.produto.produto.codigo }}Modal" class="btn btn-sm btn-outline-secondary" data-toggle="modal">Ver parceiros</a></td>
+{#              <td>{{ item.parceiros|length }}</td>#}
+{#              <td>{% for parceiro in item.parceiros %}<span class="tag tag-parceiro">{{ parceiro.parceiro__username }}</span>{% endfor %}</td>#}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+      </div>
+
+      <!-- Invoice End -->
+    </div>
+  </section>
+  <!-- Main Content End -->
+
+  {% for item in waitinglist_data %}
+    <!-- Vertically Centered Modal Start -->
+    <div id="parceirosProduto{{ item.produto.produto.codigo }}Modal" class="modal fade">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Lista de espera: {{ item.produto.produto.codigo }}</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <div class="modal-body">
+            <p>Produto: {{ item.produto.produto.descricao }}</p>
+            <p>Parceiros: {% for parceiro in item.parceiros %}
+              <span class="tag tag-parceiro">{{ parceiro.parceiro__username }}</span>{% endfor %}
+            </p>
+            <table>
+              {% for parceiro in item.parceiros %}
+                <tr>
+                  <td>{{ parceiro.parceiro__username }}</td>
+                  <td>{{ parceiro.parceiro__email }}</td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Vertically Centered Modal End -->
+  {% endfor %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+  <script type="application/javascript">
+    $.extend(true, $.fn.dataTable.defaults, {
+      "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+      "oLanguage": {
+        "sEmptyTable": "Nenhum registro encontrado.",
+        "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+        "sInfoPostFix": "",
+        "sInfoThousands": ".",
+        "sLengthMenu": "_MENU_ resultados por página",
+        "sLoadingRecords": "Carregando...",
+        "sProcessing": "Processando...",
+        "sZeroRecords": "Nenhum registro encontrado",
+        "sSearch": "Pesquisar",
+        "oPaginate": {
+          "sNext": "Próximo",
+          "sPrevious": "Anterior",
+          "sFirst": "Primeiro",
+          "sLast": "Último"
+        },
+        "oAria": {
+          "sSortAscending": ": Ordenar colunas de forma ascendente",
+          "sSortDescending": ": Ordenar colunas de forma descendente"
+        }
+      }
+    });
+    $(document).ready(function () {
+      $('#recordsListView').DataTable();
+
+      $('#recordsListView_filter').hide(); // Hide default search datatables where example is the ID of table
+
+        $('#txtSearch').on('keyup', function() {
+            $('#recordsListView')
+                .DataTable()
+                .search($('#txtSearch').val(), false, true)
+                .draw();
+        });
+    });
+  </script>
+{% endblock %}

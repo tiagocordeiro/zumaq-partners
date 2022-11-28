@@ -19,6 +19,10 @@ class Produto(TimeStampedModel, Active):
                                            cotação do dolar mais recente ao
                                            inves do dolar cotado''',
                                            default=True)
+    fora_de_estoque = models.BooleanField('Fora de estoque',
+                                          help_text='''Se selecionado, exibe o
+                                          produto, mas não permite comprar.''',
+                                          default=False)
     impostos_na_china = models.DecimalField('Impostos na China (%)', max_digits=10, decimal_places=2)
     porcentagem_importacao = models.DecimalField('Porcentagem Importação (%)', max_digits=10, decimal_places=2)
     coeficiente = models.DecimalField('Coeficidente (%)', max_digits=10, decimal_places=2)
@@ -64,7 +68,7 @@ class ProdutoAtacado(TimeStampedModel, Active):
     history = HistoricalRecords()
 
     def valor_unitario(self):
-        return round(self.produto.custo_da_peca() * (self.coeficiente + self.produto.custo_da_peca()), ndigits=2)
+        return round(self.produto.custo_da_peca() + (self.coeficiente * self.produto.custo_da_peca()), ndigits=2)
 
     def valor_atacado(self):
         return round(self.valor_unitario() * self.quantidade, ndigits=2)
@@ -106,3 +110,18 @@ class BlockedProducts(models.Model):
 
     class Meta:
         unique_together = [('parceiro', 'produto')]
+
+
+class WaitingList(models.Model):
+    parceiro = models.ForeignKey(User, on_delete=models.CASCADE)
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.produto.codigo + ' - ' + self.produto.descricao)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["parceiro", "produto"], name='parceiro com esse produto já existe')
+        ]
+        verbose_name = "Lista de espera"
+        verbose_name_plural = "Listas de espera"

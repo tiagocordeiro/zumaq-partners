@@ -57,7 +57,7 @@ python manage.py test -v 2
 ou
 ```
 coverage run manage.py test -v 2
-coverage hmtl
+coverage html
 ```
 para relatório de cobertura de testes.
 

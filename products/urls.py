@@ -13,6 +13,10 @@ urlpatterns = [
     path('products/json/<str:codigo>/', views.product_detail_json, name='product_detail_json'),
     path('products/json/public/<str:secret_key>/', views.api_product_list, name='api_product_list'),
     path('products/json/public/<str:codigo>/<str:secret_key>/', views.api_product_detail, name='api_product_detail'),
+    path('products/waitinglist/', views.waitinglist, name='waitinglist'),
+    path('products/waitinglist/add/<str:codigo>/', views.add_item_to_waitinglist, name='add_item_to_waitinglist'),
+    path('products/waitinglist/remove/<str:codigo>/', views.remove_from_waitinglist, name='remove_from_waitinglist'),
+    path('products/waitinglist/admin/', views.waitinglist_admin, name='waitinglist_admin'),
     path('api/products/', views.api_product_list_header_token, name='api_product_list_header_token'),
     path('api/product/<str:codigo>/', views.api_product_detail_header_token, name='api_product_detail_header_token'),
 ]

@@ -14,7 +14,8 @@ class ProdutoForm(ModelForm):
                   'coeficiente',
                   'imagem',
                   'active',
-                  'dolar_automatico', ]
+                  'dolar_automatico',
+                  'fora_de_estoque', ]
         widgets = {
             'pago_na_china': TextInput(attrs={'class': 'form-control', 'placeholder': 'Pago na China'}),
             'reminmbi': TextInput(attrs={'class': 'form-control', 'placeholder': 'Reminmbi'}),
@@ -24,7 +25,8 @@ class ProdutoForm(ModelForm):
             'coeficiente': TextInput(attrs={'class': 'form-control', 'placeholder': 'Coeficiente'}),
             'imagem': TextInput(attrs={'class': 'form-control', 'placeholder': 'Url da imagem'}),
             'active': CheckboxInput(attrs={'class': 'form-control'}),
-            'dolar_automatico': CheckboxInput(attrs={'class': 'form-control'})
+            'dolar_automatico': CheckboxInput(attrs={'class': 'form-control'}),
+            'fora_de_estoque': CheckboxInput(attrs={'class': 'form-control'})
         }
 
 
