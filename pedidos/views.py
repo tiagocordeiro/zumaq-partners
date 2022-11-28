@@ -140,7 +140,8 @@ def pedido_aberto(request):
         pedido_total = pedido_total + subtotal
         pedido_itens_list.append(item.item.codigo)
 
-    bloqueados = BlockedProducts.objects.filter(parceiro__parceiro=parceiro)  # .values_list('produto__codigo')
+    # Verifica se tem itens bloqueados para o parceiro no pedido aberto
+    bloqueados = BlockedProducts.objects.filter(parceiro__parceiro=parceiro)
     bloqueados_list = []
 
     for item in bloqueados:
@@ -150,6 +151,18 @@ def pedido_aberto(request):
 
             messages.info(request, f'{item.produto} Não está disponível para pedido.')
             return redirect(reverse('pedido_aberto'))
+
+    # Verifica se tem itens fora de estoque no pedido aberto
+    pedido_itens_out_of_stock = PedidoItem.objects.filter(pedido__exact=pedido, item__fora_de_estoque=True)
+    if pedido_itens_out_of_stock:
+        itens_fora_de_estoque = list(pedido_itens_out_of_stock.values_list("item__descricao", flat=True))
+        if len(itens_fora_de_estoque) == 1:
+            messages.info(request, f'{itens_fora_de_estoque} Não está disponível para pedido.')
+        elif len(itens_fora_de_estoque) >= 2:
+            messages.info(request, f'{itens_fora_de_estoque} Não estão disponíveis para pedido.')
+
+        pedido_itens_out_of_stock.delete()
+        return redirect(reverse('pedido_aberto'))
 
     itens_pedido_formset = inlineformset_factory(
         Pedido, PedidoItem, form=PedidoItensForm, extra=0, can_delete=True)

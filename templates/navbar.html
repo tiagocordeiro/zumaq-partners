@@ -37,10 +37,10 @@
       <!-- Nav User Start -->
       <li class="nav-item dropdown nav--user online">
         <a href="#" class="nav-link" data-toggle="dropdown">
-          {% if usuario is None %}
-            <img src="{% static 'assets/img/avatars/01_150x150.png' %}" alt="" class="rounded-circle">
-          {% else %}
+          {% if usuario.avatar %}
             <img src="{{ usuario.avatar.url }}" alt="" class="rounded-circle" style="object-fit: cover; height: 50px;">
+          {% else %}
+            <img src="{% static 'assets/img/avatars/01_150x150.png' %}" alt="" class="rounded-circle">
           {% endif %}
           {% if user.first_name %}
             <span>{{ user.first_name|safe }}</span>
@@ -73,10 +73,10 @@
   <div class="sidebar--profile">
     <div class="profile--img">
       <a href="{% url "profile_update" %}">
-        {% if usuario is None %}
-          <img src="{% static 'assets/img/avatars/01_150x150.png' %}" alt="" class="rounded-circle">
-        {% else %}
+        {% if usuario.avatar %}
           <img src="{{ usuario.avatar.url }}" alt="" class="rounded-circle" style="object-fit: cover; height: 80px;">
+        {% else %}
+          <img src="{% static 'assets/img/avatars/01_150x150.png' %}" alt="" class="rounded-circle">
         {% endif %}
       </a>
     </div>
@@ -185,6 +185,14 @@
               <span>Todos os pedidos</span>
             </a>
           </li>
+          {% if request.user|has_group:"Parceiro" %}
+          <li>
+            <a href="{% url 'waitinglist' %}">
+              <i class="fa fa-tasks"></i>
+              <span>Lista de espera</span>
+            </a>
+          </li>
+          {% endif %}
           {% if request.user|has_group:"Gerente" %}
             <li>
               <a href="{% url 'pedidos_list_separacao' %}">
@@ -210,6 +218,12 @@
               <a href="{% url 'reseller_access_report' %}">
                 <i class="fa fa-list-alt"></i>
                 <span>Acessos Revendas</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'waitinglist_admin' %}">
+                <i class="fa fa-tasks"></i>
+                <span>Lista de espera</span>
               </a>
             </li>
             <li>

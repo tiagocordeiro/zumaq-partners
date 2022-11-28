@@ -1,16 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.forms.models import inlineformset_factory
 from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
+from django.urls import reverse
 from pybling.products import get_product
 
 from core.models import UserProfile, User
 from pedidos.models import Pedido, PedidoItem
 from .facade import get_partner_prices, get_partner_price
 from .forms import ProdutoForm, ProdutoAtacadoForm
-from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, BlockedProducts
+from .models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, BlockedProducts, WaitingList
 
 
 @login_required
@@ -384,3 +386,100 @@ def product_atacado_list(request):
                                                           'produtos': produtos,
                                                           'total_str': total_str,
                                                           'pedido_itens_qt': pedido_itens_qt})
+
+
+@login_required
+def waitinglist(request):
+    if request.user.groups.filter(name='Gerente').exists():
+        return redirect('waitinglist_admin')
+
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    parceiro = User.objects.get(username=request.user)
+
+    pedido = Pedido.objects.filter(parceiro=parceiro, status=0).first()
+    if pedido is None:
+        pedido_itens_qt = 0
+    else:
+        pedido_itens_qt = PedidoItem.objects.filter(pedido=pedido).count()
+
+    waitinglist_items = WaitingList.objects.filter(parceiro=parceiro)
+    return render(request, 'products/waitinglist.html', {'parceiro': parceiro,
+                                                         'usuario': usuario,
+                                                         'pedido_itens_qt': pedido_itens_qt,
+                                                         'waitinglist_items': waitinglist_items})
+
+
+@login_required
+def add_item_to_waitinglist(request, codigo):
+    parceiro = User.objects.get(username=request.user)
+    bloqueados = BlockedProducts.objects.filter(parceiro__parceiro=parceiro)
+    bloqueados_list = []
+
+    for item in bloqueados:
+        bloqueados_list.append(item.produto.codigo)
+
+    produto = Produto.objects.get(codigo=codigo)
+    if produto.codigo in bloqueados_list:
+        messages.info(request, f'{produto.descricao} Não está disponível para encomenda.')
+        return redirect(reverse('product_list'))
+
+    if produto.fora_de_estoque is False:
+        messages.info(request, f'{produto.descricao} Está disponível para pedido.'
+                               f'Por isso não pode ser adicionado a lista de espera')
+        return redirect(reverse('product_list'))
+
+    try:
+        WaitingList.objects.create(parceiro=parceiro, produto=produto)
+
+    except IntegrityError:
+        messages.info(request,
+                      f'{produto.descricao} já está na lista de espera... '
+                      f'<a href="{reverse("waitinglist")}" class="alert-link">Ver lista</a>.')
+        return redirect(reverse('product_list'))
+
+    messages.info(request,
+                  f'{produto.descricao} adicionado a lista de easpera... '
+                  f'<a href="{reverse("waitinglist")}" class="alert-link">Ver lista</a>.')
+    return redirect(reverse('product_list'))
+
+
+@login_required
+def remove_from_waitinglist(request, codigo):
+    parceiro = User.objects.get(username=request.user)
+    produto = Produto.objects.get(codigo=codigo)
+
+    item = WaitingList.objects.get(parceiro=parceiro, produto=produto)
+    item.delete()
+
+    messages.info(request, f'{produto.descricao} Foi removido da lista.')
+    return redirect(reverse('waitinglist'))
+
+
+@login_required
+def waitinglist_admin(request):
+    try:
+        usuario = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        usuario = None
+
+    # Check access role
+    usuario_gerente = User.objects.get(username=request.user)
+    if usuario_gerente.groups.filter(name='Gerente').exists():
+        pass
+    else:
+        return redirect('dashboard')
+
+    waitinglist_data = []
+    waitinglist_produtos = WaitingList.objects.distinct('produto')
+    for produto in waitinglist_produtos:
+        parceiros = list(
+            WaitingList.objects.values('parceiro__username', 'parceiro__email').filter(produto=produto.produto))
+        waitinglist_item = dict({'produto': produto, 'parceiros': parceiros})
+        waitinglist_data.append(waitinglist_item)
+
+    return render(request, 'products/waitinglist_admin.html', {'usuario': usuario,
+                                                               'waitinglist_data': waitinglist_data})

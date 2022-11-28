@@ -82,7 +82,15 @@
               {% endif %}
             </td>
             <td>
-              {{ produto.descricao|normalize_for_table }}
+              {% if request.user|has_group:"Gerente" %}
+                {{ produto.descricao|normalize_for_table }}
+              {% else %}
+                {{ produto.descricao|normalize_for_table }}
+                {% if produto.fora_de_estoque %}
+                  <br>
+                  <a href="{% url 'add_item_to_waitinglist' codigo=produto.codigo %}">[avise quando chegar]</a>
+                {% endif %}
+              {% endif %}
             </td>
             <td>
               R$ {{ produto.cliente_paga|currency_display }}
@@ -93,15 +101,23 @@
             </td>
             <td>
               {% if produto.active %}
-                <span class="label label-success">Ativo</span>
+                {% if produto.fora_de_estoque %}
+                  <span class="label label-danger">Fora de estoque</span>
+                {% else %}
+                  <span class="label label-success">Ativo</span>
+                {% endif %}
               {% else %}
                 <span class="label label-warning">Inativo</span>
               {% endif %}
             </td>
             {% else %}
-            <td>
-              <a href="{% url 'pedido_add_item' codigo=produto.codigo %}" class="btn btn-success btn-sm"><i class="fa mr-2 fa-cart-plus"></i> Adicionar</a>
-            </td>
+              {% if produto.fora_de_estoque %}
+                <td><span class="label label-danger">Fora de estoque</span></td>
+              {% else %}
+                <td>
+                  <a href="{% url 'pedido_add_item' codigo=produto.codigo %}" class="btn btn-success btn-sm"><i class="fa mr-2 fa-cart-plus"></i> Adicionar</a>
+                </td>
+              {% endif %}
             {% endif %}
           </tr>
           {% endfor %}

@@ -13,8 +13,8 @@ from django.urls import reverse
 
 from core.models import UserProfile
 from products.models import Produto, CustomCoeficiente, CustomCoeficienteItens, ProdutoAtacado, CustomBlocked, \
-    BlockedProducts
-from products.views import product_add, product_update
+    BlockedProducts, WaitingList
+from products.views import product_add, product_update, add_item_to_waitinglist, remove_from_waitinglist
 
 
 class ProductsTestCase(TestCase):
@@ -63,6 +63,17 @@ class ProductsTestCase(TestCase):
                                               porcentagem_importacao=0.52,
                                               coeficiente=0.50)
 
+        # Produto
+        self.product_out_of_stock = Produto.objects.create(codigo='PEC-0908',
+                                                           descricao='Bico Padrão Plano-Fibra Raytools Double 1.5 mm',
+                                                           pago_na_china=10,
+                                                           reminmbi=6.45,
+                                                           dolar_cotado=5.45,
+                                                           impostos_na_china=0,
+                                                           porcentagem_importacao=0.65,
+                                                           coeficiente=0.75,
+                                                           fora_de_estoque=True)
+
         self.product_atacado = ProdutoAtacado.objects.create(produto=self.product, quantidade=6, coeficiente=0.45)
 
         # Custom coeficiente de parceiro
@@ -86,6 +97,8 @@ class ProductsTestCase(TestCase):
         # Custom blocked items setup
         self.custom_blocked = CustomBlocked.objects.create(parceiro=self.user_parceiro3)
         self.blocked_items = BlockedProducts.objects.create(parceiro=self.custom_blocked, produto=self.product)
+        self.blocked_items = BlockedProducts.objects.create(parceiro=self.custom_blocked,
+                                                            produto=self.product_out_of_stock)
 
     def test_retorno_ch_sem_imposto(self):
         produto = Produto.objects.get(codigo='TYL-1080')
@@ -111,6 +124,11 @@ class ProductsTestCase(TestCase):
         produto = Produto.objects.get(codigo='TYL-1080')
         self.assertEqual(produto.unitario_em_dolar(), Decimal('308.41'))
 
+    def test_retorno_produto_fora_de_estoque(self):
+        produto_fora_de_estoque = Produto.objects.get(codigo='PEC-0908')
+        self.assertTrue(produto_fora_de_estoque.fora_de_estoque)
+        self.assertEqual(str(produto_fora_de_estoque), 'PEC-0908 - Bico Padrão Plano-Fibra Raytools Double 1.5 mm')
+
     def test_product_add_anonimo(self):
         self.client.logout()
         response = self.client.get(reverse('product_add'))
@@ -125,14 +143,9 @@ class ProductsTestCase(TestCase):
 
         response = product_add(request)
         self.assertEqual(response.status_code, 200)
-        # self.client.force_login(self.user_gerente)
-        # response = self.client.get(reverse('product_add'))
-        # self.assertEqual(response.status_code, 200)
 
     def test_product_update(self):
         produto = self.product
-
-        # self.client.force_login(self.user_gerente)
 
         form_data = {'codigo': 'TYL-1080',
                      'descricao': 'Tubo de Laser Yong Li - 80w - R3',
@@ -163,8 +176,6 @@ class ProductsTestCase(TestCase):
     def test_product_atacado_update(self):
         produto = self.product
         produto_atacado = self.product_atacado
-
-        # self.client.force_login(self.user_gerente)
 
         form_data = {'codigo': 'TYL-1080',
                      'descricao': 'Tubo de Laser Yong Li - 80w - R3',
@@ -199,6 +210,12 @@ class ProductsTestCase(TestCase):
         self.assertEqual(produto_atacado.coeficiente, Decimal('0.44'))
         self.assertEqual(response.status_code, 302)
 
+    def test_produto_atacado_retornos(self):
+        produto_atacado = ProdutoAtacado.objects.first()
+        self.assertEqual(str(produto_atacado), 'Tubo de Laser Yong Li - 80w - R3-6')
+        self.assertEqual(produto_atacado.valor_unitario(), Decimal('1159.74'))
+        self.assertEqual(produto_atacado.valor_atacado(), Decimal('6958.44'))
+
     def test_product_create_exist_status_code_gerente(self):
         self.client.force_login(self.user_gerente)
         response = self.client.post(reverse('product_create', kwargs={'codigo': self.product.codigo}))
@@ -212,6 +229,160 @@ class ProductsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/products/product/create/AAA/', status_code=302, target_status_code=302)
+
+    def test_waitinglist_add_item(self):
+        produto = self.product_out_of_stock
+
+        request = self.factory.post(reverse('add_item_to_waitinglist', kwargs={'codigo': produto.codigo}))
+        request.user = self.user_parceiro
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+        waitinglists = WaitingList.objects.all()
+        self.assertEqual(waitinglists.count(), 0)
+
+        response = add_item_to_waitinglist(request, codigo=produto.codigo)
+        self.assertEqual(waitinglists.count(), 1)
+        self.assertEqual(response.status_code, 302)
+
+    def test_waitinglist_remove_item(self):
+        waitinglists = WaitingList.objects.all()
+        self.assertEqual(waitinglists.count(), 0)
+
+        # Adiciona um item a lista de espera
+        self.test_waitinglist_add_item()
+        self.assertEqual(waitinglists.count(), 1)
+
+        produto = self.product_out_of_stock
+
+        request = self.factory.post(reverse('remove_from_waitinglist', kwargs={'codigo': produto.codigo}))
+        request.user = self.user_parceiro
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        response = remove_from_waitinglist(request, codigo=produto.codigo)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(waitinglists.count(), 0)
+
+    def test_waitinglist_add_item_in_waitinglist(self):
+        # Adicionando um produto a lista de espera de parceiro
+        waitinglist_parceiro = WaitingList.objects.create(parceiro=self.user_parceiro,
+                                                          produto=self.product_out_of_stock)
+        waitinglist_parceiro.save()
+
+        # Tenta adicionar um produto que já está na lista de espera
+        produto = self.product_out_of_stock
+
+        request = self.factory.post(reverse('add_item_to_waitinglist', kwargs={'codigo': produto.codigo}))
+        request.user = self.user_parceiro
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+        waitinglists = WaitingList.objects.all()
+        self.assertEqual(waitinglists.count(), 1)
+
+        response = add_item_to_waitinglist(request, codigo=produto.codigo)
+        self.assertEqual(response.status_code, 302)
+
+    def test_waintinglist_add_item_in_stock(self):
+        produto = self.product
+
+        request = self.factory.post(reverse('add_item_to_waitinglist', kwargs={'codigo': produto.codigo}))
+        request.user = self.user_parceiro
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+        waitinglists = WaitingList.objects.all()
+        self.assertEqual(waitinglists.count(), 0)
+
+        response = add_item_to_waitinglist(request, codigo=produto.codigo)
+        self.assertEqual(waitinglists.count(), 0)
+        self.assertEqual(response.status_code, 302)
+
+    def test_waintinglist_add_item_blocked(self):
+        produto = self.product_out_of_stock
+
+        request = self.factory.post(reverse('add_item_to_waitinglist', kwargs={'codigo': produto.codigo}))
+        request.user = self.user_parceiro3
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+        waitinglists = WaitingList.objects.all()
+        self.assertEqual(waitinglists.count(), 0)
+
+        response = add_item_to_waitinglist(request, codigo=produto.codigo)
+        self.assertEqual(waitinglists.count(), 0)
+        self.assertEqual(response.status_code, 302)
+
+    def test_waitinglist_view_anonimo(self):
+        self.client.logout()
+        response = self.client.get(reverse('waitinglist'))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/products/waitinglist/', status_code=302,
+                             target_status_code=200)
+
+    def test_waitinglist_view_parceiro(self):
+        self.client.force_login(self.user_parceiro)
+        response = self.client.get(reverse('waitinglist'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sua lista está vazia')
+
+        # Adicionando um produto a lista de espera de parceiro
+        waitinglist_parceiro = WaitingList.objects.create(parceiro=self.user_parceiro,
+                                                          produto=self.product_out_of_stock)
+        waitinglist_parceiro.save()
+
+        response = self.client.get(reverse('waitinglist'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'PEC-0908')
+
+    def test_waitinglist_view_gerente(self):
+        self.client.force_login(self.user_gerente)
+        response = self.client.get(reverse('waitinglist'))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/products/waitinglist/admin/', status_code=302, target_status_code=200)
+
+    def test_waitinglist_admin_view_anonimo(self):
+        self.client.logout()
+        response = self.client.get(reverse('waitinglist_admin'))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/products/waitinglist/admin/', status_code=302,
+                             target_status_code=200)
+
+    def test_waitinglist_admin_view_parceiro(self):
+        self.client.force_login(self.user_parceiro)
+        response = self.client.get(reverse('waitinglist_admin'))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/', status_code=302, target_status_code=200)
+
+    def test_waitinglist_admin_view_gerente(self):
+        # Adicionando um produto a lista de espera de parceiro
+        waitinglist_parceiro = WaitingList.objects.create(parceiro=self.user_parceiro,
+                                                          produto=self.product_out_of_stock)
+        waitinglist_parceiro.save()
+
+        self.client.force_login(self.user_gerente)
+        response = self.client.get(reverse('waitinglist_admin'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'PEC-0908')
+
+    def test_waitinglist_item_str(self):
+        # Adicionando um produto a lista de espera de parceiro
+        waitinglist_parceiro = WaitingList.objects.create(parceiro=self.user_parceiro,
+                                                          produto=self.product_out_of_stock)
+        waitinglist_parceiro.save()
+        self.assertEqual(str(waitinglist_parceiro), 'PEC-0908 - Bico Padrão Plano-Fibra Raytools Double 1.5 mm')
+
+    def test_blocked_item_str(self):
+        self.assertEqual(str(self.blocked_items), 'PEC-0908 - Bico Padrão Plano-Fibra Raytools Double 1.5 mm')
 
     def test_product_list_view_anonimo(self):
         self.client.logout()
@@ -289,8 +460,10 @@ class ProductsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.parceiro2_coefiente.coeficiente_padrao, 0.50)
+        self.assertContains(response, 'R$ 37,94')
         self.assertContains(response, 'R$ 1.799,60')
-        self.assertEqual(response.context['produtos'][0].cliente_paga, Decimal('1799.60'))
+        self.assertEqual(response.context['produtos'][0].cliente_paga, Decimal('37.94'))
+        self.assertEqual(response.context['produtos'][1].cliente_paga, Decimal('1799.60'))
 
     def test_product_view_gerente(self):
         self.client.force_login(self.user_gerente)
