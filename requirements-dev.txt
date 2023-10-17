@@ -1,13 +1,13 @@
 # Flake8
-flake8==6.0.0
+flake8==6.1.0
 
 # DebugToolbar
-django-debug-toolbar==3.7.0
+django-debug-toolbar==4.2.0
 
 # Coverage
-coverage==6.5.0
+coverage==7.3.2
 
 # responses
-responses==0.22.0
+responses==0.23.3
 
 -r requirements.txt

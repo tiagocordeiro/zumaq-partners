@@ -12,17 +12,12 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 import os
-import django_heroku
 
 from dj_database_url import parse as dburl
 from decouple import config, Csv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
@@ -45,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'crispy_bootstrap4',
 
     # MyApps
     'core',
@@ -157,9 +153,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
 COLLECTFAST_ENABLED = False
 
-# Configure Django App for Heroku.
-django_heroku.settings(locals())
-
 # Force ssl if run in Heroku
 if 'DYNO' in os.environ:
     SECURE_SSL_REDIRECT = True
@@ -189,8 +182,9 @@ if CLOUDINARY_URL:  # pragma: no cover
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.RawMediaCloudinaryStorage'
     STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticCloudinaryStorage'
 
-# Sentry
-sentry_sdk.init(dsn=config('SENTRY_DSN'), integrations=[DjangoIntegration()])
+# Since version 2.0, django-crispy-forms template packs are now in separate packages.
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # Clicky Analytics
 CLICKY_SITE_ID = config('CLICKY_SITE_ID')
@@ -204,3 +198,6 @@ SECURE_REFERRER_POLICY = config('SECURE_REFERRER_POLICY', default='same-origin')
 MASSEDIT = {
     'ADD_ACTION_GLOBALLY': False,
 }
+
+# Sentry
+sentry_sdk.init(dsn=config('SENTRY_DSN'), integrations=[DjangoIntegration()])

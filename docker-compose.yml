@@ -3,7 +3,7 @@ version: "3.3"
 services:
   database:
     container_name: zumaq-partners
-    image: postgres:12.6
+    image: postgres:latest
     restart: always
     volumes:
     - ./.pgdata:/var/lib/postgresql/data
