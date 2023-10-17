@@ -1,18 +1,18 @@
 # Django
-Django==4.1.3
+Django==4.2.6
 
 # Decouple
-python-decouple==3.6
+python-decouple==3.8
 
 # Heroku
-dj-database-url==1.0.0
-django-heroku==0.3.1
-psycopg2==2.9.5
-psycopg2-binary==2.9.5
-gunicorn==20.1.0
+dj-database-url==2.1.0
+# django-heroku==0.3.1
+# psycopg2==2.9.9
+psycopg2-binary==2.9.9
+gunicorn==21.2.0
 
 # Images
-Pillow==9.3.0
+Pillow==10.1.0
 
 # Cloudinary
 dj3-cloudinary-storage==0.0.6
@@ -21,22 +21,23 @@ dj3-cloudinary-storage==0.0.6
 pybling==0.0.9
 
 # Sentry
-sentry-sdk==1.11.1
+sentry-sdk==1.32.0
 
 # Crispy Forms
-django-crispy-forms==1.14.0
+django-crispy-forms==2.1
+crispy-bootstrap4==2023.1
 
 # Bulk Changes in Admin
-django-mass-edit==3.4.1
+django-mass-edit==3.5.0
 
 # Excel for reports
 xlwt==1.3.0
 
 # PDF
-xhtml2pdf==0.2.8
+xhtml2pdf==0.2.11
 
 # Loggin
-django-simple-history==3.2.0
+django-simple-history==3.4.0
 
 # Analytics
 django-analytical==3.1.0
