@@ -9,7 +9,7 @@ dj-database-url==2.1.0
 # django-heroku==0.3.1
 # psycopg2==2.9.9
 psycopg2-binary==2.9.9
-gunicorn==21.2.0
+gunicorn==22.0.0
 
 # Images
 Pillow==10.1.0
