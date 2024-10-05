@@ -25,7 +25,7 @@ sentry-sdk==1.32.0
 
 # Crispy Forms
 django-crispy-forms==2.1
-crispy-bootstrap4==2023.1
+crispy-bootstrap4==2024.10
 
 # Bulk Changes in Admin
 django-mass-edit==3.5.0
